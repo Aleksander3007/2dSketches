@@ -1,6 +1,10 @@
 package com.blackteam.dsketches;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.pm.ConfigurationInfo;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,21 +41,48 @@ import android.widget.Toast;
  * Created by Aleksander Ermakov on 23.09.2016.
  */
 public class Main extends Activity {
+    private GLSurfaceView glSurfaceView;
+    private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
 
-            // если хотим, чтобы приложение было полноэкранным
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            // и без заголовка
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            glSurfaceView = new GLSurfaceView(this);
 
-            setContentView(new GameView(this));
+            // Проверяем поддерживается ли OpenGL ES 2.0.
+            final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+            final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
+            if (supportsEs2) {
+                glSurfaceView.setEGLContextClientVersion(2);
+                glSurfaceView.setRenderer(new GameRenderer(this));
+                rendererSet = true;
+            } else {
+                Toast.makeText(this, "This device does not support OpenGL ES 2.0.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            setContentView(glSurfaceView);
+            //setContentView(new GameView(this));
         }
         catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Internal error.", Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    protected void onPause() { super.onPause();
+        if (rendererSet) {
+            glSurfaceView.onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() { super.onResume();
+        if (rendererSet) {
+            glSurfaceView.onResume();
+        }
+    }
+
 }
