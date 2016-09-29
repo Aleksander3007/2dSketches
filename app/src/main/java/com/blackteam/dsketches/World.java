@@ -27,7 +27,7 @@ public class World {
     private ArrayList<Orb> selectedOrbs_ = new ArrayList<Orb>();
     private ArrayList<TouchLine> touchLines_ = new ArrayList<TouchLine>();
 
-    public World(final Vector2 pos, final int rectWidth, final int rectHeight, ArrayMap<String, Bitmap> bitmaps) {
+    public World(final Vector2 pos, final int rectWidth, final int rectHeight) {
         this.pos_ = pos;
 
         this.nColumns_ = (int) Math.floor(rectWidth / Orb.WIDTH);

@@ -11,19 +11,18 @@ public class GameScreen {
     private RestartButton restartBtn_;
     //private SkillsPanel skillsPanel;
 
-    private int width_;
-    private int height_;
+    private float width_;
+    private float height_;
 
     private Orb orb_;
 
-    public GameScreen(final int screenWidth, final int screenHeight, ArrayMap<String, Bitmap> bitmaps) {
+    public GameScreen(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
-        Vector2 worldOffset = new Vector2(0, 80);
+        Vector2 worldOffset = new Vector2(0, 0);
         world_ = new World(
                 worldOffset,
-                (int)(width_ + worldOffset.x), (int)(height_ - worldOffset.y),
-                bitmaps
+                (int)(width_ + worldOffset.x), (int)(height_ - worldOffset.y)
         );
     }
 

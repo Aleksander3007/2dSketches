@@ -38,7 +38,7 @@ import android.widget.Toast;
 // TODO: Кнопка exit.
 
 /**
- * Created by Aleksander Ermakov on 23.09.2016.
+ * Главный класс.
  */
 public class Main extends Activity {
     private GLSurfaceView glSurfaceView;
@@ -62,8 +62,8 @@ public class Main extends Activity {
                 Toast.makeText(this, "This device does not support OpenGL ES 2.0.", Toast.LENGTH_LONG).show();
                 return;
             }
+
             setContentView(glSurfaceView);
-            //setContentView(new GameView(this));
         }
         catch (Exception e) {
             e.printStackTrace();

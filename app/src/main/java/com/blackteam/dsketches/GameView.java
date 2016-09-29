@@ -85,7 +85,7 @@ public class GameView extends SurfaceView
         screenFactor_ = (float)(screenWidth) / (float)(gameWidth_);
         gameHeight_ = (int)((float)(screenHeight) / ((float)(screenWidth) / (float)(gameWidth_)));
 
-        gameScreen_ = new GameScreen(gameWidth_, gameHeight_, bitmaps_);
+        gameScreen_ = new GameScreen(/*gameWidth_, gameHeight_, bitmaps_*/1,1);
         loadContent();
         gameScreen_.init();
 
