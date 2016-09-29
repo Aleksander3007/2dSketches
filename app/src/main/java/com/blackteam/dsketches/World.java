@@ -1,22 +1,18 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
-
-import com.blackteam.tripledouble.R;
 
 import java.util.ArrayList;
 
 /**
- * Created by Aleksander on 26.09.2016.
+ * Модель мира.
  */
 public class World {
-    private Bitmap touchLineTexture_;
-    private ArrayMap<OrbType, ArrayMap<OrbSpecType, Bitmap>> orbTextures_ =
-            new ArrayMap<OrbType, ArrayMap<OrbSpecType, Bitmap>>();
+    private final ShaderProgram shader_;
+    private Texture touchLineTexture_;
+    private final ArrayMap<OrbType, ArrayMap<OrbSpecType, Texture>> orbTextures_ = new ArrayMap<>();
 
     private Vector2 pos_;
     private float width_;
@@ -24,30 +20,52 @@ public class World {
     private int nRows_;
     private int nColumns_;
     private Orb[][] orbs_;
-    private ArrayList<Orb> selectedOrbs_ = new ArrayList<Orb>();
-    private ArrayList<TouchLine> touchLines_ = new ArrayList<TouchLine>();
+    private ArrayList<Orb> selectedOrbs_ = new ArrayList<>();
+    private ArrayList<TouchLine> touchLines_ = new ArrayList<>();
 
-    public World(final Vector2 pos, final int rectWidth, final int rectHeight) {
+    private float orbSize_;
+    private float touchLineWidth_;
+    private float touchLineHeight_;
+
+    public World(final Vector2 pos, final float rectWidth, final float rectHeight,
+                 ShaderProgram shader) {
+        shader_ = shader;
         this.pos_ = pos;
+        this.nRows_ = 12; // TODO: Magic number!
+        this.nColumns_ = 7; // TODO: Magic number!
+        this.height_ = rectHeight;
+        this.width_ = rectWidth;
 
-        this.nColumns_ = (int) Math.floor(rectWidth / Orb.WIDTH);
-        this.nRows_ = (int) Math.floor(rectHeight  / Orb.HEIGHT);
-        this.height_ = Orb.WIDTH * this.nRows_;
-        this.width_ = Orb.HEIGHT * this.nColumns_;
+        float orbHeight = this.height_ / nRows_;
+        float orbWidth = this.width_ / nColumns_;
+
+        orbSize_ = (orbWidth < orbHeight) ? orbWidth : orbHeight;
+
+        Log.i("rectWidth", String.valueOf(rectWidth));
+        Log.i("rectHeight", String.valueOf(rectHeight));
+        Log.i("orbHeight", String.valueOf(orbHeight));
+        Log.i("orbWidth", String.valueOf(orbWidth));
+        Log.i("orbSize_", String.valueOf(orbSize_));
+
+        //float realWidth = orbSize_ * orbWidth;
+        //this.pos_ = new Vector2(pos_.x + (rectWidth / 2) - (realWidth / 2), pos_.y);
+
+        touchLineWidth_ = orbSize_; /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
+        touchLineHeight_ = orbSize_ / 4;
     }
 
     public void init() {
         createLevel();
     }
 
-    public void onDraw(Canvas canvas) {
+    public void onDraw(float[] mvpMatrix) {
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
-                orbs_[iRow][iCol].onDraw(canvas);
+                orbs_[iRow][iCol].draw(mvpMatrix);
             }
         }
         for (TouchLine touchLine : touchLines_) {
-            touchLine.onDraw(canvas);
+            touchLine.draw(mvpMatrix);
         }
     }
 
@@ -184,7 +202,7 @@ public class World {
 
     private OrbType generateOrbType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<OrbType, Float> orbTypeProbabilities = new ArrayMap<OrbType, Float>();
+        ArrayMap<OrbType, Float> orbTypeProbabilities = new ArrayMap<>();
         orbTypeProbabilities.put(OrbType.TYPE1, 32f);
         orbTypeProbabilities.put(OrbType.TYPE2, 32f);
         orbTypeProbabilities.put(OrbType.TYPE3, 32f);
@@ -195,7 +213,7 @@ public class World {
 
     private OrbSpecType generateOrbSpecType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<OrbSpecType, Float> orbTypeProbabilities = new ArrayMap<OrbSpecType, Float>();
+        ArrayMap<OrbSpecType, Float> orbTypeProbabilities = new ArrayMap<>();
         orbTypeProbabilities.put(OrbSpecType.NONE, 90f);
         orbTypeProbabilities.put(OrbSpecType.DOUBLE, 0f);
         orbTypeProbabilities.put(OrbSpecType.TRIPLE, 0f);
@@ -229,7 +247,7 @@ public class World {
                     if ((Math.abs((orb.getColNo() - prevOrb.getColNo())) == 1) ||
                             (Math.abs((orb.getRowNo() - prevOrb.getRowNo())) == 1)) {
                         selectedOrbs_.add(orb);
-                        TouchLine touchLine = new TouchLine(prevOrb, orb, touchLineTexture_);
+                        TouchLine touchLine = new TouchLine(prevOrb, orb, touchLineTexture_, shader_);
                         touchLines_.add(touchLine);
                     }
                 }
@@ -272,45 +290,43 @@ public class World {
      * @param rowNo Номер строки.
      * @param colNo Номер столбца.
      */
-    private void createOrb(final OrbType orbType, final OrbSpecType orbSpecType, final int rowNo, final int colNo) {
-        Bitmap orbTexture = orbTextures_.get(orbType).get(orbSpecType);
+    private void createOrb(final OrbType orbType, final OrbSpecType orbSpecType,
+                           final int rowNo, final int colNo
+    ) {
+        Texture orbTexture = orbTextures_.get(orbType).get(orbSpecType);
         Vector2 orbPos = new Vector2(
-                this.pos_.x + Orb.WIDTH * colNo,
-                this.pos_.y + Orb.HEIGHT * rowNo);
-        orbs_[rowNo][colNo] = new Orb(orbType, orbSpecType, orbPos, rowNo, colNo, orbTexture);
+                this.pos_.x + colNo * orbSize_,
+                this.pos_.y + rowNo * orbSize_);
+        orbs_[rowNo][colNo] = new Orb(orbType, orbSpecType,
+                orbPos,
+                rowNo, colNo,
+                orbTexture, shader_
+        );
+
+        orbs_[rowNo][colNo].setSize(orbSize_);
     }
 
-    public void loadContent(GameView gameView) {
-        int orbWidth = (int)(Orb.WIDTH * gameView.getScreenFactor());
-        int orbHeight = (int)(Orb.HEIGHT * gameView.getScreenFactor());
-
+    // Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
+    public void loadContent(Context context) {
         for (OrbType orbType : OrbType.values()) {
             for (OrbSpecType orbSpecType : OrbSpecType.values()) {
 
                 int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
-                // Получаем и скейлим текстуру.
-                Bitmap orbTexture = Bitmap.createScaledBitmap(
-                        BitmapFactory.decodeResource(gameView.getResources(), orbResourceId),
-                        Orb.WIDTH,
-                        Orb.HEIGHT,
-                        false);
+                Texture orbTexture = new Texture(context, orbResourceId);
 
                 if (orbTextures_.get(orbType) != null) {
                     orbTextures_.get(orbType).put(orbSpecType, orbTexture);
                 }
                 else {
-                    ArrayMap<OrbSpecType, Bitmap> orbSpecTypeTextures = new ArrayMap<OrbSpecType, Bitmap>();
+                    ArrayMap<OrbSpecType, Texture> orbSpecTypeTextures = new ArrayMap<>();
                     orbSpecTypeTextures.put(orbSpecType, orbTexture);
                     orbTextures_.put(orbType, orbSpecTypeTextures);
                 }
             }
         }
-
+        Log.i("World.Content", "Content of world are loaded.");
         // TODO: R.drawable.touch_line по аналогии с Orb.getResourceId() сделать.
-        touchLineTexture_ = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeResource(gameView.getResources(), R.drawable.touch_line),
-                TouchLine.WIDTH,
-                TouchLine.HEIGHT,
-                false);
+        //int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
+        //Texture texture = new Texture(context, TouchLine.resourceId);
     }
 }

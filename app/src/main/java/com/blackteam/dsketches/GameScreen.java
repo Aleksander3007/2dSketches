@@ -1,5 +1,6 @@
 package com.blackteam.dsketches;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.support.v4.util.ArrayMap;
@@ -16,13 +17,15 @@ public class GameScreen {
 
     private Orb orb_;
 
-    public GameScreen(final float screenWidth, final float screenHeight) {
+    public GameScreen(final float screenWidth, final float screenHeight, ShaderProgram shader) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
         Vector2 worldOffset = new Vector2(0, 0);
+
         world_ = new World(
                 worldOffset,
-                (int)(width_ + worldOffset.x), (int)(height_ - worldOffset.y)
+                width_ - worldOffset.x, height_ - worldOffset.y,
+                shader
         );
     }
 
@@ -30,12 +33,12 @@ public class GameScreen {
         world_.init();
     }
 
-    public void onDraw(Canvas canvas) {
-        world_.onDraw(canvas);
+    public void onDraw(float[] mvpMatrix) {
+        world_.onDraw(mvpMatrix);
     }
 
-    public void loadContent(GameView gameView) {
-        world_.loadContent(gameView);
+    public void loadContent(Context context) {
+        world_.loadContent(context);
     }
 
     public boolean hit(Vector2 worldCoords) {

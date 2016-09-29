@@ -1,30 +1,25 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
- * Текстура.
+ * Спрайт.
  */
 public class Sprite {
     private static final float squareCoords[] = {
-            -0.5f,  0.5f, 0.0f, // top left;
-            -0.5f, -0.5f, 0.0f, // bottom left;
-            0.5f,  0.5f, 0.0f,  // top right;
-            0.5f, -0.5f, 0.0f   // bottom right;
+            0f, 1f, 0.0f, // top left;
+            0f, 0f, 0.0f, // bottom left;
+            1f, 1f, 0.0f,  // top right;
+            1f, 0f, 0.0f   // bottom right;
     };
 
     private static final float textureCoords[] = {
-            // Mapping coordinates for the vertices
+            // Mapping coordinates for the vertices:
             0.0f, 1.0f,     // top left     (V2)
             0.0f, 0.0f,     // bottom left  (V1)
             1.0f, 1.0f,     // top right    (V4)
@@ -41,10 +36,10 @@ public class Sprite {
     private FloatBuffer textureBuffer_;
 
     private int positionHandle_;
-    private int TexturePosHandle_;
+    private int texturePosHandle_;
     private int mvpMatrixHandle_;
 
-    private int textureId_;
+    private Texture texture_;
 
     private float[] translateMatrix_ = new float[16];
     private float[] scaleMatrix_ = new float[16];
@@ -52,11 +47,9 @@ public class Sprite {
     private float[] modelMatrix_ = new float[16];
     private float[] matrix_ = new float[16];
 
-    public Sprite(Context context, ShaderProgram shader,Bitmap bitmap/* int resourceId*/) {
+    public Sprite(Texture texture, ShaderProgram shader) {
+        this.texture_ = texture;
         prepareData();
-
-        boolean isLoaded = load(bitmap/*context, resourceId*/);
-        if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
 
         getHandlers(shader);
         bindData();
@@ -71,7 +64,7 @@ public class Sprite {
         Matrix.multiplyMM(matrix_, 0, mvpMatrix, 0, modelMatrix_, 0);
         // Pass the projection and view transformation to the shader.
         GLES20.glUniformMatrix4fv(mvpMatrixHandle_, 1, false, matrix_, 0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 1);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture_.getId());
         // Draw the sprite.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, VERTEX_COUNT_);
     }
@@ -84,6 +77,18 @@ public class Sprite {
     public void setPosition(Vector2 pos) {
         Matrix.setIdentityM(translateMatrix_, 0);
         Matrix.translateM(translateMatrix_, 0, pos.x, pos.y, 0.0f);
+        buildModelMatrix();
+    }
+
+    public void setRotate(float rotationDeg) {
+        Matrix.setIdentityM(rotateMatrix_, 0);
+        Matrix.rotateM(rotateMatrix_, 0, rotationDeg, 0.0f, 0.0f, 1.0f);
+        buildModelMatrix();
+    }
+
+    public void setScale(float scaleX, float scaleY) {
+        Matrix.setIdentityM(scaleMatrix_, 0);
+        Matrix.scaleM(scaleMatrix_, 0, scaleX, scaleY, 0.0f);
         buildModelMatrix();
     }
 
@@ -116,52 +121,7 @@ public class Sprite {
     }
 
     /**
-     * Загрузка текстуры.
-     * @param context Контекст.
-     * @param resourceId Индентификатор текстуры.
-     * @return true - текстура удачно загружена.
-     */
-    private boolean load(Bitmap bitmap/*Context context, int resourceId*/) {
-        final int[] textureIds = new int[1];
-        // В массив запишет свободный номер текстуры.
-        GLES20.glGenTextures(1, textureIds, 0);
-        if (textureIds[0] == 0) {
-            return false;
-        }
-/*
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        final Bitmap bitmap = BitmapFactory.decodeResource(
-                context.getResources(), resourceId, options);
-        if (bitmap == null) {
-            GLES20.glDeleteTextures(1, textureIds, 0);
-            return false;
-        }
-*/
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        // Привязка текстуры.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[0]);
-        // Переписываем Bitmap в память видеокарты.
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-        setFilter();
-        // Сброс привязки текстуры.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-
-        textureId_ = textureIds[0];
-
-        Log.i("Sprite.textureId", String.valueOf(textureId_));
-
-        return true;
-    }
-
-    private void setFilter() {
-        // На меньшем количестве пикселей экрана отображается больше кол-во пикселей текстуры.
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        // На большом количестве пикселей экрана отображается меньшее кол-во пикселей текстуры.
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-    }
-    /**
-     * Привязка данных (координат и т.п.) к текстуре.
+     * Привязка данных (координат и т.п.) к шейдеру.
      */
     private void bindData() {
         // Enable a handle to the texture vertices.
@@ -172,17 +132,18 @@ public class Sprite {
                 VERTEX_STRIDE_, vertexBuffer_);
 
         // координаты текстур.
-        GLES20.glEnableVertexAttribArray(TexturePosHandle_);
-        GLES20.glVertexAttribPointer(TexturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
+        GLES20.glEnableVertexAttribArray(texturePosHandle_);
+        GLES20.glVertexAttribPointer(texturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
                 false, TEXTURE_STRIDE_, textureBuffer_);
     }
 
     /**
-     * Получение Handler-ов всех атрибутов.
+     * Получение Handler-ов всех атрибутов шейдер.
+     * @param shader Шейдер.
      */
     private void getHandlers(ShaderProgram shader) {
         positionHandle_ = shader.getAttribLocation(ShaderProgram.POSITION_ATTR);
-        TexturePosHandle_ = shader.getAttribLocation(ShaderProgram.TEXCOORD_ATTR);
+        texturePosHandle_ = shader.getAttribLocation(ShaderProgram.TEXCOORD_ATTR);
         mvpMatrixHandle_ = shader.getUniformLocation(ShaderProgram.MATRIX_ATTR);
     }
 }

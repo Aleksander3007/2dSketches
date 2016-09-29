@@ -1,4 +1,4 @@
-package com.blackteam.tripledouble;
+package com.blackteam.dsketches;
 
 import org.junit.Test;
 

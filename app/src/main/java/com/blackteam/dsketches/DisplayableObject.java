@@ -1,9 +1,9 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Bitmap;
+import android.graphics.Shader;
 
 public abstract class DisplayableObject {
-    protected Bitmap texture_;
+    protected Sprite sprite_;
     /**
      * Координаты левого нижнего угла.
      */
@@ -17,43 +17,49 @@ public abstract class DisplayableObject {
      */
     protected float rotationDeg_ = 0;
 
-    public DisplayableObject(Vector2 pos, Bitmap texture) {
-        this.texture_ = texture;
-        this.pos_ = pos;
+    protected float width_ = 1.0f;
+    protected float height_ = 1.0f;
+
+    public DisplayableObject(Vector2 pos, Texture texture, ShaderProgram shader) {
+        this(pos, 0f, texture, shader);
     }
 
-    public DisplayableObject(Vector2 pos, float rotationDeg, Bitmap texture) {
-        this.texture_ = texture;
+    public DisplayableObject(Vector2 pos, float rotationDeg,
+                             Texture texture, ShaderProgram shader) {
         this.pos_ = pos;
+        this.sprite_ = new Sprite(texture, shader);
         this.rotationDeg_ = rotationDeg;
+
+        sprite_.setPosition(pos);
+        sprite_.setRotate(rotationDeg);
     }
 
-    public Bitmap getTexture() {
-        return texture_;
+    public void draw(float[] mvpMatrix) {
+        sprite_.draw(mvpMatrix);
+    }
+
+    public Sprite getSprite() {
+        return sprite_;
     }
 
     public abstract void dispose();
 
-    public float getX() {
-        return this.pos_.x;
+    public float getX() { return pos_.x; }
+    public float getY() { return pos_.y; }
+
+    public float getScaleX() { return scale_.x; }
+    public float getScaleY() { return scale_.y; }
+
+    public float getRotationDeg() { return rotationDeg_; }
+
+    public float getWidth() { return width_; }
+    public float getHeight() { return height_; }
+
+    public void setSize(float width, float height) {
+        width_ = width;
+        height_ = height;
+        sprite_.setScale(width, height);
     }
 
-    public float getY() {
-        return this.pos_.y;
-    }
 
-    public float getScaleX() {
-        return this.scale_.x;
-    }
-
-    public float getScaleY() {
-        return this.scale_.y;
-    }
-
-    public float getRotationDeg() {
-        return this.rotationDeg_;
-    }
-
-    public abstract int getWidth();
-    public abstract int getHeight();
 }

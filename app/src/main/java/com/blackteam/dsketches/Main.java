@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class Main extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         try {
+            Log.i("Version", "0.0.0.14");
             super.onCreate(savedInstanceState);
 
             glSurfaceView = new GLSurfaceView(this);

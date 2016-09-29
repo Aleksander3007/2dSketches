@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.blackteam.tripledouble.BuildConfig;
-
 /**
  * Created by Aleksander on 26.09.2016.
  */

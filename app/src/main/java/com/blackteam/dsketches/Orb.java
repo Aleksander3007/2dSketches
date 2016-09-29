@@ -1,20 +1,16 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
-import com.blackteam.tripledouble.R;
-
 public class Orb extends DisplayableObject {
-    public static int WIDTH = 64;
-    public static int HEIGHT = 64;
     private OrbType type_;
     private OrbSpecType specType_;
     private int rowNo_;
     private int colNo_;
 
-    public Orb(OrbType orbType, OrbSpecType orbSpecType, Vector2 pos, int rowNo, int colNo, Bitmap texture) {
-        this(pos, texture);
+    public Orb(OrbType orbType, OrbSpecType orbSpecType,
+               Vector2 pos,
+               int rowNo, int colNo,
+               Texture texture, ShaderProgram shader) {
+        this(pos, texture, shader);
         this.type_ = orbType;
         this.specType_ = orbSpecType;
         this.rowNo_ = rowNo;
@@ -22,26 +18,16 @@ public class Orb extends DisplayableObject {
     }
 
     public boolean hit(Vector2 coords) {
-        return ((coords.x >= pos_.x) && (coords.x <= (pos_.x + Orb.WIDTH))) &&
-                ((coords.y >= pos_.y) && (coords.y <= (pos_.y + Orb.HEIGHT)));
-    }
-
-    @Override
-    public int getWidth() {
-        return Orb.WIDTH;
-    }
-
-    @Override
-    public int getHeight() {
-        return Orb.HEIGHT;
+        return ((coords.x >= pos_.x) && (coords.x <= (pos_.x + width_))) &&
+                ((coords.y >= pos_.y) && (coords.y <= (pos_.y + height_)));
     }
 
     public int getColNo() {
-        return this.colNo_;
+        return colNo_;
     }
 
     public int getRowNo() {
-        return this.rowNo_;
+        return rowNo_;
     }
 
     public OrbType getType() {
@@ -123,18 +109,16 @@ public class Orb extends DisplayableObject {
         return R.drawable.universal;
     }
 
+    public void setSize(float size) {
+        setSize(size, size);
+    }
+
     @Override
     public void dispose() {
 
     }
 
-    public void onDraw(Canvas canvas)
-    {
-        canvas.drawBitmap(texture_, getX(), getY(), null);
+    private Orb(Vector2 pos, Texture texture, ShaderProgram shader) {
+        super(pos, texture, shader);
     }
-
-    private Orb(Vector2 pos, Bitmap texture) {
-        super(pos, texture);
-    }
-
 }

@@ -1,51 +1,29 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.util.Log;
 
 /**
- * Created by Aleksander on 26.09.2016.
+ * Линия при выделении Orbs.
  */
 public class TouchLine extends DisplayableObject {
-    public final static int WIDTH = Orb.WIDTH;
-    public final static int HEIGHT = (Orb.WIDTH / 4);
-
-    public TouchLine(Vector2 pos, Bitmap texture) {
-        super(pos, texture);
+    public TouchLine(Vector2 pos, Texture texture, ShaderProgram shader) {
+        super(pos, texture, shader);
     }
 
-    public TouchLine(Vector2 pos, float rotationDeg, Bitmap texture) {
-        super(pos, rotationDeg, texture);
+    public TouchLine(Vector2 pos, float rotationDeg, Texture texture, ShaderProgram shader) {
+        super(pos, rotationDeg, texture, shader);
     }
 
-    public TouchLine(Orb orb1, Orb orb2, Bitmap texture) {
-        super(new Vector2(0, 0), 0, texture);
+    public TouchLine(Orb orb1, Orb orb2, Texture texture, ShaderProgram shader) {
+        super(new Vector2(0, 0), 0, texture, shader);
 
         this.pos_ = calculatePos(orb1, orb2);
         this.rotationDeg_ =  calculateRotationDeg(orb1, orb2);
     }
 
-    public void onDraw(Canvas canvas)
-    {
-        canvas.drawBitmap(texture_, getX(), getY(), null);
-        //canvas.rotate(rotationDeg_);
-        //canvas.restoreToCount(1);
-    }
-
     @Override
     public void dispose() {
         // TODO: Auto-generated method stub
-    }
-
-    @Override
-    public int getWidth() {
-        return TouchLine.WIDTH; /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
-    }
-
-    @Override
-    public int getHeight() {
-        return TouchLine.HEIGHT;
     }
 
     private Vector2 calculatePos(Orb orb1, Orb orb2) {
@@ -64,8 +42,8 @@ public class TouchLine extends DisplayableObject {
             }
 
             return new Vector2(
-                    startOrb.getX() + (Orb.WIDTH / 2) - (TouchLine.WIDTH / 2),
-                    startOrb.getY() + Orb.HEIGHT  - (TouchLine.HEIGHT / 2)
+                    startOrb.getX() + (startOrb.getWidth() / 2) - (width_ / 2),
+                    startOrb.getY() + startOrb.getHeight()  - (height_ / 2)
             );
         }
         else {
@@ -81,8 +59,8 @@ public class TouchLine extends DisplayableObject {
             }
 
             return new Vector2(
-                    startOrb.getX() + (Orb.WIDTH / 2),
-                    startOrb.getY() + (Orb.HEIGHT / 2) - (TouchLine.HEIGHT / 2)
+                    startOrb.getX() + (startOrb.getWidth() / 2),
+                    startOrb.getY() + (startOrb.getHeight() / 2) - (height_ / 2)
             );
         }
     }
