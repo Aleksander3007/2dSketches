@@ -2,6 +2,7 @@ package com.blackteam.dsketches;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,7 +19,7 @@ public class Sprite {
             1f, 0f, 0.0f   // bottom right;
     };
 
-    private static final float textureCoords[] = {
+    private float textureCoords[] = {
             // Mapping coordinates for the vertices:
             0.0f, 1.0f,     // top left     (V2)
             0.0f, 0.0f,     // bottom left  (V1)
@@ -48,16 +49,47 @@ public class Sprite {
     private float[] matrix_ = new float[16];
 
     public Sprite(Texture texture, ShaderProgram shader) {
+        this(texture, 0.0f, 0.0f, texture.getWidth(), texture.getHeight(), shader);
+    }
+
+    /**
+     * Конструктор.
+     * @param texture Текстура.
+     * @param x X-позиция региона в пикселях из указанной текстуры.
+     * @param y Y-позиция региона в пикселях из указанной текстуры.
+     * @param width Ширина региона в пикселях из указанной текстуры.
+     * @param height Высота региона в пикселях из указанной текстуры.
+     * @param shader Шейдер.
+     */
+    public Sprite(Texture texture, float x, float y, float width, float height,
+                  ShaderProgram shader) {
+        // Units per pixel.
+        float uppX = 1.0f / texture.getWidth();
+        float uppY = 1.0f / texture.getHeight();
+
+        float xUnits = x * uppX;
+        float yUnits = y * uppY;
+        float widthUnits = width * uppX;
+        float heightUnits = height * uppY;
+
+        // Top left (V2).
+        textureCoords[0] = xUnits;
+        textureCoords[1] = yUnits + heightUnits;
+        // Bottom left (V1).
+        textureCoords[2] = xUnits;
+        textureCoords[3] = yUnits;
+        // Top right (V4).
+        textureCoords[4] = xUnits + widthUnits;
+        textureCoords[5] = yUnits + heightUnits;
+        // Bottom right (V3).
+        textureCoords[6] = xUnits + widthUnits;
+        textureCoords[7] = yUnits;
+
         this.texture_ = texture;
         prepareData();
-
         getHandlers(shader);
         bindData();
-
-        Matrix.setIdentityM(translateMatrix_, 0);
-        Matrix.setIdentityM(scaleMatrix_, 0);
-        Matrix.setIdentityM(rotateMatrix_, 0);
-        Matrix.setIdentityM(modelMatrix_, 0);
+        resetMatrices();
     }
 
     public void draw(float[] mvpMatrix) {
@@ -67,11 +99,6 @@ public class Sprite {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture_.getId());
         // Draw the sprite.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, VERTEX_COUNT_);
-    }
-
-    private void buildModelMatrix() {
-        Matrix.multiplyMM(modelMatrix_, 0, translateMatrix_, 0, rotateMatrix_, 0);
-        Matrix.multiplyMM(modelMatrix_, 0, modelMatrix_, 0, scaleMatrix_, 0);
     }
 
     public void setPosition(Vector2 pos) {
@@ -96,6 +123,18 @@ public class Sprite {
         Matrix.setIdentityM(scaleMatrix_, 0);
         Matrix.scaleM(scaleMatrix_, 0, scaleVal, scaleVal, 0.0f);
         buildModelMatrix();
+    }
+
+    private void resetMatrices() {
+        Matrix.setIdentityM(translateMatrix_, 0);
+        Matrix.setIdentityM(scaleMatrix_, 0);
+        Matrix.setIdentityM(rotateMatrix_, 0);
+        Matrix.setIdentityM(modelMatrix_, 0);
+    }
+
+    private void buildModelMatrix() {
+        Matrix.multiplyMM(modelMatrix_, 0, translateMatrix_, 0, rotateMatrix_, 0);
+        Matrix.multiplyMM(modelMatrix_, 0, modelMatrix_, 0, scaleMatrix_, 0);
     }
 
     /**
