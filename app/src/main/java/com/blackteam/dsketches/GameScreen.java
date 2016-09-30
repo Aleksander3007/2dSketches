@@ -3,7 +3,9 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.support.v4.util.ArrayMap;
+import android.util.SizeF;
 
 public class GameScreen {
 
@@ -21,12 +23,13 @@ public class GameScreen {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
         Vector2 worldOffset = new Vector2(0, 0);
+        Size2 worldSize = new Size2(
+                width_ - worldOffset.x,
+                height_ - worldOffset.y - (screenHeight / 7));
 
-        world_ = new World(
-                worldOffset,
-                width_ - worldOffset.x, height_ - worldOffset.y,
-                shader
-        );
+        world_ = new World(worldOffset, worldSize, shader);
+
+        scoreLabel_ = new ScoreLabel();
     }
 
     public void init() {

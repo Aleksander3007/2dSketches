@@ -47,7 +47,7 @@ public class Main extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         try {
-            Log.i("Version", "0.0.0.14");
+            Log.i("Version", "0.0.0.15");
             super.onCreate(savedInstanceState);
 
             glSurfaceView = new GLSurfaceView(this);

@@ -27,28 +27,21 @@ public class World {
     private float touchLineWidth_;
     private float touchLineHeight_;
 
-    public World(final Vector2 pos, final float rectWidth, final float rectHeight,
+    public World(final Vector2 pos, final Size2 rectSize,
                  ShaderProgram shader) {
         shader_ = shader;
-        this.pos_ = pos;
+
         this.nRows_ = 12; // TODO: Magic number!
         this.nColumns_ = 7; // TODO: Magic number!
-        this.height_ = rectHeight;
-        this.width_ = rectWidth;
 
-        float orbHeight = this.height_ / nRows_;
-        float orbWidth = this.width_ / nColumns_;
+        float orbHeight = rectSize.height / nRows_;
+        float orbWidth = rectSize.width / nColumns_;
 
         orbSize_ = (orbWidth < orbHeight) ? orbWidth : orbHeight;
 
-        Log.i("rectWidth", String.valueOf(rectWidth));
-        Log.i("rectHeight", String.valueOf(rectHeight));
-        Log.i("orbHeight", String.valueOf(orbHeight));
-        Log.i("orbWidth", String.valueOf(orbWidth));
-        Log.i("orbSize_", String.valueOf(orbSize_));
-
-        //float realWidth = orbSize_ * orbWidth;
-        //this.pos_ = new Vector2(pos_.x + (rectWidth / 2) - (realWidth / 2), pos_.y);
+        this.height_ = orbSize_ * nRows_;
+        this.width_ = orbSize_ * nColumns_;
+        this.pos_ = new Vector2(pos.x + (rectSize.width / 2) - (this.width_ / 2), pos.y);
 
         touchLineWidth_ = orbSize_; /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
         touchLineHeight_ = orbSize_ / 4;
