@@ -19,7 +19,7 @@ public class GameScreen {
 
     private Orb orb_;
 
-    public GameScreen(final float screenWidth, final float screenHeight, ShaderProgram shader) {
+    public void init(final float screenWidth, final float screenHeight, ShaderProgram shader) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
         Vector2 worldOffset = new Vector2(0, 0);

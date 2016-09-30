@@ -5,7 +5,7 @@ import android.support.v4.util.ArrayMap;
 import java.util.Map;
 
 /**
- * Created by Aleksander on 26.09.2016.
+ * Вся игровая математика.
  */
 public class GameMath {
     /**

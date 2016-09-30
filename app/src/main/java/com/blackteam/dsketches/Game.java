@@ -4,39 +4,43 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
- * Created by Aleksander on 26.09.2016.
+ * По сути контроллер.
  */
 public class Game implements View.OnTouchListener {
     private GameScreen screen_;
-    private float screenFactor_;
 
-    public Game(GameScreen screen, final float screenFactor) {
+    public Game(GameScreen screen) {
         this.screen_ = screen;
-        this.screenFactor_ = screenFactor;
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        try {
+            int action = MotionEventCompat.getActionMasked(event);
 
-        int action = MotionEventCompat.getActionMasked(event);
-
-        switch (action) {
-            case (MotionEvent.ACTION_UP) :
-                if (BuildConfig.DEBUG) {
-                    Log.i("Game.onTouch()", "Action was DOWN");
-                    Log.i("Game.onTouch().x", String.valueOf(event.getX() / screenFactor_));
-                    Log.i("Game.onTouch().y", String.valueOf(event.getY() / screenFactor_));
-                }
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-                screen_.hit(new Vector2(
-                        event.getX() / screenFactor_,
-                        event.getY() / screenFactor_));
-                return true;
-            default:
-                return true;
+            switch (action) {
+                case (MotionEvent.ACTION_UP):
+                    if (BuildConfig.DEBUG) {
+                        Log.i("Game.onTouch()", "Action was DOWN");
+                        Log.i("Game.onTouch().x", String.valueOf(event.getX() * GameRenderer.uppX));
+                        Log.i("Game.onTouch().y", String.valueOf(event.getY() * GameRenderer.uppY));
+                    }
+                    return true;
+                case (MotionEvent.ACTION_MOVE):
+                    screen_.hit(new Vector2(
+                            event.getX() * GameRenderer.uppX,
+                            event.getY() * GameRenderer.uppY));
+                    return true;
+                default:
+                    return true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

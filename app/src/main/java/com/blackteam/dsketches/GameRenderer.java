@@ -14,6 +14,11 @@ import javax.microedition.khronos.opengles.GL10;
  * Класс Рендеринга.
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
+
+    // Units per pixels.
+    public static float uppX = 1.0f;
+    public static float uppY = 1.0f;
+
     private Context context_;
 
     /** Model View Projection Matrix. */
@@ -24,8 +29,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private ShaderProgram shader_;
     private GameScreen gameScreen_;
 
-    public GameRenderer(Context context) {
+    public GameRenderer(Context context, GameScreen gameScreen) {
         this.context_ = context;
+        this.gameScreen_ = gameScreen;
     }
 
     @Override
@@ -35,7 +41,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         createShader();
 
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-
     }
 
     @Override
@@ -58,6 +63,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                         3f // far.
                 );
 
+                uppX = aspectRatio / width;
+                uppY = 1.0f / height;
+
                 throw new Exception("Landscape is not available.");
             }
             // Portrait or square.
@@ -71,14 +79,14 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                         3f // far.
                 );
 
-                if (gameScreen_ == null) {
-                    gameScreen_ = new GameScreen(1f, aspectRatio, shader_);
-                    gameScreen_.loadContent(context_);
-                    gameScreen_.init();
-                }
-                else {
-                    //gameScreen_.rebuild(2f, 2 * aspectRatio);
-                }
+                uppX = 1.0f / width;
+                uppY = aspectRatio / height;
+
+                // Тут должен быть gameScreen_.resize.
+                // а в onSurfaceCreated() должен быть передан gameScreen_.setShader(shader_);
+                gameScreen_.init(1f, aspectRatio, shader_);
+                gameScreen_.loadContent(context_);
+                gameScreen_.init();
             }
 
             // Calculate the projection and view transformation.

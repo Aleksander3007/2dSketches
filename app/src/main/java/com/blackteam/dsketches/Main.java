@@ -42,30 +42,37 @@ import android.widget.Toast;
  * Главный класс.
  */
 public class Main extends Activity {
-    private GLSurfaceView glSurfaceView;
+    private GLSurfaceView gameView_;
+    private GameRenderer gameRenderer_;
+    private GameScreen gameScreen_;
+    private Game game_;
     private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
         try {
-            Log.i("Version", "0.0.0.19");
+            Log.i("Version", "0.0.0.22");
             super.onCreate(savedInstanceState);
 
-            glSurfaceView = new GLSurfaceView(this);
+            gameView_ = new GLSurfaceView(this);
 
             // Проверяем поддерживается ли OpenGL ES 2.0.
             final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
             final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
             if (supportsEs2) {
-                glSurfaceView.setEGLContextClientVersion(2);
-                glSurfaceView.setRenderer(new GameRenderer(this));
+                gameScreen_ = new GameScreen();
+                gameRenderer_ = new GameRenderer(this, gameScreen_);
+                game_ = new Game(gameScreen_);
+                gameView_.setOnTouchListener(game_);
+                gameView_.setEGLContextClientVersion(2);
+                gameView_.setRenderer(gameRenderer_);
                 rendererSet = true;
             } else {
                 Toast.makeText(this, "This device does not support OpenGL ES 2.0.", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            setContentView(glSurfaceView);
+            setContentView(gameView_);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -76,14 +83,14 @@ public class Main extends Activity {
     @Override
     protected void onPause() { super.onPause();
         if (rendererSet) {
-            glSurfaceView.onPause();
+            gameView_.onPause();
         }
     }
 
     @Override
     protected void onResume() { super.onResume();
         if (rendererSet) {
-            glSurfaceView.onResume();
+            gameView_.onResume();
         }
     }
 
