@@ -58,6 +58,11 @@ public class ShaderProgram {
     public void begin() {
         // Add program to OpenGL ES environment.
         GLES20.glUseProgram(program_);
+
+        // Enable a handle to the texture vertices.
+        GLES20.glEnableVertexAttribArray(getAttribLocation(POSITION_ATTR));
+        // координаты текстур.
+        GLES20.glEnableVertexAttribArray(getAttribLocation(TEXCOORD_ATTR));
     }
 
     public int getAttribLocation(String name) {

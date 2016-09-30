@@ -27,27 +27,32 @@ public class GameScreen {
                 width_ - worldOffset.x,
                 height_ - worldOffset.y - (screenHeight / 7));
 
-        world_ = new World(worldOffset, worldSize, shader);
+        Vector2 scoreLabelOffset = new Vector2(0,
+                (worldOffset.y + worldSize.height) + (screenHeight - worldSize.height) / 3);
+        Size2 scoreLabelSize = new Size2(
+                width_ - scoreLabelOffset.x,
+                (screenHeight - worldSize.height) / 3);
 
-        scoreLabel_ = new ScoreLabel();
+        world_ = new World(worldOffset, worldSize, shader);
+        scoreLabel_ = new ScoreLabel(0, scoreLabelOffset, scoreLabelSize, shader);
     }
 
     public void init() {
         world_.init();
+        scoreLabel_.init();
     }
 
     public void onDraw(float[] mvpMatrix) {
         world_.onDraw(mvpMatrix);
+        scoreLabel_.draw(mvpMatrix);
     }
 
     public void loadContent(Context context) {
         world_.loadContent(context);
+        scoreLabel_.loadContent(context);
     }
 
     public boolean hit(Vector2 worldCoords) {
-        if (world_.hit(worldCoords)) {
-            return true;
-        }
-        return false;
+        return world_.hit(worldCoords);
     }
 }

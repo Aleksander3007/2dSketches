@@ -6,10 +6,8 @@ public class Orb extends DisplayableObject {
     private int rowNo_;
     private int colNo_;
 
-    public Orb(OrbType orbType, OrbSpecType orbSpecType,
-               Vector2 pos,
-               int rowNo, int colNo,
-               Texture texture, ShaderProgram shader) {
+    public Orb(OrbType orbType, OrbSpecType orbSpecType, Vector2 pos,
+               int rowNo, int colNo, Texture texture, ShaderProgram shader) {
         this(pos, texture, shader);
         this.type_ = orbType;
         this.specType_ = orbSpecType;
