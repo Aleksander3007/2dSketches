@@ -21,10 +21,10 @@ public class Sprite {
 
     private float textureCoords[] = {
             // Mapping coordinates for the vertices:
-            0.0f, 1.0f,     // top left     (V2)
             0.0f, 0.0f,     // bottom left  (V1)
-            1.0f, 1.0f,     // top right    (V4)
-            1.0f, 0.0f      // bottom right (V3)
+            0.0f, 1.0f,     // top left     (V2)
+            1.0f, 0.0f,     // bottom right (V3)
+            1.0f, 1.0f      // top right    (V4)
     };
 
     private static final int COORDS_PER_VERTEX_ = 3;
@@ -72,18 +72,18 @@ public class Sprite {
         float widthUnits = width * uppX;
         float heightUnits = height * uppY;
 
-        // Top left (V2).
-        textureCoords[0] = xUnits;
-        textureCoords[1] = yUnits + heightUnits;
         // Bottom left (V1).
+        textureCoords[0] = xUnits;
+        textureCoords[1] = yUnits;
+        // Top left (V2).
         textureCoords[2] = xUnits;
-        textureCoords[3] = yUnits;
-        // Top right (V4).
-        textureCoords[4] = xUnits + widthUnits;
-        textureCoords[5] = yUnits + heightUnits;
+        textureCoords[3] = yUnits + heightUnits;
         // Bottom right (V3).
+        textureCoords[4] = xUnits + widthUnits;
+        textureCoords[5] = yUnits;
+        // Top right (V4).
         textureCoords[6] = xUnits + widthUnits;
-        textureCoords[7] = yUnits;
+        textureCoords[7] = yUnits + heightUnits;
 
         this.texture_ = texture;
         prepareData();
@@ -93,11 +93,14 @@ public class Sprite {
     }
 
     public void draw(float[] mvpMatrix) {
+        // Привязка текстурных координат.
+        GLES20.glVertexAttribPointer(texturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
+                false, TEXTURE_STRIDE_, textureBuffer_);
+
         Matrix.multiplyMM(matrix_, 0, mvpMatrix, 0, modelMatrix_, 0);
         // Pass the projection and view transformation to the shader.
         GLES20.glUniformMatrix4fv(mvpMatrixHandle_, 1, false, matrix_, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture_.getId());
-        // Draw the sprite.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, VERTEX_COUNT_);
     }
 
@@ -163,17 +166,10 @@ public class Sprite {
      * Привязка данных (координат и т.п.) к шейдеру.
      */
     private void bindData() {
-        // Enable a handle to the texture vertices.
-        GLES20.glEnableVertexAttribArray(positionHandle_);
         // Prepare the texture coordinate data.
         GLES20.glVertexAttribPointer(positionHandle_, COORDS_PER_VERTEX_,
                 GLES20.GL_FLOAT, false,
                 VERTEX_STRIDE_, vertexBuffer_);
-
-        // координаты текстур.
-        GLES20.glEnableVertexAttribArray(texturePosHandle_);
-        GLES20.glVertexAttribPointer(texturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
-                false, TEXTURE_STRIDE_, textureBuffer_);
     }
 
     /**
