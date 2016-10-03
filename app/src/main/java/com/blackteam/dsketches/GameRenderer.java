@@ -84,7 +84,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
                 // Тут должен быть gameScreen_.resize.
                 // а в onSurfaceCreated() должен быть передан gameScreen_.setShader(shader_);
-                gameScreen_.init(1f, aspectRatio, shader_);
+                gameScreen_.init(1f, aspectRatio);
                 gameScreen_.loadContent(context_);
                 gameScreen_.init();
             }
@@ -104,7 +104,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        gameScreen_.onDraw(mMVPMatrix_);
+        gameScreen_.onDraw(mMVPMatrix_, shader_);
     }
 
     /**

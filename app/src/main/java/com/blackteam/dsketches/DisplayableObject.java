@@ -22,12 +22,19 @@ public abstract class DisplayableObject {
 
     /**
      * Конструктор.
+     * @param texture Текстура.
+     */
+    public DisplayableObject (Texture texture) {
+        this(new Vector2(0.0f, 0.0f), 0.0f, texture);
+    }
+
+    /**
+     * Конструктор.
      * @param pos Позиция объекта.
      * @param texture Текстура.
-     * @param shader Шейдер.
      */
-    public DisplayableObject(Vector2 pos, Texture texture, ShaderProgram shader) {
-        this(pos, 0f, texture, shader);
+    public DisplayableObject(Vector2 pos, Texture texture) {
+        this(pos, 0.0f, texture);
     }
 
     /**
@@ -35,11 +42,9 @@ public abstract class DisplayableObject {
      * @param pos Позиция объекта.
      * @param rotationDeg Угол поворота объекта в градусах.
      * @param texture Текстура.
-     * @param shader Шейдер.
      */
-    public DisplayableObject(Vector2 pos, float rotationDeg,
-                             Texture texture, ShaderProgram shader) {
-        this(pos, rotationDeg, texture, 0, 0, texture.getWidth(), texture.getHeight(), shader);
+    public DisplayableObject(Vector2 pos, float rotationDeg, Texture texture) {
+        this(pos, rotationDeg, texture, 0, 0, texture.getWidth(), texture.getHeight());
     }
 
     /**
@@ -50,12 +55,10 @@ public abstract class DisplayableObject {
      * @param texY Y-позиция региона в пикселях из указанной текстуры.
      * @param texWidth Ширина региона в пикселях из указанной текстуры.
      * @param texHeight Высота региона в пикселях из указанной текстуры.
-     * @param shader Шейдер.
      */
     public DisplayableObject(Vector2 pos, Texture texture,
-                             float texX, float texY, float texWidth, float texHeight,
-                             ShaderProgram shader) {
-        this(pos, 0.0f, texture, texX, texY, texWidth, texHeight, shader);
+                             float texX, float texY, float texWidth, float texHeight) {
+        this(pos, 0.0f, texture, texX, texY, texWidth, texHeight);
     }
 
     /**
@@ -67,21 +70,22 @@ public abstract class DisplayableObject {
      * @param texY Y-позиция региона в пикселях из указанной текстуры.
      * @param texWidth Ширина региона в пикселях из указанной текстуры.
      * @param texHeight Высота региона в пикселях из указанной текстуры.
-     * @param shader Шейдер.
      */
     public DisplayableObject(Vector2 pos, float rotationDeg, Texture texture,
-                             float texX, float texY, float texWidth, float texHeight,
-                             ShaderProgram shader) {
+                             float texX, float texY, float texWidth, float texHeight) {
+        if (texture == null) {
+            throw new IllegalArgumentException("Texture is not loaded.");
+        }
         this.pos_ = pos;
-        this.sprite_ = new Sprite(texture, texX, texY, texWidth, texHeight, shader);
+        this.sprite_ = new Sprite(texture, texX, texY, texWidth, texHeight);
         this.rotationDeg_ = rotationDeg;
 
         sprite_.setPosition(pos);
         sprite_.setRotate(rotationDeg);
     }
 
-    public void draw(float[] mvpMatrix) {
-        sprite_.draw(mvpMatrix);
+    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
+        sprite_.draw(mvpMatrix, shader);
     }
 
     public abstract void dispose();
@@ -103,6 +107,12 @@ public abstract class DisplayableObject {
     }
 
     public void setPosition(Vector2 pos) {
+        pos_ = pos;
         sprite_.setPosition(pos);
+    }
+
+    public void setRotationDeg(final float angleDeg) {
+        rotationDeg_ = angleDeg;
+        sprite_.setRotate(angleDeg);
     }
 }

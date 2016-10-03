@@ -6,19 +6,23 @@ import android.util.Log;
  * Линия при выделении Orbs.
  */
 public class TouchLine extends DisplayableObject {
-    public TouchLine(Vector2 pos, Texture texture, ShaderProgram shader) {
-        super(pos, texture, shader);
+    public TouchLine(Size2 size, Texture texture) {
+        super(texture);
     }
 
-    public TouchLine(Vector2 pos, float rotationDeg, Texture texture, ShaderProgram shader) {
-        super(pos, rotationDeg, texture, shader);
+    public TouchLine(Orb orb1, Orb orb2, Size2 size, Texture texture) {
+        super(texture);
+        setPosition(new Vector2(0,0));
+        /*setSize(size.width, size.height);
+        Vector2 pos = calculatePos(orb1, orb2);
+        Log.i("TouchLine.pos.x", String.valueOf(pos.x));
+        Log.i("TouchLine.pos.y", String.valueOf(pos.y));
+        setPosition(pos);
+        setRotationDeg(calculateRotationDeg(orb1, orb2));*/
     }
 
-    public TouchLine(Orb orb1, Orb orb2, Texture texture, ShaderProgram shader) {
-        super(new Vector2(0, 0), 0, texture, shader);
-
-        this.pos_ = calculatePos(orb1, orb2);
-        this.rotationDeg_ =  calculateRotationDeg(orb1, orb2);
+    public static int getResourceId() {
+        return R.drawable.touch_line;
     }
 
     @Override

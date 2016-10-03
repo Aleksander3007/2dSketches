@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * Модель мира.
  */
 public class World {
-    private final ShaderProgram shader_;
     private Texture touchLineTexture_;
     private final ArrayMap<OrbType, ArrayMap<OrbSpecType, Texture>> orbTextures_ = new ArrayMap<>();
 
@@ -24,13 +23,11 @@ public class World {
     private ArrayList<TouchLine> touchLines_ = new ArrayList<>();
 
     private float orbSize_;
-    private float touchLineWidth_;
-    private float touchLineHeight_;
+    private Size2 touchLineSize_;
 
-    public World(final Vector2 pos, final Size2 rectSize,
-                 ShaderProgram shader) {
-        shader_ = shader;
+    private TouchLine touchLine;
 
+    public World(final Vector2 pos, final Size2 rectSize) {
         this.nRows_ = 12; // TODO: Magic number!
         this.nColumns_ = 7; // TODO: Magic number!
 
@@ -43,22 +40,24 @@ public class World {
         this.width_ = orbSize_ * nColumns_;
         this.pos_ = new Vector2(pos.x + (rectSize.width / 2) - (this.width_ / 2), pos.y);
 
-        touchLineWidth_ = orbSize_; /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
-        touchLineHeight_ = orbSize_ / 4;
+        touchLineSize_ = new Size2(
+                orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
+                orbSize_
+        );
     }
 
     public void init() {
         createLevel();
     }
 
-    public void onDraw(float[] mvpMatrix) {
+    public void onDraw(float[] mvpMatrix, final ShaderProgram shader) {
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
-                orbs_[iRow][iCol].draw(mvpMatrix);
+                orbs_[iRow][iCol].draw(mvpMatrix, shader);
             }
         }
         for (TouchLine touchLine : touchLines_) {
-            touchLine.draw(mvpMatrix);
+            touchLine.draw(mvpMatrix, shader);
         }
     }
 
@@ -171,7 +170,7 @@ public class World {
         }
     }
 
-    public void dispose () {
+    public void dispose() {
         clearOrbs();
 
         for (TouchLine touchLine : touchLines_) {
@@ -240,7 +239,18 @@ public class World {
                     if ((Math.abs((orb.getColNo() - prevOrb.getColNo())) == 1) ||
                             (Math.abs((orb.getRowNo() - prevOrb.getRowNo())) == 1)) {
                         selectedOrbs_.add(orb);
-                        TouchLine touchLine = new TouchLine(prevOrb, orb, touchLineTexture_, shader_);
+                        Log.i("touchLineSize", "{" +
+                                String.valueOf(touchLineSize_.width) +
+                                ", " +
+                                String.valueOf(touchLineSize_.height) +
+                                "}"
+                        );
+
+                        TouchLine touchLine = new TouchLine(
+                                prevOrb, orb,
+                                touchLineSize_,
+                                touchLineTexture_
+                        );
                         touchLines_.add(touchLine);
                     }
                 }
@@ -293,13 +303,13 @@ public class World {
         orbs_[rowNo][colNo] = new Orb(orbType, orbSpecType,
                 orbPos,
                 rowNo, colNo,
-                orbTexture, shader_
+                orbTexture
         );
 
         orbs_[rowNo][colNo].setSize(orbSize_);
     }
 
-    // Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
+    // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
     public void loadContent(Context context) {
         for (OrbType orbType : OrbType.values()) {
             for (OrbSpecType orbSpecType : OrbSpecType.values()) {
@@ -317,9 +327,9 @@ public class World {
                 }
             }
         }
-        Log.i("World.Content", "Content of world are loaded.");
-        // TODO: R.drawable.touch_line по аналогии с Orb.getResourceId() сделать.
-        //int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
-        //Texture texture = new Texture(context, TouchLine.resourceId);
+
+        touchLineTexture_ = new Texture(context, TouchLine.getResourceId());
+
+        Log.i("World.Content", "Content of the world are loaded.");
     }
 }

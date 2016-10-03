@@ -4,7 +4,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * По сути контроллер.
@@ -24,15 +23,16 @@ public class Game implements View.OnTouchListener {
             switch (action) {
                 case (MotionEvent.ACTION_UP):
                     if (BuildConfig.DEBUG) {
-                        Log.i("Game.onTouch()", "Action was DOWN");
+                        Log.i("Game.onTouch()", "Action was UP");
                         Log.i("Game.onTouch().x", String.valueOf(event.getX() * GameRenderer.uppX));
                         Log.i("Game.onTouch().y", String.valueOf(event.getY() * GameRenderer.uppY));
                     }
-                    return true;
-                case (MotionEvent.ACTION_MOVE):
                     screen_.hit(new Vector2(
                             event.getX() * GameRenderer.uppX,
                             event.getY() * GameRenderer.uppY));
+                    return true;
+                case (MotionEvent.ACTION_MOVE):
+
                     return true;
                 default:
                     return true;

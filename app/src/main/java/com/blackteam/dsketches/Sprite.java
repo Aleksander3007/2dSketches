@@ -48,8 +48,8 @@ public class Sprite {
     private float[] modelMatrix_ = new float[16];
     private float[] matrix_ = new float[16];
 
-    public Sprite(Texture texture, ShaderProgram shader) {
-        this(texture, 0.0f, 0.0f, texture.getWidth(), texture.getHeight(), shader);
+    public Sprite(Texture texture) {
+        this(texture, 0.0f, 0.0f, texture.getWidth(), texture.getHeight());
     }
 
     /**
@@ -61,8 +61,7 @@ public class Sprite {
      * @param height Высота региона в пикселях из указанной текстуры.
      * @param shader Шейдер.
      */
-    public Sprite(Texture texture, float x, float y, float width, float height,
-                  ShaderProgram shader) {
+    public Sprite(Texture texture, float x, float y, float width, float height) {
         // Units per pixel.
         float uppX = 1.0f / texture.getWidth();
         float uppY = 1.0f / texture.getHeight();
@@ -87,15 +86,14 @@ public class Sprite {
 
         this.texture_ = texture;
         prepareData();
-        getHandlers(shader);
-        bindData();
         resetMatrices();
     }
 
-    public void draw(float[] mvpMatrix) {
-        // Привязка текстурных координат.
-        GLES20.glVertexAttribPointer(texturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
-                false, TEXTURE_STRIDE_, textureBuffer_);
+    // На shader можно ссылаться только в потоке Open GL ES.
+    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
+
+        getHandlers(shader);
+        bindData();
 
         Matrix.multiplyMM(matrix_, 0, mvpMatrix, 0, modelMatrix_, 0);
         // Pass the projection and view transformation to the shader.
@@ -110,9 +108,9 @@ public class Sprite {
         buildModelMatrix();
     }
 
-    public void setRotate(float rotationDeg) {
+    public void setRotate(float angleDeg) {
         Matrix.setIdentityM(rotateMatrix_, 0);
-        Matrix.rotateM(rotateMatrix_, 0, rotationDeg, 0.0f, 0.0f, 1.0f);
+        Matrix.rotateM(rotateMatrix_, 0, angleDeg, 0.0f, 0.0f, 1.0f);
         buildModelMatrix();
     }
 
@@ -166,10 +164,13 @@ public class Sprite {
      * Привязка данных (координат и т.п.) к шейдеру.
      */
     private void bindData() {
-        // Prepare the texture coordinate data.
+        // Привязка координат спрайта.
         GLES20.glVertexAttribPointer(positionHandle_, COORDS_PER_VERTEX_,
                 GLES20.GL_FLOAT, false,
                 VERTEX_STRIDE_, vertexBuffer_);
+        // Привязка текстурных координат.
+        GLES20.glVertexAttribPointer(texturePosHandle_, TEX_COORDS_PER_VERTEX_, GLES20.GL_FLOAT,
+                false, TEXTURE_STRIDE_, textureBuffer_);
     }
 
     /**

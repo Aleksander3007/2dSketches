@@ -7,8 +7,8 @@ public class Orb extends DisplayableObject {
     private int colNo_;
 
     public Orb(OrbType orbType, OrbSpecType orbSpecType, Vector2 pos,
-               int rowNo, int colNo, Texture texture, ShaderProgram shader) {
-        this(pos, texture, shader);
+               int rowNo, int colNo, Texture texture) {
+        this(pos, texture);
         this.type_ = orbType;
         this.specType_ = orbSpecType;
         this.rowNo_ = rowNo;
@@ -116,7 +116,7 @@ public class Orb extends DisplayableObject {
 
     }
 
-    private Orb(Vector2 pos, Texture texture, ShaderProgram shader) {
-        super(pos, texture, shader);
+    private Orb(Vector2 pos, Texture texture) {
+        super(pos, texture);
     }
 }

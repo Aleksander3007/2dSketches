@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class ScoreLabel {
     private Texture numbersTexture_;
-    private final ShaderProgram shader_;
 
     private Vector2 pos_;
     private int score_;
@@ -16,8 +15,7 @@ public class ScoreLabel {
     private float numberWidth_;
 
     public ScoreLabel(final int startScore, final Vector2 pos,
-                      final Size2 rectSize, ShaderProgram shader) {
-        this.shader_ = shader;
+                      final Size2 rectSize) {
         this.pos_ = pos;
         score_ = startScore;
         numberHeight_ = rectSize.height;
@@ -43,7 +41,7 @@ public class ScoreLabel {
             Log.i("ScoreLabel.setScore()", "score = 0");
             ScoreNumber scoreNumber = new ScoreNumber(
                     new Vector2(this.pos_.x, this.pos_.y),
-                    numbersTexture_, 0, 0, 32, 32, shader_);
+                    numbersTexture_, 0, 0, 32, 32);
             scoreNumber.setSize(numberWidth_, numberHeight_);
             numbers_.add(scoreNumber);
         }
@@ -56,7 +54,7 @@ public class ScoreLabel {
 
             ScoreNumber scoreNumber = new ScoreNumber(
                     new Vector2(this.pos_.x, this.pos_.y), // Правильная позиция устанавливается далее.
-                    numbersTexture_, shader_);
+                    numbersTexture_);
             scoreNumber.setSize(numberWidth_, numberHeight_);
             numbers_.add(scoreNumber);
         }
@@ -73,9 +71,9 @@ public class ScoreLabel {
         numbersTexture_ = new Texture(context, R.drawable.numbers);
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
         for (ScoreNumber number : numbers_) {
-            number.draw(mvpMatrix);
+            number.draw(mvpMatrix, shader);
         }
     }
 }

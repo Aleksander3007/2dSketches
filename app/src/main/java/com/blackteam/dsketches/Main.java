@@ -38,9 +38,6 @@ import android.widget.Toast;
 // TODO: Игровой баланс.
 // TODO: Кнопка exit.
 
-/**
- * Главный класс.
- */
 public class Main extends Activity {
     private GLSurfaceView gameView_;
     private GameRenderer gameRenderer_;
@@ -50,7 +47,7 @@ public class Main extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         try {
-            Log.i("Version", "0.0.0.22");
+            Log.i("Version", "0.0.0.49");
             super.onCreate(savedInstanceState);
 
             gameView_ = new GLSurfaceView(this);

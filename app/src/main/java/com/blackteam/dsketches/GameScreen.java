@@ -19,7 +19,7 @@ public class GameScreen {
 
     private Orb orb_;
 
-    public void init(final float screenWidth, final float screenHeight, ShaderProgram shader) {
+    public void init(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
         Vector2 worldOffset = new Vector2(0, 0);
@@ -33,8 +33,8 @@ public class GameScreen {
                 width_ - scoreLabelOffset.x,
                 (screenHeight - worldSize.height) / 3);
 
-        world_ = new World(worldOffset, worldSize, shader);
-        scoreLabel_ = new ScoreLabel(0, scoreLabelOffset, scoreLabelSize, shader);
+        world_ = new World(worldOffset, worldSize);
+        scoreLabel_ = new ScoreLabel(0, scoreLabelOffset, scoreLabelSize);
     }
 
     public void init() {
@@ -42,14 +42,14 @@ public class GameScreen {
         scoreLabel_.init();
     }
 
-    public void onDraw(float[] mvpMatrix) {
-        world_.onDraw(mvpMatrix);
-        scoreLabel_.draw(mvpMatrix);
+    public void onDraw(float[] mvpMatrix, final ShaderProgram shader) {
+        scoreLabel_.draw(mvpMatrix, shader);
+        world_.onDraw(mvpMatrix, shader);
     }
 
     public void loadContent(Context context) {
-        world_.loadContent(context);
         scoreLabel_.loadContent(context);
+        world_.loadContent(context);
     }
 
     public boolean hit(Vector2 worldCoords) {
