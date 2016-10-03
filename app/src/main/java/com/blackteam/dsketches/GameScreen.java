@@ -55,4 +55,23 @@ public class GameScreen {
     public boolean hit(Vector2 worldCoords) {
         return world_.hit(worldCoords);
     }
+
+    public void touchUp(Vector2 worldCoords) {
+//        if (restartBtn_.hit(worldCoords)) {
+//            Gdx.app.log("GameScreen", "hit restartBtn_");
+//            world_.createLevel();
+//            scoreLabel_.setScore(0);
+//        } else {
+            world_.update();
+            int profit = world_.getProfitByOrbs();
+            if (profit > 0) {
+                scoreLabel_.addScore(profit);
+                world_.deleteSelectedOrbs();
+                world_.removeSelection();
+            }
+            else {
+                world_.removeSelection();
+            }
+//        }
+    }
 }

@@ -27,12 +27,11 @@ public class Game implements View.OnTouchListener {
                         Log.i("Game.onTouch().x", String.valueOf(event.getX() * GameRenderer.uppX));
                         Log.i("Game.onTouch().y", String.valueOf(event.getY() * GameRenderer.uppY));
                     }
-                    screen_.hit(new Vector2(
-                            event.getX() * GameRenderer.uppX,
-                            event.getY() * GameRenderer.uppY));
+                    // TODO: По идеи везде hit и необходимо передавать Action.
+                    screen_.touchUp(getWorldCoords(event.getX(),event.getY()));
                     return true;
                 case (MotionEvent.ACTION_MOVE):
-
+                    screen_.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
                     return true;
@@ -42,5 +41,12 @@ public class Game implements View.OnTouchListener {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private Vector2 getWorldCoords(float screenX, float screenY) {
+        return new Vector2(
+                screenX * GameRenderer.uppX,
+                (GameRenderer.height - screenY) * GameRenderer.uppY
+        );
     }
 }

@@ -42,7 +42,7 @@ public class World {
 
         touchLineSize_ = new Size2(
                 orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
-                orbSize_
+                orbSize_ / 4.0f
         );
     }
 
@@ -126,6 +126,8 @@ public class World {
             return;
         }
 
+        // Добавленные с помощью спец. Orbs.
+        ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
         // Ищем спец. Orbs.
         for (Orb orb : selectedOrbs_) {
             switch (orb.getSpecType()) {
@@ -136,7 +138,7 @@ public class World {
                         if (!selectedOrbs_.contains(orbs_[orb.getRowNo()][iCol])) {
                             // ... и делаем их уникальным, чтобы считался Profit и для них.
                             orbs_[orb.getRowNo()][iCol].setType(OrbType.UNIVERSAL);
-                            selectedOrbs_.add(orbs_[orb.getRowNo()][iCol]);
+                            addSpecOrbs_.add(orbs_[orb.getRowNo()][iCol]);
                         }
                     }
                 }
@@ -145,6 +147,8 @@ public class World {
                     break;
             }
         }
+
+        selectedOrbs_.addAll(addSpecOrbs_);
     }
 
     public void removeSelection() {
@@ -239,12 +243,6 @@ public class World {
                     if ((Math.abs((orb.getColNo() - prevOrb.getColNo())) == 1) ||
                             (Math.abs((orb.getRowNo() - prevOrb.getRowNo())) == 1)) {
                         selectedOrbs_.add(orb);
-                        Log.i("touchLineSize", "{" +
-                                String.valueOf(touchLineSize_.width) +
-                                ", " +
-                                String.valueOf(touchLineSize_.height) +
-                                "}"
-                        );
 
                         TouchLine touchLine = new TouchLine(
                                 prevOrb, orb,

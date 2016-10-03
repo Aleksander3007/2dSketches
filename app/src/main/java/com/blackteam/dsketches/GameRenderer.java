@@ -15,6 +15,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
+    public static float width = 0;
+    public static float height = 0;
+
     // Units per pixels.
     public static float uppX = 1.0f;
     public static float uppY = 1.0f;
@@ -47,6 +50,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         try {
             GLES20.glViewport(0, 0, width, height);
+            GameRenderer.width = width;
+            GameRenderer.height = height;
 
             float aspectRatio = width > height ?
                     (float) width / height :

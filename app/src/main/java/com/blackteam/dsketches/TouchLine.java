@@ -12,13 +12,10 @@ public class TouchLine extends DisplayableObject {
 
     public TouchLine(Orb orb1, Orb orb2, Size2 size, Texture texture) {
         super(texture);
-        setPosition(new Vector2(0,0));
-        /*setSize(size.width, size.height);
+        setSize(size.width, size.height);
         Vector2 pos = calculatePos(orb1, orb2);
-        Log.i("TouchLine.pos.x", String.valueOf(pos.x));
-        Log.i("TouchLine.pos.y", String.valueOf(pos.y));
         setPosition(pos);
-        setRotationDeg(calculateRotationDeg(orb1, orb2));*/
+        setRotationDeg(calculateRotationDeg(orb1, orb2));
     }
 
     public static int getResourceId() {
@@ -32,7 +29,7 @@ public class TouchLine extends DisplayableObject {
 
     private Vector2 calculatePos(Orb orb1, Orb orb2) {
         Orb startOrb;
-        // Если выделение идёт снизу вверх.
+        // Если выделение по вертикали.
         if (orb2.getY() != orb1.getY()) {
             // Если выделение идёт снизу вверх.
             if (orb2.getY() > orb1.getY()) {
@@ -46,10 +43,11 @@ public class TouchLine extends DisplayableObject {
             }
 
             return new Vector2(
-                    startOrb.getX() + (startOrb.getWidth() / 2) - (width_ / 2),
-                    startOrb.getY() + startOrb.getHeight()  - (height_ / 2)
+                    startOrb.getX() + (startOrb.getWidth() / 2),
+                    startOrb.getY() + (startOrb.getHeight() / 2)
             );
         }
+        // По горизонтали.
         else {
             // Если выделение идёт слево направо.
             if (orb2.getX() > orb1.getX()) {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -47,7 +48,7 @@ public class Main extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         try {
-            Log.i("Version", "0.0.0.49");
+            Log.i("Version", "0.0.0.61");
             super.onCreate(savedInstanceState);
 
             gameView_ = new GLSurfaceView(this);
