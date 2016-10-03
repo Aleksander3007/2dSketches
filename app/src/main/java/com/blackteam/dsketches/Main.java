@@ -25,6 +25,7 @@ import android.widget.Toast;
  * 6. implements interface RenderingObject или class DisplayableObject.
  * 7. Выделение по диагонали?.
  * 8. Отмена действий?
+ * 9. Может убрать прослойку DisplayableObject (она ничего полезного не делает). Наследовать только от Spite.
  */
 
 // TODO: OpenGL.
@@ -48,29 +49,28 @@ public class Main extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         try {
-            Log.i("Version", "0.0.0.61");
+            Log.i("Version", "0.0.0.72");
             super.onCreate(savedInstanceState);
-
-            gameView_ = new GLSurfaceView(this);
 
             // Проверяем поддерживается ли OpenGL ES 2.0.
             final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
             final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
             if (supportsEs2) {
+                gameView_ = new GLSurfaceView(this);
+                gameView_.setEGLContextClientVersion(2);
+                setContentView(gameView_);
+
                 gameScreen_ = new GameScreen();
                 gameRenderer_ = new GameRenderer(this, gameScreen_);
                 game_ = new Game(gameScreen_);
                 gameView_.setOnTouchListener(game_);
-                gameView_.setEGLContextClientVersion(2);
                 gameView_.setRenderer(gameRenderer_);
                 rendererSet = true;
             } else {
                 Toast.makeText(this, "This device does not support OpenGL ES 2.0.", Toast.LENGTH_LONG).show();
                 return;
             }
-
-            setContentView(gameView_);
         }
         catch (Exception e) {
             e.printStackTrace();

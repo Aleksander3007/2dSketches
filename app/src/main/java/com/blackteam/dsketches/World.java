@@ -25,11 +25,14 @@ public class World {
     private float orbSize_;
     private Size2 touchLineSize_;
 
-    private TouchLine touchLine;
+    public World(final Context context) {
+        loadContent(context);
+    }
 
-    public World(final Vector2 pos, final Size2 rectSize) {
+    public void setSize(final Vector2 pos, final Size2 rectSize) {
         this.nRows_ = 12; // TODO: Magic number!
         this.nColumns_ = 7; // TODO: Magic number!
+        orbs_ = new Orb[nRows_][nColumns_];
 
         float orbHeight = rectSize.height / nRows_;
         float orbWidth = rectSize.width / nColumns_;
@@ -175,8 +178,6 @@ public class World {
     }
 
     public void dispose() {
-        clearOrbs();
-
         for (TouchLine touchLine : touchLines_) {
             touchLine.dispose();
         }
@@ -184,16 +185,15 @@ public class World {
     }
 
     public void createLevel() {
-        clearOrbs();
-
-        orbs_ = new Orb[nRows_][nColumns_];
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
                 createOrb(iRow, iCol);
             }
         }
 
-        Log.i("World", "Level is created.");
+        if (BuildConfig.DEBUG) {
+            Log.i("World", "Level is created.");
+        }
     }
 
     private OrbType generateOrbType() {
@@ -218,18 +218,6 @@ public class World {
         orbTypeProbabilities.put(OrbSpecType.COLUMNS_EATER, 0f);
 
         return GameMath.generateValue(orbTypeProbabilities);
-    }
-
-    private void clearOrbs() {
-        if (orbs_ != null)
-        {
-            for (int iRow = 0; iRow < nRows_; iRow++) {
-                for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    orbs_[iRow][iCol].dispose();
-                    orbs_[iRow][iCol] = null;
-                }
-            }
-        }
     }
 
     private boolean hitOrb(Orb orb, Vector2 coords) {
@@ -328,6 +316,7 @@ public class World {
 
         touchLineTexture_ = new Texture(context, TouchLine.getResourceId());
 
-        Log.i("World.Content", "Content of the world are loaded.");
+        if (BuildConfig.DEBUG)
+            Log.i("World.Content", "Content of the world are loaded.");
     }
 }

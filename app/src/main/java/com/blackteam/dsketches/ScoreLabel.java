@@ -14,8 +14,11 @@ public class ScoreLabel {
     private float numberHeight_;
     private float numberWidth_;
 
-    public ScoreLabel(final int startScore, final Vector2 pos,
-                      final Size2 rectSize) {
+    public ScoreLabel(final Context context) {
+        loadContent(context);
+    }
+
+    public void setSize(final int startScore, final Vector2 pos, final Size2 rectSize) {
         this.pos_ = pos;
         score_ = startScore;
         numberHeight_ = rectSize.height;

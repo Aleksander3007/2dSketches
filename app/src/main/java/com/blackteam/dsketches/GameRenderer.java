@@ -49,6 +49,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         try {
+            Log.i("GameRender", "onSurfaceChanged begin");
             GLES20.glViewport(0, 0, width, height);
             GameRenderer.width = width;
             GameRenderer.height = height;
@@ -89,13 +90,14 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
                 // Тут должен быть gameScreen_.resize.
                 // а в onSurfaceCreated() должен быть передан gameScreen_.setShader(shader_);
-                gameScreen_.init(1f, aspectRatio);
-                gameScreen_.loadContent(context_);
+                gameScreen_.init(context_, 1f, aspectRatio);
                 gameScreen_.init();
             }
 
             // Calculate the projection and view transformation.
             Matrix.multiplyMM(mMVPMatrix_, 0, mProjectionMatrix_, 0, mViewMatrix_, 0);
+
+            Log.i("GameRender", "onSurfaceChanged end");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -105,11 +107,16 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
-
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        gameScreen_.onDraw(mMVPMatrix_, shader_);
+        try {
+            //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+            gameScreen_.onDraw(mMVPMatrix_, shader_);
+        }
+        catch (Exception ex) {
+            Log.i("GameRenderer", "onDrawFrame.Exception");
+            ex.printStackTrace();
+            Toast.makeText(context_, "Internal error.", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
