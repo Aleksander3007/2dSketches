@@ -13,8 +13,7 @@ public class TouchLine extends DisplayableObject {
     public TouchLine(Orb orb1, Orb orb2, Size2 size, Texture texture) {
         super(texture);
         setSize(size.width, size.height);
-        Vector2 pos = calculatePos(orb1, orb2);
-        setPosition(pos);
+        setPosition(calculatePos(orb1, orb2));
         setRotationDeg(calculateRotationDeg(orb1, orb2));
     }
 
@@ -43,7 +42,7 @@ public class TouchLine extends DisplayableObject {
             }
 
             return new Vector2(
-                    startOrb.getX() + (startOrb.getWidth() / 2),
+                    startOrb.getX() + (startOrb.getWidth() / 2) + (height_ / 2),
                     startOrb.getY() + (startOrb.getHeight() / 2)
             );
         }
