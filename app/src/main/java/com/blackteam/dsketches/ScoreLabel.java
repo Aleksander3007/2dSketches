@@ -54,7 +54,7 @@ public class ScoreLabel {
 
             ScoreNumber scoreNumber = new ScoreNumber(
                     new Vector2(this.pos_.x, this.pos_.y), // Правильная позиция устанавливается далее.
-                    numbersTexture_);
+                    numbersTexture_, number * 32, 0, 32, 32);
             scoreNumber.setSize(numberWidth_, numberHeight_);
             numbers_.add(scoreNumber);
         }
