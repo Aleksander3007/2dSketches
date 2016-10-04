@@ -18,16 +18,12 @@ public class ScoreLabel {
         loadContent(context);
     }
 
-    public void setSize(final int startScore, final Vector2 pos, final Size2 rectSize) {
+    public void init(final int startScore, final Vector2 pos, final Size2 rectSize) {
         this.pos_ = pos;
         score_ = startScore;
         numberHeight_ = rectSize.height;
         numberWidth_ = rectSize.height;
 
-        Log.i("ScoreLabel", String.valueOf(numberWidth_));
-    }
-
-    public void init() {
         addScore(score_);
     }
 

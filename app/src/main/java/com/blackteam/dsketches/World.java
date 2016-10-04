@@ -29,8 +29,8 @@ public class World {
         loadContent(context);
     }
 
-    public void setSize(final Vector2 pos, final Size2 rectSize) {
-        this.nRows_ = 12; // TODO: Magic number!
+    public void init(final Vector2 pos, final Size2 rectSize) {
+        this.nRows_ = 9; // TODO: Magic number!
         this.nColumns_ = 7; // TODO: Magic number!
         orbs_ = new Orb[nRows_][nColumns_];
 
@@ -47,13 +47,11 @@ public class World {
                 orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
                 orbSize_ / 4.0f
         );
-    }
 
-    public void init() {
         createLevel();
     }
 
-    public void onDraw(float[] mvpMatrix, final ShaderProgram shader) {
+    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
                 orbs_[iRow][iCol].draw(mvpMatrix, shader);
@@ -81,6 +79,18 @@ public class World {
         return (hitX && hitY);
     }
 
+    public int getNumRows() {
+        return nRows_;
+    }
+
+    public int getNumCols() {
+        return nColumns_;
+    }
+
+    public Orb getOrb(int rowNo, int colNo) {
+        return orbs_[rowNo][colNo];
+    }
+
     public int getProfitByOrbs() {
         // TODO: Возможно это должно быть в классе GameRules.
         // А лучше GameRule, и GameRuleManager.
@@ -92,8 +102,9 @@ public class World {
         int factor = 1;
         OrbType orbType = selectedOrbs_.get(0).getType();
         for (Orb orb : selectedOrbs_) {
-            if ((orb.getType() == orbType) || (orb.getType() == OrbType.UNIVERSAL) || (orbType == OrbType.UNIVERSAL)) {
-                profit += 10;
+            if ((orb.getType() == orbType) ||
+                    (orb.getType() == OrbType.UNIVERSAL) || (orbType == OrbType.UNIVERSAL)) {
+                profit += 10; // TODO: Magic number!
             }
             // Все элементы должны быть одинакового OrbType.
             else {
@@ -279,7 +290,7 @@ public class World {
      * @param rowNo Номер строки.
      * @param colNo Номер столбца.
      */
-    private void createOrb(final OrbType orbType, final OrbSpecType orbSpecType,
+    public void createOrb(final OrbType orbType, final OrbSpecType orbSpecType,
                            final int rowNo, final int colNo
     ) {
         Texture orbTexture = orbTextures_.get(orbType).get(orbSpecType);
@@ -296,7 +307,7 @@ public class World {
     }
 
     // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
-    public void loadContent(Context context) {
+    private void loadContent(Context context) {
         for (OrbType orbType : OrbType.values()) {
             for (OrbSpecType orbSpecType : OrbSpecType.values()) {
 

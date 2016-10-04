@@ -1,12 +1,7 @@
 package com.blackteam.dsketches;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.RectF;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
-import android.util.SizeF;
 
 public class GameScreen {
 
@@ -14,13 +9,14 @@ public class GameScreen {
     private ScoreLabel scoreLabel_;
     private RestartButton restartBtn_;
     private Texture restartBtnTexture_;
-    //private SkillsPanel skillsPanel;
+    private SkillsPanel skillsPanel_;
 
     private float width_;
     private float height_;
 
     public void init(final Context context, final float screenWidth, final float screenHeight) {
         world_ = new World(context);
+        skillsPanel_ = new SkillsPanel(context);
         scoreLabel_ = new ScoreLabel(context);
         restartBtn_ = new RestartButton(new Texture(context, R.drawable.restart_btn));
         setSize(screenWidth, screenHeight);
@@ -29,40 +25,50 @@ public class GameScreen {
     private void setSize(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
-        Vector2 worldOffset = new Vector2(0, 0);
+
+        float screenPart = this.height_ / (3 + 15 + 3);
+
+        Vector2 skillsPanelOffset = new Vector2(0, screenPart);
+        Size2 skillsPanelSize = new Size2(
+                width_ - skillsPanelOffset.x,
+                screenPart
+        );
+
+        Vector2 worldOffset = new Vector2(0,
+                skillsPanelOffset.y + skillsPanelSize.height + screenPart
+        );
+
         Size2 worldSize = new Size2(
                 width_ - worldOffset.x,
-                height_ - worldOffset.y - (screenHeight / 7));
+                (screenPart * 15)
+        );
 
         Vector2 scoreLabelOffset = new Vector2(0,
-                (worldOffset.y + worldSize.height) + (screenHeight - worldSize.height) / 3);
+                (worldOffset.y + worldSize.height) + screenPart);
         Size2 scoreLabelSize = new Size2(
                 width_ - scoreLabelOffset.x,
-                (screenHeight - worldSize.height) / 3);
+                screenPart);
 
         Size2 restartBtnSize = new Size2(
-                ((screenHeight - worldSize.height) * 2 / 3),
-                ((screenHeight - worldSize.height) * 2 / 3)
+                2.0f * screenPart,
+                2.0f * screenPart
         );
         Vector2 restartBtnOffset = new Vector2(
                 width_ - restartBtnSize.width,
                 height_ - restartBtnSize.height
         );
 
-        world_.setSize(worldOffset, worldSize);
-        scoreLabel_.setSize(0, scoreLabelOffset, scoreLabelSize);
+        skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
+        world_.init(worldOffset, worldSize);
+        scoreLabel_.init(0, scoreLabelOffset, scoreLabelSize);
         restartBtn_.init(restartBtnOffset, restartBtnSize);
-    }
-
-    public void init() {
-        world_.init();
-        scoreLabel_.init();
     }
 
     public void onDraw(float[] mvpMatrix, final ShaderProgram shader) {
         scoreLabel_.draw(mvpMatrix, shader);
-        world_.onDraw(mvpMatrix, shader);
+        world_.draw(mvpMatrix, shader);
         restartBtn_.draw(mvpMatrix, shader);
+        skillsPanel_.draw(mvpMatrix, shader);
     }
 
     public boolean hit(Vector2 worldCoords) {
@@ -72,12 +78,13 @@ public class GameScreen {
     public void touchUp(Vector2 worldCoords) {
         Log.i("GameScreen", "touchUp begin");
         if (restartBtn_.hit(worldCoords)) {
-            Log.i("GameScreen", "restartBtn_.hit end");
             world_.createLevel();
-            Log.i("GameScreen", "World.createLevel end");
             scoreLabel_.setScore(0);
-            Log.i("GameScreen", "scoreLabel_.setScore end");
-        } else {
+        }
+        if (skillsPanel_.hit(worldCoords)) {
+            skillsPanel_.applySelectedSkill(world_);
+        }
+        else {
             world_.update();
             int profit = world_.getProfitByOrbs();
             if (profit > 0) {

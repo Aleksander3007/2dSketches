@@ -91,7 +91,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                 // Тут должен быть gameScreen_.resize.
                 // а в onSurfaceCreated() должен быть передан gameScreen_.setShader(shader_);
                 gameScreen_.init(context_, 1f, aspectRatio);
-                gameScreen_.init();
             }
 
             // Calculate the projection and view transformation.

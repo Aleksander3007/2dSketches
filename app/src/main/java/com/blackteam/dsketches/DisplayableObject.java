@@ -84,6 +84,11 @@ public abstract class DisplayableObject {
         sprite_.setRotate(rotationDeg);
     }
 
+    public boolean hit(Vector2 coords) {
+        return ((coords.x >= pos_.x) && (coords.x <= (pos_.x + width_))) &&
+                ((coords.y >= pos_.y) && (coords.y <= (pos_.y + height_)));
+    }
+
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
         sprite_.draw(mvpMatrix, shader);
     }
@@ -109,6 +114,10 @@ public abstract class DisplayableObject {
     public void setPosition(Vector2 pos) {
         pos_ = pos;
         sprite_.setPosition(pos);
+    }
+
+    public Vector2 getPosition() {
+        return  pos_;
     }
 
     public void setRotationDeg(final float angleDeg) {
