@@ -30,7 +30,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix_ = new float[16];
 
     private ShaderProgram shader_;
-    private GameScreen gameScreen_;
+    private MainWindow mainWindow_;
+    private MenuWindow menuWindow_;
 
     /**
      * Ограничение по FPS.
@@ -44,9 +45,12 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     /** Сколько времени прошло с последнего обновления, мс.. */
     private long elapsedTime_;
 
-    public GameRenderer(Context context, GameScreen gameScreen) {
+    // TODO: По идеи передавать не такой большой список MainWindow mainWindow, MenuWindow menuWindow,
+    // а либо массив ArrayList<GameWindow>, либо WindowManager (можно не услажнять так).
+    public GameRenderer(Context context, MainWindow mainWindow, MenuWindow menuWindow) {
         this.context_ = context;
-        this.gameScreen_ = gameScreen;
+        this.mainWindow_ = mainWindow;
+        this.menuWindow_ = menuWindow;
     }
 
     @Override
@@ -102,9 +106,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
                 uppX = 1.0f / width;
                 uppY = aspectRatio / height;
 
-                // Тут должен быть gameScreen_.resize.
-                // а в onSurfaceCreated() должен быть передан gameScreen_.setShader(shader_);
-                gameScreen_.init(context_, 1f, aspectRatio);
+                // Тут должен быть mainWindow_.resize.
+                // а в onSurfaceCreated() должен быть передан mainWindow_.setShader(shader_);
+                mainWindow_.init(context_, 1f, aspectRatio);
+                menuWindow_.init(context_, 1f, aspectRatio);
             }
 
             // Calculate the projection and view transformation.
@@ -126,7 +131,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             lastTime_ = currentTime_;
 
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-            gameScreen_.render(mMVPMatrix_, shader_, elapsedTime_);
+
+            // TODO: mMVPMatrix_, shader_, elapsedTime_ в Graphics.
+            mainWindow_.render(mMVPMatrix_, shader_, elapsedTime_);
+            menuWindow_.render(mMVPMatrix_, shader_);
 
             elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
             // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батарии, для меньшей нагрузки проца.

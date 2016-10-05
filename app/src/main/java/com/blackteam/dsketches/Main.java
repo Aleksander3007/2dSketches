@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 public class Main extends Activity {
     private GameView gameView_;
-    private GameController gameController_;
+
     private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {

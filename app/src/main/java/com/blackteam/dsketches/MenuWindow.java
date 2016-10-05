@@ -1,8 +1,11 @@
 package com.blackteam.dsketches;
 
 import android.content.Context;
+import android.util.Log;
 
 public class MenuWindow {
+    private GameController gameController_;
+
      private GameButton closeButton_;
      private GameButton restartBtn_;
     // private GameButton achievementButton_;
@@ -12,6 +15,10 @@ public class MenuWindow {
 
 
     private boolean isVisible_;
+
+    public MenuWindow(GameController gameController) {
+        this.gameController_ = gameController;
+    }
 
     // TODO: Бред, что передаём windowWidth, windowHeight а позицию нет.
     // либо передавть еще позицию, либо вообще убрать размеры.
@@ -49,7 +56,12 @@ public class MenuWindow {
 
     public void touchUp(Vector2 worldCoords) {
         if (closeButton_.hit(worldCoords)) {
+            Log.i("MenuWindow", "closeButton is clicked.");
             this.setInvisible();
+        }
+        else if (restartBtn_.hit(worldCoords)) {
+            Log.i("MenuWindow", "restartButton is clicked.");
+            gameController_.restartLevel();
         }
     }
 }

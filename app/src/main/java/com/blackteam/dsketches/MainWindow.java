@@ -3,19 +3,24 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.util.Log;
 
-public class GameScreen {
+public class MainWindow {
+
+    private GameController gameController_;
 
     private World world_;
     private ScoreLabel scoreLabel_;
     private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
-    private MenuWindow menuWindow_;
 
     private float width_;
     private float height_;
 
     private float screenPart_;
+
+    public MainWindow(GameController gameController) {
+        this.gameController_ = gameController;
+    }
 
     public void init(final Context context, final float screenWidth, final float screenHeight) {
         world_ = new World(context);
@@ -23,9 +28,6 @@ public class GameScreen {
         scoreLabel_ = new ScoreLabel(context);
         menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(context);
-        menuWindow_ = new MenuWindow();
-
-        menuWindow_.init(context, screenWidth, screenHeight);
 
         setSize(screenWidth, screenHeight);
     }
@@ -80,7 +82,6 @@ public class GameScreen {
         menuButton_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
         profitLabel_.render(mvpMatrix, shader, elapsedTime);
-        menuWindow_.render(mvpMatrix, shader);
     }
 
     public boolean hit(Vector2 worldCoords) {
@@ -88,19 +89,11 @@ public class GameScreen {
     }
 
     public void touchUp(Vector2 worldCoords) {
-        Log.i("GameScreen", "touchUp begin");
-
-        if (menuWindow_.isVisible()) {
-            menuWindow_.touchUp(worldCoords);
-            return;
-        }
-
+        Log.i("MainWindow", "touchUp begin");
         if (menuButton_.hit(worldCoords)) {
-            //world_.createLevel();
-            //scoreLabel_.setScore(0);
-            menuWindow_.setVisible();
+            gameController_.openMenu();
         }
-        if (skillsPanel_.hit(worldCoords)) {
+        else if (skillsPanel_.hit(worldCoords)) {
             skillsPanel_.applySelectedSkill(world_);
         }
         else {
@@ -116,5 +109,10 @@ public class GameScreen {
                 world_.removeSelection();
             }
         }
+    }
+
+    public void restartLevel() {
+        world_.createLevel();
+        scoreLabel_.setScore(0);
     }
 }

@@ -142,33 +142,31 @@ public class World {
     public void update() {
         isUpdating_ = true;
 
-        if (selectedOrbs_.size() < 2) {
-            return;
-        }
-
-        // Добавленные с помощью спец. Orbs.
-        ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
-        // Ищем спец. Orbs.
-        for (Orb orb : selectedOrbs_) {
-            switch (orb.getSpecType()) {
-                case ROWS_EATER: {
-                    // Добавляем все элементы строки как выделенные.
-                    for (int iCol = 0; iCol < nColumns_; iCol++) {
-                        // ... без повтора в массиве.
-                        if (!selectedOrbs_.contains(orbs_[orb.getRowNo()][iCol])) {
-                            // ... и делаем их уникальным, чтобы считался Profit и для них.
-                            orbs_[orb.getRowNo()][iCol].setType(OrbType.UNIVERSAL);
-                            addSpecOrbs_.add(orbs_[orb.getRowNo()][iCol]);
+        if (selectedOrbs_.size() >= 2) {
+            // Добавленные с помощью спец. Orbs.
+            ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
+            // Ищем спец. Orbs.
+            for (Orb orb : selectedOrbs_) {
+                switch (orb.getSpecType()) {
+                    case ROWS_EATER: {
+                        // Добавляем все элементы строки как выделенные.
+                        for (int iCol = 0; iCol < nColumns_; iCol++) {
+                            // ... без повтора в массиве.
+                            if (!selectedOrbs_.contains(orbs_[orb.getRowNo()][iCol])) {
+                                // ... и делаем их уникальным, чтобы считался Profit и для них.
+                                orbs_[orb.getRowNo()][iCol].setType(OrbType.UNIVERSAL);
+                                addSpecOrbs_.add(orbs_[orb.getRowNo()][iCol]);
+                            }
                         }
                     }
+                    default:
+                        // В остальных случаях ничего не делаем.
+                        break;
                 }
-                default:
-                    // В остальных случаях ничего не делаем.
-                    break;
             }
-        }
 
-        selectedOrbs_.addAll(addSpecOrbs_);
+            selectedOrbs_.addAll(addSpecOrbs_);
+        }
 
         isUpdating_ = false;
     }

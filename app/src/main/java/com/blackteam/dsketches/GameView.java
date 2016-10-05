@@ -5,20 +5,27 @@ import android.opengl.GLSurfaceView;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 /**
  * Отрисовка мира, а также обработка событий пользователя.
  */
 public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
-    private GameScreen gameScreen_;
+    private MainWindow mainWindow_;
+    private MenuWindow menuWindow_;
+    private GameController gameController_;
 
     public GameView(Context context) {
         super(context);
 
-        gameScreen_ = new GameScreen();
-        gameRenderer_ = new GameRenderer(context, gameScreen_);
+        gameController_ = new GameController();
+
+        mainWindow_ = new MainWindow(gameController_);
+        menuWindow_ = new MenuWindow(gameController_);
+
+        gameController_.setViews(mainWindow_, menuWindow_);
+
+        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);
@@ -30,17 +37,23 @@ public class GameView extends GLSurfaceView {
             int action = MotionEventCompat.getActionMasked(event);
 
             switch (action) {
+                // TODO: Отдельный метод для каждого Events.
                 case (MotionEvent.ACTION_UP):
                     if (BuildConfig.DEBUG) {
-                        Log.i("GameController", "Action was UP");
-                        Log.i("GameController.x", String.valueOf(event.getX() * GameRenderer.uppX));
-                        Log.i("GameController.y", String.valueOf(event.getY() * GameRenderer.uppY));
+                        Log.i("GameView", "Action was UP");
+                        Log.i("GameView.x", String.valueOf(event.getX() * GameRenderer.uppX));
+                        Log.i("GameView.y", String.valueOf(event.getY() * GameRenderer.uppY));
+                    }
+                    if (menuWindow_.isVisible()) {
+                        menuWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                        return true;
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
-                    gameScreen_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    mainWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));
+
                     return true;
                 case (MotionEvent.ACTION_MOVE):
-                    gameScreen_.hit(getWorldCoords(event.getX(), event.getY()));
+                    mainWindow_.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
                     return true;
