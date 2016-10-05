@@ -1,37 +1,46 @@
 package com.blackteam.dsketches;
 
+import android.content.Context;
+import android.opengl.GLSurfaceView;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * По сути контроллер.
+ * Отрисовка мира, а также обработка событий пользователя.
  */
-public class Game implements View.OnTouchListener {
-    private GameScreen screen_;
+public class GameView extends GLSurfaceView {
+    private GameRenderer gameRenderer_;
+    private GameScreen gameScreen_;
 
-    public Game(GameScreen screen) {
-        this.screen_ = screen;
+    public GameView(Context context) {
+        super(context);
+
+        gameScreen_ = new GameScreen();
+        gameRenderer_ = new GameRenderer(context, gameScreen_);
+
+        setEGLContextClientVersion(2);
+        setRenderer(gameRenderer_);
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         try {
             int action = MotionEventCompat.getActionMasked(event);
 
             switch (action) {
                 case (MotionEvent.ACTION_UP):
                     if (BuildConfig.DEBUG) {
-                        Log.i("Game.onTouch()", "Action was UP");
-                        Log.i("Game.onTouch().x", String.valueOf(event.getX() * GameRenderer.uppX));
-                        Log.i("Game.onTouch().y", String.valueOf(event.getY() * GameRenderer.uppY));
+                        Log.i("GameController", "Action was UP");
+                        Log.i("GameController.x", String.valueOf(event.getX() * GameRenderer.uppX));
+                        Log.i("GameController.y", String.valueOf(event.getY() * GameRenderer.uppY));
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
-                    screen_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    gameScreen_.touchUp(getWorldCoords(event.getX(),event.getY()));
                     return true;
                 case (MotionEvent.ACTION_MOVE):
-                    screen_.hit(getWorldCoords(event.getX(), event.getY()));
+                    gameScreen_.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
                     return true;

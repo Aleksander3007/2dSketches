@@ -6,11 +6,6 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.Toast;
 
 /**
@@ -41,35 +36,17 @@ import android.widget.Toast;
 // TODO: Кнопка exit.
 
 public class Main extends Activity {
-    private GLSurfaceView gameView_;
-    private GameRenderer gameRenderer_;
-    private GameScreen gameScreen_;
-    private Game game_;
+    private GameView gameView_;
+    private GameController gameController_;
     private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
 
-            // Проверяем поддерживается ли OpenGL ES 2.0.
-            final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-            final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
-            if (supportsEs2) {
-                gameView_ = new GLSurfaceView(this);
-                gameView_.setEGLContextClientVersion(2);
-                setContentView(gameView_);
-
-                gameScreen_ = new GameScreen();
-                gameRenderer_ = new GameRenderer(this, gameScreen_);
-                game_ = new Game(gameScreen_);
-                gameView_.setOnTouchListener(game_);
-                gameView_.setRenderer(gameRenderer_);
-                rendererSet = true;
-            } else {
-                Toast.makeText(this, "This device does not support OpenGL ES 2.0.", Toast.LENGTH_LONG).show();
-                return;
-            }
+            gameView_ = new GameView(this);
+            rendererSet = true;
+            setContentView(gameView_);
         }
         catch (Exception e) {
             e.printStackTrace();
