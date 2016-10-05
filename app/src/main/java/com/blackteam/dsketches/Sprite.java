@@ -39,6 +39,7 @@ public class Sprite {
     private int positionHandle_;
     private int texturePosHandle_;
     private int mvpMatrixHandle_;
+    private int alphaFactorHandle_;
 
     private Texture texture_;
 
@@ -47,6 +48,8 @@ public class Sprite {
     private float[] rotateMatrix_ = new float[16];
     private float[] modelMatrix_ = new float[16];
     private float[] matrix_ = new float[16];
+
+    private float alphaFactor_;
 
     public Sprite(Texture texture) {
         this(texture, 0.0f, 0.0f, texture.getWidth(), texture.getHeight());
@@ -59,7 +62,6 @@ public class Sprite {
      * @param y Y-позиция региона в пикселях из указанной текстуры.
      * @param width Ширина региона в пикселях из указанной текстуры.
      * @param height Высота региона в пикселях из указанной текстуры.
-     * @param shader Шейдер.
      */
     public Sprite(Texture texture, float x, float y, float width, float height) {
         // Units per pixel.
@@ -89,7 +91,13 @@ public class Sprite {
         resetMatrices();
     }
 
-    // На shader можно ссылаться только в потоке Open GL ES.
+    /**
+     * Отрисовка спрайта.
+     * <br/><b>Note: На shader можно ссылаться только в потоке Open GL ES.</b>
+     * @param mvpMatrix Матрица мира.
+     * @param shader Шейдер.
+     */
+    //
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
 
         getHandlers(shader);
@@ -98,12 +106,25 @@ public class Sprite {
         Matrix.multiplyMM(matrix_, 0, mvpMatrix, 0, modelMatrix_, 0);
         // Pass the projection and view transformation to the shader.
         GLES20.glUniformMatrix4fv(mvpMatrixHandle_, 1, false, matrix_, 0);
+        GLES20.glUniform1f(alphaFactorHandle_, alphaFactor_);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture_.getId());
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, VERTEX_COUNT_);
     }
 
+    /**
+     * Установка множителя альфа-канала.
+     * @param alpha Множитель.
+     */
+    public void setAlpha(float alpha) {
+        alphaFactor_ = alpha;
+    }
+
     public void setPosition(Vector2 pos) {
         Matrix.setIdentityM(translateMatrix_, 0);
+        addPosition(pos);
+    }
+
+    public void addPosition(Vector2 pos) {
         Matrix.translateM(translateMatrix_, 0, pos.x, pos.y, 0.0f);
         buildModelMatrix();
     }
@@ -158,6 +179,8 @@ public class Sprite {
         textureBuffer_ = byteBuffer.asFloatBuffer();
         textureBuffer_.put(textureCoords);
         textureBuffer_.position(0);
+
+        alphaFactor_ = 1.0f;
     }
 
     /**
@@ -181,5 +204,6 @@ public class Sprite {
         positionHandle_ = shader.getAttribLocation(ShaderProgram.POSITION_ATTR);
         texturePosHandle_ = shader.getAttribLocation(ShaderProgram.TEXCOORD_ATTR);
         mvpMatrixHandle_ = shader.getUniformLocation(ShaderProgram.MATRIX_ATTR);
+        alphaFactorHandle_ = shader.getUniformLocation(ShaderProgram.ALPHA_FACTOR_ATTR);
     }
 }

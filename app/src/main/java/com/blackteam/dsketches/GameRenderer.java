@@ -32,6 +32,18 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private ShaderProgram shader_;
     private GameScreen gameScreen_;
 
+    /**
+     * Ограничение по FPS.
+     * Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
+     */
+    private long MS_PER_FRAME_ = 33; //ms; ~ 30.3 FPS.
+    /** мс. */
+    private long currentTime_;
+    /** Время последенго обновления, мс. */
+    private long lastTime_;
+    /** Сколько времени прошло с последнего обновления, мс.. */
+    private long elapsedTime_;
+
     public GameRenderer(Context context, GameScreen gameScreen) {
         this.context_ = context;
         this.gameScreen_ = gameScreen;
@@ -44,6 +56,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         createShader();
 
         GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+
+        lastTime_ = GameMath.getCurrentTime();
     }
 
     @Override
@@ -107,9 +121,21 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         try {
-            //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
+            currentTime_ = GameMath.getCurrentTime();
+            elapsedTime_ = currentTime_ - lastTime_;
+            lastTime_ = currentTime_;
+
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-            gameScreen_.onDraw(mMVPMatrix_, shader_);
+            gameScreen_.render(mMVPMatrix_, shader_, elapsedTime_);
+
+            elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
+            // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батарии, для меньшей нагрузки проца.
+            // Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
+            if (elapsedTime_ < MS_PER_FRAME_) {
+                Thread.sleep(MS_PER_FRAME_ - elapsedTime_);
+            }
+
+            //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
         }
         catch (Exception ex) {
             Log.i("GameRenderer", "onDrawFrame.Exception");
@@ -119,7 +145,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Настройка свйоств рендеринга.
+     * Настройка свойств рендеринга.
      */
     private void configRender() {
         GLES20.glEnable(GLES20.GL_TEXTURE_2D);
@@ -145,5 +171,4 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         if (!isShaderCompiled) throw new IllegalArgumentException("Error compiling shader.");
         shader_.begin();
     }
-
 }

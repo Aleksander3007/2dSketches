@@ -14,6 +14,8 @@ public class ScoreLabel {
     private float numberHeight_;
     private float numberWidth_;
 
+    private boolean isUpdating = false;
+
     public ScoreLabel(final Context context) {
         loadContent(context);
     }
@@ -32,6 +34,8 @@ public class ScoreLabel {
     }
 
     public void setScore(int score) {
+        isUpdating = true;
+
         score_ = score;
 
         numbers_.clear();
@@ -64,6 +68,8 @@ public class ScoreLabel {
                     this.pos_.y
             );
         }
+
+        isUpdating = false;
     }
 
     public void loadContent(Context context) {
@@ -71,8 +77,16 @@ public class ScoreLabel {
     }
 
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
-        for (ScoreNumber number : numbers_) {
-            number.draw(mvpMatrix, shader);
+        // TODO: Тут необходимо по умному, через потоки и блокировки.
+        if (!isUpdating) {
+            for (ScoreNumber number : numbers_) {
+                number.draw(mvpMatrix, shader);
+            }
+        }
+        else {
+            if (BuildConfig.DEBUG) {
+                Log.i("Race", "ScoreLabel.render()");
+            }
         }
     }
 }

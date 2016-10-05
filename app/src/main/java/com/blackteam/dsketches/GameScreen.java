@@ -8,17 +8,21 @@ public class GameScreen {
     private World world_;
     private ScoreLabel scoreLabel_;
     private RestartButton restartBtn_;
-    private Texture restartBtnTexture_;
     private SkillsPanel skillsPanel_;
+    private ProfitLabel profitLabel_;
 
     private float width_;
     private float height_;
+
+    private float screenPart_;
 
     public void init(final Context context, final float screenWidth, final float screenHeight) {
         world_ = new World(context);
         skillsPanel_ = new SkillsPanel(context);
         scoreLabel_ = new ScoreLabel(context);
         restartBtn_ = new RestartButton(new Texture(context, R.drawable.restart_btn));
+        profitLabel_ = new ProfitLabel(context);
+
         setSize(screenWidth, screenHeight);
     }
 
@@ -26,32 +30,32 @@ public class GameScreen {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
 
-        float screenPart = this.height_ / (3 + 15 + 3);
+        screenPart_ = this.height_ / (3 + 15 + 3);
 
-        Vector2 skillsPanelOffset = new Vector2(0, screenPart);
+        Vector2 skillsPanelOffset = new Vector2(0, screenPart_);
         Size2 skillsPanelSize = new Size2(
                 width_ - skillsPanelOffset.x,
-                screenPart
+                screenPart_
         );
 
         Vector2 worldOffset = new Vector2(0,
-                skillsPanelOffset.y + skillsPanelSize.height + screenPart
+                skillsPanelOffset.y + skillsPanelSize.height + screenPart_
         );
 
         Size2 worldSize = new Size2(
                 width_ - worldOffset.x,
-                (screenPart * 15)
+                (screenPart_ * 15)
         );
 
         Vector2 scoreLabelOffset = new Vector2(0,
-                (worldOffset.y + worldSize.height) + screenPart);
+                (worldOffset.y + worldSize.height) + screenPart_);
         Size2 scoreLabelSize = new Size2(
                 width_ - scoreLabelOffset.x,
-                screenPart);
+                screenPart_);
 
         Size2 restartBtnSize = new Size2(
-                2.0f * screenPart,
-                2.0f * screenPart
+                2.0f * screenPart_,
+                2.0f * screenPart_
         );
         Vector2 restartBtnOffset = new Vector2(
                 width_ - restartBtnSize.width,
@@ -62,13 +66,16 @@ public class GameScreen {
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(0, scoreLabelOffset, scoreLabelSize);
         restartBtn_.init(restartBtnOffset, restartBtnSize);
+        profitLabel_.init(new Size2(screenPart_, screenPart_));
+
     }
 
-    public void onDraw(float[] mvpMatrix, final ShaderProgram shader) {
+    public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
         scoreLabel_.draw(mvpMatrix, shader);
         world_.draw(mvpMatrix, shader);
         restartBtn_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
+        profitLabel_.render(mvpMatrix, shader, elapsedTime);
     }
 
     public boolean hit(Vector2 worldCoords) {
@@ -88,6 +95,7 @@ public class GameScreen {
             world_.update();
             int profit = world_.getProfitByOrbs();
             if (profit > 0) {
+                profitLabel_.setScore(profit, new Vector2(width_ / 2, height_ / 2));
                 scoreLabel_.addScore(profit);
                 world_.deleteSelectedOrbs();
                 world_.removeSelection();

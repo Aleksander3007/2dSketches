@@ -31,4 +31,8 @@ public class GameMath {
 
         return objectProbabilities.keyAt(0);
     }
+
+    public static long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
 }

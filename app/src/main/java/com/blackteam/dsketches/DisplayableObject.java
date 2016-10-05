@@ -2,6 +2,7 @@ package com.blackteam.dsketches;
 
 import android.graphics.Shader;
 
+// TODO: Может extends Sprite.
 public abstract class DisplayableObject {
     protected Sprite sprite_;
     /**
@@ -116,8 +117,19 @@ public abstract class DisplayableObject {
         sprite_.setPosition(pos);
     }
 
+    public void addPosition(Vector2 pos) {
+        // TODO: Переопределить операцию "+".
+        pos_.x = pos.x;
+        pos_.y = pos.y;
+        sprite_.addPosition(pos);
+    }
+
     public Vector2 getPosition() {
         return  pos_;
+    }
+
+    public void setAlpha(float alphaFactor) {
+        sprite_.setAlpha(alphaFactor);
     }
 
     public void setRotationDeg(final float angleDeg) {
