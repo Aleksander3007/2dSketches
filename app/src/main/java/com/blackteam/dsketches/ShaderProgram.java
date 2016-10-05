@@ -10,6 +10,7 @@ public class ShaderProgram {
     public static final String POSITION_ATTR = "v_Position";
     public static final String TEXCOORD_ATTR = "a_Texture";
     public static final String MATRIX_ATTR = "u_Matrix";
+    public static final String ALPHA_FACTOR_ATTR = "v_alphaFactor";
 
     private static final String VERTEX_SHADER_CODE_ =
             "uniform mat4 " + MATRIX_ATTR + ";" +
@@ -25,8 +26,10 @@ public class ShaderProgram {
             "precision mediump float;" +
                     "uniform sampler2D u_TextureUnit;" +
                     "varying vec2 v_Texture;" +
+                    "uniform float v_alphaFactor;" +
                     "void main() {" +
                     "  gl_FragColor = texture2D(u_TextureUnit, v_Texture);" +
+                    " gl_FragColor.a *= v_alphaFactor;" +
                     "}";
 
     private int program_;
