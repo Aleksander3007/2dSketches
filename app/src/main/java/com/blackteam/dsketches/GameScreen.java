@@ -7,9 +7,10 @@ public class GameScreen {
 
     private World world_;
     private ScoreLabel scoreLabel_;
-    private RestartButton restartBtn_;
+    private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
+    private MenuWindow menuWindow_;
 
     private float width_;
     private float height_;
@@ -20,8 +21,11 @@ public class GameScreen {
         world_ = new World(context);
         skillsPanel_ = new SkillsPanel(context);
         scoreLabel_ = new ScoreLabel(context);
-        restartBtn_ = new RestartButton(new Texture(context, R.drawable.restart_btn));
+        menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(context);
+        menuWindow_ = new MenuWindow();
+
+        menuWindow_.init(context, screenWidth, screenHeight);
 
         setSize(screenWidth, screenHeight);
     }
@@ -65,17 +69,18 @@ public class GameScreen {
         skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(0, scoreLabelOffset, scoreLabelSize);
-        restartBtn_.init(restartBtnOffset, restartBtnSize);
+        menuButton_.init(restartBtnOffset, restartBtnSize);
         profitLabel_.init(new Size2(screenPart_, screenPart_));
-
     }
 
+    // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
         scoreLabel_.draw(mvpMatrix, shader);
         world_.draw(mvpMatrix, shader);
-        restartBtn_.draw(mvpMatrix, shader);
+        menuButton_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
         profitLabel_.render(mvpMatrix, shader, elapsedTime);
+        menuWindow_.render(mvpMatrix, shader);
     }
 
     public boolean hit(Vector2 worldCoords) {
@@ -84,9 +89,16 @@ public class GameScreen {
 
     public void touchUp(Vector2 worldCoords) {
         Log.i("GameScreen", "touchUp begin");
-        if (restartBtn_.hit(worldCoords)) {
-            world_.createLevel();
-            scoreLabel_.setScore(0);
+
+        if (menuWindow_.isVisible()) {
+            menuWindow_.touchUp(worldCoords);
+            return;
+        }
+
+        if (menuButton_.hit(worldCoords)) {
+            //world_.createLevel();
+            //scoreLabel_.setScore(0);
+            menuWindow_.setVisible();
         }
         if (skillsPanel_.hit(worldCoords)) {
             skillsPanel_.applySelectedSkill(world_);

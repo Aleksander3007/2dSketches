@@ -25,6 +25,8 @@ public class World {
     private float orbSize_;
     private Size2 touchLineSize_;
 
+    private boolean isUpdating_ = false;
+
     public World(final Context context) {
         loadContent(context);
     }
@@ -52,13 +54,15 @@ public class World {
     }
 
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
-        for (int iRow = 0; iRow < nRows_; iRow++) {
-            for (int iCol = 0; iCol < nColumns_; iCol++) {
-                orbs_[iRow][iCol].draw(mvpMatrix, shader);
+        if (!isUpdating_) {
+            for (int iRow = 0; iRow < nRows_; iRow++) {
+                for (int iCol = 0; iCol < nColumns_; iCol++) {
+                    orbs_[iRow][iCol].draw(mvpMatrix, shader);
+                }
             }
-        }
-        for (TouchLine touchLine : touchLines_) {
-            touchLine.draw(mvpMatrix, shader);
+            for (TouchLine touchLine : touchLines_) {
+                touchLine.draw(mvpMatrix, shader);
+            }
         }
     }
 
@@ -136,6 +140,8 @@ public class World {
     }
 
     public void update() {
+        isUpdating_ = true;
+
         if (selectedOrbs_.size() < 2) {
             return;
         }
@@ -163,6 +169,8 @@ public class World {
         }
 
         selectedOrbs_.addAll(addSpecOrbs_);
+
+        isUpdating_ = false;
     }
 
     public void removeSelection() {
