@@ -1,10 +1,7 @@
 package com.blackteam.dsketches;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.opengl.GLES20;
 import android.util.Log;
-import android.view.animation.Animation;
 
 import java.util.ArrayList;
 
@@ -12,6 +9,11 @@ import java.util.ArrayList;
  * Количество очков полученное с текущего действия.
  */
 public class ProfitLabel {
+    private static final float START_ALPHA_ = 1.0f;
+    private static final float END_ALPHA_ = 0.85f;
+    private static final float ALPHA_SPEED_ = -0.0014f; // units per ms.
+    private static final float TRANSLATE_SPEED_ = 0.0006f; // units per ms.
+
     private Texture numbersTexture_;
 
     private Vector2 pos_;
@@ -20,11 +22,7 @@ public class ProfitLabel {
     private float numberHeight_;
     private float numberWidth_;
 
-    private float startScale_;
-    private float endScale_;
-    private float curScale_;
-    private float scaleSpeed_; // units per ms.
-    private float translateSpeed_; // units per ms.
+    private float curAlpha_;
 
     private boolean isVisible_;
 
@@ -35,11 +33,6 @@ public class ProfitLabel {
     public void init(final Size2 rectSize) {
         numberHeight_ = rectSize.height;
         numberWidth_ = rectSize.height;
-
-        startScale_ = 1.0f;
-        endScale_ = 0.7f;
-        scaleSpeed_ = -0.0019f;
-        translateSpeed_ = 0.0006f;
     }
 
     public void setScore(int val, Vector2 pos) {
@@ -48,13 +41,11 @@ public class ProfitLabel {
 
         numbers_.clear();
 
-        Log.i("ProfitLabel.setScore()", String.valueOf(value_));
-
         if (value_ == 0) {
             // TODO: Текстуру должен знать ScoreNumber.
             // TODO: пока используем ScoreNumber.
             ScoreNumber scoreNumber = new ScoreNumber(
-                    new Vector2(this.pos_.x, this.pos_.y),
+                    new Vector2(pos_.x, pos_.y),
                     numbersTexture_, 0, 0, 32, 32);
             scoreNumber.setSize(numberWidth_, numberHeight_);
             numbers_.add(scoreNumber);
@@ -67,7 +58,7 @@ public class ProfitLabel {
             rest = rest / 10;
 
             ScoreNumber scoreNumber = new ScoreNumber(
-                    new Vector2(this.pos_.x, this.pos_.y), // Правильная позиция устанавливается далее.
+                    new Vector2(pos_.x, pos_.y), // Правильная позиция устанавливается далее.
                     numbersTexture_, number * 32, 0, 32, 32);
             scoreNumber.setSize(numberWidth_, numberHeight_);
             numbers_.add(scoreNumber);
@@ -76,36 +67,32 @@ public class ProfitLabel {
         // Устанавливаем позицию.
         for (int iNumber = 0; iNumber < numbers_.size(); iNumber++) {
             numbers_.get(numbers_.size() - iNumber - 1).setPosition(
-                    this.pos_.x + iNumber * numberWidth_,
-                    this.pos_.y
+                    pos_.x + iNumber * numberWidth_,
+                    pos_.y - 2 * numberWidth_
             );
         }
 
-        curScale_ = startScale_;
-        for (ScoreNumber number : numbers_) {
-            number.addPosition(new Vector2(-2 * numberWidth_, 0));
-        }
+        curAlpha_ = START_ALPHA_;
         isVisible_ = true;
     }
 
     // TODO: В ScoreLabel используется та же текстуры, дублирование!!
     // По идеи должен быть AssetsManager, как в libgdx.
     public void loadContent(Context context) {
-        numbersTexture_ = new Texture(context, R.drawable.numbers);
+        numbersTexture_ = new Texture(context, R.drawable.profit_numbers);
     }
 
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
         if (isVisible_) {
-            curScale_ += scaleSpeed_ * elapsedTime;
+            curAlpha_ += ALPHA_SPEED_ * elapsedTime;
             for (ScoreNumber number : numbers_) {
-                if (Math.abs(curScale_ - endScale_) > 0) {
-                    number.setAlpha(curScale_);
-                    number.addPosition(new Vector2(0, translateSpeed_ * elapsedTime));
+                if (Math.abs(curAlpha_ - END_ALPHA_) > 0) {
+                    number.setAlpha(curAlpha_);
+                    number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * elapsedTime));
                 } else {
                     isVisible_ = false;
                 }
                 number.draw(mvpMatrix, shader);
-
             }
         }
     }
