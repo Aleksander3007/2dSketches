@@ -8,9 +8,10 @@ public class MenuWindow {
 
      private GameButton closeButton_;
      private GameButton restartBtn_;
-    // private GameButton achievementButton_;
+     private GameButton achievementButton_;
+    // private GameButton hallOfFameButton_;
     // private GameButton settingButton_;
-    // private GameButton exitButton_;
+     private GameButton exitButton_;
     private GameImage backgroundImage_;
 
 
@@ -27,19 +28,36 @@ public class MenuWindow {
                 new Texture(context, R.drawable.menu_window)
         );
 
-        closeButton_ = new GameButton(new Vector2(windowWidth - windowWidth / 3f,
-                windowHeight - windowHeight / 5f),
+        Size2 btnSize = new Size2(windowWidth / 3f, windowHeight / 5f);
+
+        closeButton_ = new GameButton(new Vector2(windowWidth - btnSize.width,
+                windowHeight - btnSize.height - 3 * 0.01f),
                 new Texture(context, R.drawable.x_close)
         );
 
-        restartBtn_ = new GameButton(new Vector2(windowWidth / 3f,
-                windowHeight - 2f * windowHeight / 5f),
+        // TODO: Тут может нужно какой нибудь массив сварганить из кнопок.
+
+        restartBtn_ = new GameButton(new Vector2(btnSize.width,
+                windowHeight - 2f * btnSize.height + 2 * 0.01f),
                 new Texture(context, R.drawable.restart_btn)
         );
 
+        achievementButton_ = new GameButton(new Vector2(btnSize.width,
+                windowHeight - 3f * btnSize.height + 0.01f),
+                new Texture(context, R.drawable.achievement_btn)
+        );
+
+        exitButton_ = new GameButton(new Vector2(btnSize.width,
+                windowHeight - 4f * btnSize.height),
+                new Texture(context, R.drawable.exit_btn)
+        );
+
+
         backgroundImage_.setSize(windowWidth, windowHeight);
-        closeButton_.setSize(windowWidth / 3f, windowHeight / 5f);
-        restartBtn_.setSize(windowWidth / 3f, windowHeight / 5f);
+        closeButton_.setSize(btnSize);
+        restartBtn_.setSize(btnSize);
+        achievementButton_.setSize(btnSize);
+        exitButton_.setSize(btnSize);
     }
 
     public void render(float[] mvpMatrix, final ShaderProgram shader) {
@@ -47,6 +65,8 @@ public class MenuWindow {
             backgroundImage_.draw(mvpMatrix, shader);
             closeButton_.draw(mvpMatrix, shader);
             restartBtn_.draw(mvpMatrix, shader);
+            achievementButton_.draw(mvpMatrix, shader);
+            exitButton_.draw(mvpMatrix, shader);
         }
     }
 

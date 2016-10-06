@@ -1,9 +1,7 @@
 package com.blackteam.dsketches;
 
 import android.content.Context;
-import android.util.Log;
-
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Количество очков полученное с текущего действия.
@@ -18,7 +16,7 @@ public class ProfitLabel {
 
     private Vector2 pos_;
     private int value_;
-    private ArrayList<ScoreNumber> numbers_ = new ArrayList<>();
+    private CopyOnWriteArrayList<ScoreNumber> numbers_ = new CopyOnWriteArrayList<>();
     private float numberHeight_;
     private float numberWidth_;
 

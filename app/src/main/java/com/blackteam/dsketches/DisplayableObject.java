@@ -23,6 +23,11 @@ public abstract class DisplayableObject {
 
     /**
      * Конструктор.
+     */
+    protected DisplayableObject() {}
+
+    /**
+     * Конструктор.
      * @param texture Текстура.
      */
     public DisplayableObject (Texture texture) {
@@ -101,6 +106,10 @@ public abstract class DisplayableObject {
 
     public float getWidth() { return width_; }
     public float getHeight() { return height_; }
+
+    public void setSize(Size2 size) {
+        setSize(size.width, size.height);
+    }
 
     public void setSize(float width, float height) {
         width_ = width;

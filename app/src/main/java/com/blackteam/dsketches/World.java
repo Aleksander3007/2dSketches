@@ -227,8 +227,8 @@ public class World {
     private OrbSpecType generateOrbSpecType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
         ArrayMap<OrbSpecType, Float> orbTypeProbabilities = new ArrayMap<>();
-        orbTypeProbabilities.put(OrbSpecType.NONE, 90f);
-        orbTypeProbabilities.put(OrbSpecType.DOUBLE, 0f);
+        orbTypeProbabilities.put(OrbSpecType.NONE, 80f);
+        orbTypeProbabilities.put(OrbSpecType.DOUBLE, 10f);
         orbTypeProbabilities.put(OrbSpecType.TRIPLE, 0f);
         orbTypeProbabilities.put(OrbSpecType.AROUND_EATER, 0f);
         orbTypeProbabilities.put(OrbSpecType.ROWS_EATER, 10f);

@@ -41,8 +41,6 @@ public class GameView extends GLSurfaceView {
                 case (MotionEvent.ACTION_UP):
                     if (BuildConfig.DEBUG) {
                         Log.i("GameView", "Action was UP");
-                        Log.i("GameView.x", String.valueOf(event.getX() * GameRenderer.uppX));
-                        Log.i("GameView.y", String.valueOf(event.getY() * GameRenderer.uppY));
                     }
                     if (menuWindow_.isVisible()) {
                         menuWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));

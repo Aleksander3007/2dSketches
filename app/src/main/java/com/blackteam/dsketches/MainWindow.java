@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class MainWindow {
+    public static String VERSION_;
 
     private GameController gameController_;
 
@@ -12,6 +13,7 @@ public class MainWindow {
     private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
+    private StaticText versionLabel_;
 
     private float width_;
     private float height_;
@@ -23,6 +25,11 @@ public class MainWindow {
     }
 
     public void init(final Context context, final float screenWidth, final float screenHeight) {
+        VERSION_ = context.getResources().getString(R.string.version_str);
+
+        this.width_ = screenWidth;
+        this.height_ = screenHeight;
+
         world_ = new World(context);
         skillsPanel_ = new SkillsPanel(context);
         scoreLabel_ = new ScoreLabel(context);
@@ -33,9 +40,6 @@ public class MainWindow {
     }
 
     private void setSize(final float screenWidth, final float screenHeight) {
-        this.width_ = screenWidth;
-        this.height_ = screenHeight;
-
         screenPart_ = this.height_ / (3 + 15 + 3);
 
         Vector2 skillsPanelOffset = new Vector2(0, screenPart_);
@@ -68,6 +72,12 @@ public class MainWindow {
                 height_ - restartBtnSize.height
         );
 
+        versionLabel_ = new StaticText(
+                VERSION_,
+                new Vector2(width_ / 2,  height_ - screenPart_),
+                new Size2(width_ / 4, screenPart_)
+        );
+
         skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(0, scoreLabelOffset, scoreLabelSize);
@@ -82,6 +92,7 @@ public class MainWindow {
         menuButton_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
         profitLabel_.render(mvpMatrix, shader, elapsedTime);
+        versionLabel_.draw(mvpMatrix, shader);
     }
 
     public boolean hit(Vector2 worldCoords) {

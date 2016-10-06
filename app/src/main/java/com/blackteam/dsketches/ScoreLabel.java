@@ -4,17 +4,16 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ScoreLabel {
     private Texture numbersTexture_;
 
     private Vector2 pos_;
     private int score_;
-    private ArrayList<ScoreNumber> numbers_ = new ArrayList<ScoreNumber>();
+    private CopyOnWriteArrayList<ScoreNumber> numbers_ = new CopyOnWriteArrayList<>();
     private float numberHeight_;
     private float numberWidth_;
-
-    private boolean isUpdating = false;
 
     public ScoreLabel(final Context context) {
         loadContent(context);
@@ -34,14 +33,13 @@ public class ScoreLabel {
     }
 
     public void setScore(int score) {
-        isUpdating = true;
-
         score_ = score;
 
         numbers_.clear();
 
+        Log.i("ScoreLabel", "score = " + String.valueOf(score_));
+
         if (score_ == 0) {
-            Log.i("ScoreLabel.setScore()", "score = 0");
             ScoreNumber scoreNumber = new ScoreNumber(
                     new Vector2(this.pos_.x, this.pos_.y),
                     numbersTexture_, 0, 0, 32, 32);
@@ -68,8 +66,6 @@ public class ScoreLabel {
                     this.pos_.y
             );
         }
-
-        isUpdating = false;
     }
 
     public void loadContent(Context context) {
@@ -77,16 +73,8 @@ public class ScoreLabel {
     }
 
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
-        // TODO: Тут необходимо по умному, через потоки и блокировки.
-        if (!isUpdating) {
-            for (ScoreNumber number : numbers_) {
-                number.draw(mvpMatrix, shader);
-            }
-        }
-        else {
-            if (BuildConfig.DEBUG) {
-                Log.i("Race", "ScoreLabel.render()");
-            }
+        for (ScoreNumber number : numbers_) {
+            number.draw(mvpMatrix, shader);
         }
     }
 }

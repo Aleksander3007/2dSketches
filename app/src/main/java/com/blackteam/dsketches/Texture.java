@@ -22,6 +22,11 @@ public class Texture {
         if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
     }
 
+    public Texture(Bitmap bitmap) {
+        boolean isLoaded = load(bitmap);
+        if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
+    }
+
     public int getId() {
         return textureId_;
     }
@@ -37,19 +42,19 @@ public class Texture {
      * @return true - текстура удачно загружена.
      */
     private boolean load(Context context, int resourceId) {
-        final int[] textureIds = new int[1];
-        // В массив запишет свободный номер текстуры.
-        GLES20.glGenTextures(1, textureIds, 0);
-        if (textureIds[0] == 0) {
-            return false;
-        }
-
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
         final Bitmap bitmap = BitmapFactory.decodeResource(
                 context.getResources(), resourceId, options);
-        if (bitmap == null) {
-            GLES20.glDeleteTextures(1, textureIds, 0);
+
+        return load(bitmap);
+    }
+
+    private boolean load(final Bitmap bitmap) {
+        final int[] textureIds = new int[1];
+        // В массив запишет свободный номер текстуры.
+        GLES20.glGenTextures(1, textureIds, 0);
+        if (textureIds[0] == 0) {
             return false;
         }
 
@@ -64,6 +69,7 @@ public class Texture {
         setFilter();
         // Сброс привязки текстуры.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        bitmap.recycle();
 
         textureId_ = textureIds[0];
 
