@@ -14,6 +14,7 @@ public class MainWindow {
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
     private StaticText versionLabel_;
+    private AchievementsManager achievementsManager_;
 
     private float width_;
     private float height_;
@@ -35,6 +36,9 @@ public class MainWindow {
         scoreLabel_ = new ScoreLabel(context);
         menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(context);
+
+        achievementsManager_ = new AchievementsManager();
+        world_.addObserver(achievementsManager_);
 
         setSize(screenWidth, screenHeight);
     }

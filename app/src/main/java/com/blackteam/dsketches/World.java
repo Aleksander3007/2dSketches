@@ -5,11 +5,12 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Модель мира.
  */
-public class World {
+public class World extends Observable {
     private Texture touchLineTexture_;
     private final ArrayMap<OrbType, ArrayMap<OrbSpecType, Texture>> orbTextures_ = new ArrayMap<>();
 
@@ -143,6 +144,10 @@ public class World {
         isUpdating_ = true;
 
         if (selectedOrbs_.size() >= 2) {
+
+            setChanged();
+            notifyObservers(new ArrayList<Orb>(selectedOrbs_));
+
             // Добавленные с помощью спец. Orbs.
             ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
             // Ищем спец. Orbs.
