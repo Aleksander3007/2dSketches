@@ -3,12 +3,28 @@ package com.blackteam.dsketches;
 import com.blackteam.dsketches.Utils.Vector2;
 
 public class Orb extends DisplayableObject {
-    private OrbType type_;
-    private OrbSpecType specType_;
+    public enum Types {
+        TYPE1,
+        TYPE2,
+        TYPE3,
+        UNIVERSAL
+    }
+
+    public enum SpecTypes {
+        NONE,
+        DOUBLE,
+        TRIPLE,
+        AROUND_EATER,
+        ROWS_EATER,
+        COLUMNS_EATER
+    }
+
+    private Orb.Types type_;
+    private Orb.SpecTypes specType_;
     private int rowNo_;
     private int colNo_;
 
-    public Orb(OrbType orbType, OrbSpecType orbSpecType, Vector2 pos,
+    public Orb(Orb.Types orbType, Orb.SpecTypes orbSpecType, Vector2 pos,
                int rowNo, int colNo, Texture texture) {
         this(pos, texture);
         this.type_ = orbType;
@@ -25,19 +41,19 @@ public class Orb extends DisplayableObject {
         return rowNo_;
     }
 
-    public OrbType getType() {
+    public Orb.Types getType() {
         return this.type_;
     }
 
-    public void setType(OrbType orbType) {
+    public void setType(Orb.Types orbType) {
         this.type_ = orbType;
     }
 
-    public OrbSpecType getSpecType() {
+    public Orb.SpecTypes getSpecType() {
         return this.specType_;
     }
 
-    public static int getResourceId(OrbType type, OrbSpecType specType) {
+    public static int getResourceId(Orb.Types type, Orb.SpecTypes specType) {
         switch (type) {
             case TYPE1:
                 switch (specType) {

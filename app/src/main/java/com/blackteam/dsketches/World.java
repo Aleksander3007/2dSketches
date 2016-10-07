@@ -16,7 +16,7 @@ import java.util.Observable;
  */
 public class World extends Observable {
     private Texture touchLineTexture_;
-    private final ArrayMap<OrbType, ArrayMap<OrbSpecType, Texture>> orbTextures_ = new ArrayMap<>();
+    private final ArrayMap<Orb.Types, ArrayMap<Orb.SpecTypes, Texture>> orbTextures_ = new ArrayMap<>();
 
     private Vector2 pos_;
     private float width_;
@@ -107,13 +107,13 @@ public class World extends Observable {
 
         int profit = 0;
         int factor = 1;
-        OrbType orbType = selectedOrbs_.get(0).getType();
+        Orb.Types orbType = selectedOrbs_.get(0).getType();
         for (Orb orb : selectedOrbs_) {
             if ((orb.getType() == orbType) ||
-                    (orb.getType() == OrbType.UNIVERSAL) || (orbType == OrbType.UNIVERSAL)) {
+                    (orb.getType() == Orb.Types.UNIVERSAL) || (orbType == Orb.Types.UNIVERSAL)) {
                 profit += 10; // TODO: Magic number!
             }
-            // Все элементы должны быть одинакового OrbType.
+            // Все элементы должны быть одинакового Orb's Type.
             else {
                 return 0;
             }
@@ -161,7 +161,7 @@ public class World extends Observable {
                             // ... без повтора в массиве.
                             if (!selectedOrbs_.contains(orbs_[orb.getRowNo()][iCol])) {
                                 // ... и делаем их уникальным, чтобы считался Profit и для них.
-                                orbs_[orb.getRowNo()][iCol].setType(OrbType.UNIVERSAL);
+                                orbs_[orb.getRowNo()][iCol].setType(Orb.Types.UNIVERSAL);
                                 addSpecOrbs_.add(orbs_[orb.getRowNo()][iCol]);
                             }
                         }
@@ -220,26 +220,26 @@ public class World extends Observable {
         }
     }
 
-    private OrbType generateOrbType() {
+    private Orb.Types generateOrbType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<OrbType, Float> orbTypeProbabilities = new ArrayMap<>();
-        orbTypeProbabilities.put(OrbType.TYPE1, 32f);
-        orbTypeProbabilities.put(OrbType.TYPE2, 32f);
-        orbTypeProbabilities.put(OrbType.TYPE3, 32f);
-        orbTypeProbabilities.put(OrbType.UNIVERSAL, 4f);
+        ArrayMap<Orb.Types, Float> orbTypeProbabilities = new ArrayMap<>();
+        orbTypeProbabilities.put(Orb.Types.TYPE1, 32f);
+        orbTypeProbabilities.put(Orb.Types.TYPE2, 32f);
+        orbTypeProbabilities.put(Orb.Types.TYPE3, 32f);
+        orbTypeProbabilities.put(Orb.Types.UNIVERSAL, 4f);
 
         return GameMath.generateValue(orbTypeProbabilities);
     }
 
-    private OrbSpecType generateOrbSpecType() {
+    private Orb.SpecTypes generateOrbSpecType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<OrbSpecType, Float> orbTypeProbabilities = new ArrayMap<>();
-        orbTypeProbabilities.put(OrbSpecType.NONE, 80f);
-        orbTypeProbabilities.put(OrbSpecType.DOUBLE, 10f);
-        orbTypeProbabilities.put(OrbSpecType.TRIPLE, 0f);
-        orbTypeProbabilities.put(OrbSpecType.AROUND_EATER, 0f);
-        orbTypeProbabilities.put(OrbSpecType.ROWS_EATER, 10f);
-        orbTypeProbabilities.put(OrbSpecType.COLUMNS_EATER, 0f);
+        ArrayMap<Orb.SpecTypes, Float> orbTypeProbabilities = new ArrayMap<>();
+        orbTypeProbabilities.put(Orb.SpecTypes.NONE, 80f);
+        orbTypeProbabilities.put(Orb.SpecTypes.DOUBLE, 10f);
+        orbTypeProbabilities.put(Orb.SpecTypes.TRIPLE, 0f);
+        orbTypeProbabilities.put(Orb.SpecTypes.AROUND_EATER, 0f);
+        orbTypeProbabilities.put(Orb.SpecTypes.ROWS_EATER, 10f);
+        orbTypeProbabilities.put(Orb.SpecTypes.COLUMNS_EATER, 0f);
 
         return GameMath.generateValue(orbTypeProbabilities);
     }
@@ -291,8 +291,8 @@ public class World extends Observable {
      * @param colNo Номер столбца.
      */
     private void createOrb(final int rowNo, final int colNo) {
-        OrbType orbType = generateOrbType();
-        OrbSpecType orbSpecType = generateOrbSpecType();
+        Orb.Types orbType = generateOrbType();
+        Orb.SpecTypes orbSpecType = generateOrbSpecType();
         createOrb(orbType, orbSpecType, rowNo, colNo);
     }
 
@@ -303,7 +303,7 @@ public class World extends Observable {
      * @param rowNo Номер строки.
      * @param colNo Номер столбца.
      */
-    public void createOrb(final OrbType orbType, final OrbSpecType orbSpecType,
+    public void createOrb(final Orb.Types orbType, final Orb.SpecTypes orbSpecType,
                            final int rowNo, final int colNo
     ) {
         Texture orbTexture = orbTextures_.get(orbType).get(orbSpecType);
@@ -321,8 +321,8 @@ public class World extends Observable {
 
     // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
     private void loadContent(Context context) {
-        for (OrbType orbType : OrbType.values()) {
-            for (OrbSpecType orbSpecType : OrbSpecType.values()) {
+        for (Orb.Types orbType : Orb.Types.values()) {
+            for (Orb.SpecTypes orbSpecType : Orb.SpecTypes.values()) {
 
                 int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
                 Texture orbTexture = new Texture(context, orbResourceId);
@@ -331,7 +331,7 @@ public class World extends Observable {
                     orbTextures_.get(orbType).put(orbSpecType, orbTexture);
                 }
                 else {
-                    ArrayMap<OrbSpecType, Texture> orbSpecTypeTextures = new ArrayMap<>();
+                    ArrayMap<Orb.SpecTypes, Texture> orbSpecTypeTextures = new ArrayMap<>();
                     orbSpecTypeTextures.put(orbSpecType, orbTexture);
                     orbTextures_.put(orbType, orbSpecTypeTextures);
                 }

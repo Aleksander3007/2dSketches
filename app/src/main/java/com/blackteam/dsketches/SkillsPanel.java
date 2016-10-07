@@ -73,8 +73,8 @@ public class SkillsPanel {
                         int randomRow = (int) (Math.random() * world.getNumRows());
                         int randomCol = (int) (Math.random() * world.getNumCols());
 
-                        OrbType tempOrbType = world.getOrb(iRow, iCol).getType();
-                        OrbSpecType tempOrbSpecType = world.getOrb(iRow, iCol).getSpecType();
+                        Orb.Types tempOrbType = world.getOrb(iRow, iCol).getType();
+                        Orb.SpecTypes tempOrbSpecType = world.getOrb(iRow, iCol).getSpecType();
 
                         world.createOrb(world.getOrb(randomRow, randomCol).getType(),
                                 world.getOrb(randomRow, randomCol).getSpecType(),
