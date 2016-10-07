@@ -128,7 +128,7 @@ public class MainWindow {
             world_.update();
             int profit = world_.getProfitByOrbs();
             if (profit > 0) {
-                profitLabel_.setProfit(profit, new Vector2(width_ / 2, height_ / 2));
+                profitLabel_.setProfit(profit, new Vector2(worldCoords));
                 score_ += profit;
                 scoreLabel_.setValue(score_);
                 world_.deleteSelectedOrbs();

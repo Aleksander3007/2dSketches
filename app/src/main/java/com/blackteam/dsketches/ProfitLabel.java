@@ -24,8 +24,13 @@ public class ProfitLabel extends NumberLabel {
     public void setProfit(int val, Vector2 pos) {
         curAlpha_ = START_ALPHA_;
         setValue(val);
-        setPosition(pos);
+        setPosition(calculatePosition(pos));
         isVisible_ = true;
+    }
+
+    private Vector2 calculatePosition(Vector2 pos) {
+        float numberSize = digits_.size() * digitWidth_;
+        return new Vector2(pos.x - numberSize / 2f, pos.y);
     }
 
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
