@@ -1,9 +1,11 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Shader;
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
 
 // TODO: Может extends Sprite.
-public abstract class DisplayableObject {
+// TODO: Вместо Texture использовать TextureRegion.
+public class DisplayableObject {
     protected Sprite sprite_;
     /**
      * Координаты левого нижнего угла.
@@ -99,7 +101,9 @@ public abstract class DisplayableObject {
         sprite_.draw(mvpMatrix, shader);
     }
 
-    public abstract void dispose();
+    public void dispose() {
+        // TODO: Не реализован метод DisplayableObject.dispose().
+    };
 
     public float getX() { return pos_.x; }
     public float getY() { return pos_.y; }

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.blackteam.dsketches.Utils.GameMath;
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -50,8 +54,6 @@ public class World extends Observable {
                 orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
                 orbSize_ / 4.0f
         );
-
-        createLevel();
     }
 
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {

@@ -1,5 +1,8 @@
 package com.blackteam.dsketches;
 
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
+
 public class RestartButton extends DisplayableObject {
 
     public RestartButton(Texture texture) {

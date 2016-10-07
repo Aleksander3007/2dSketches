@@ -2,7 +2,8 @@ package com.blackteam.dsketches;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
+
+import com.blackteam.dsketches.Utils.Vector2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

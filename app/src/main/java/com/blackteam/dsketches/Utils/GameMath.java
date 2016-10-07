@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.Utils;
 
 import android.support.v4.util.ArrayMap;
 

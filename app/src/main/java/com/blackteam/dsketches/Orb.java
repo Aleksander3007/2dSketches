@@ -1,5 +1,7 @@
 package com.blackteam.dsketches;
 
+import com.blackteam.dsketches.Utils.Vector2;
+
 public class Orb extends DisplayableObject {
     private OrbType type_;
     private OrbSpecType specType_;

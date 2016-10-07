@@ -2,6 +2,9 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
+
 /**
  * Линия при выделении Orbs.
  */

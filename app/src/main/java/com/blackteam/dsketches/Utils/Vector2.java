@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.Utils;
 
 /**
  * Created by СКБ4-3 on 26.09.2016.

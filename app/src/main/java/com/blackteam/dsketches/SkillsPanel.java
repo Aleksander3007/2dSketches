@@ -3,6 +3,9 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.util.Log;
 
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
+
 import java.util.ArrayList;
 
 /**

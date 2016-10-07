@@ -1,6 +1,9 @@
 package com.blackteam.dsketches;
 
 // TODO: Нужен ли?
+
+import com.blackteam.dsketches.Utils.Vector2;
+
 /**
  * Цифра для отрисовки счёта.
  */

@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.Utils;
 
 public class FPSCounter {
     private static long lastFrame = System.nanoTime();

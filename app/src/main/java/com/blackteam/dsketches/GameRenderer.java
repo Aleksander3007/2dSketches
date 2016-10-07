@@ -7,6 +7,8 @@ import android.opengl.Matrix;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blackteam.dsketches.Utils.GameMath;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 

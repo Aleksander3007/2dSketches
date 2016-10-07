@@ -3,13 +3,17 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.util.Log;
 
+import com.blackteam.dsketches.Utils.NumberLabel;
+import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.Vector2;
+
 public class MainWindow {
     public static String VERSION_;
 
     private GameController gameController_;
 
     private World world_;
-    private ScoreLabel scoreLabel_;
+    private NumberLabel scoreLabel_;
     private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
@@ -21,6 +25,9 @@ public class MainWindow {
 
     private float screenPart_;
 
+    // TODO: Это должно быт не здесь.
+    private int score_;
+
     public MainWindow(GameController gameController) {
         this.gameController_ = gameController;
     }
@@ -31,9 +38,12 @@ public class MainWindow {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
 
+        Texture profitDigits = new Texture(context, R.drawable.profit_numbers);
+        Texture scoreDigits = new Texture(context, R.drawable.numbers);
+
         world_ = new World(context);
         skillsPanel_ = new SkillsPanel(context);
-        scoreLabel_ = new ScoreLabel(context);
+        scoreLabel_ = new NumberLabel(scoreDigits);
         menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(context);
 
@@ -41,6 +51,8 @@ public class MainWindow {
         world_.addObserver(achievementsManager_);
 
         setSize(screenWidth, screenHeight);
+
+        restartLevel();
     }
 
     private void setSize(final float screenWidth, final float screenHeight) {
@@ -84,14 +96,15 @@ public class MainWindow {
 
         skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
         world_.init(worldOffset, worldSize);
-        scoreLabel_.init(0, scoreLabelOffset, scoreLabelSize);
+        scoreLabel_.init(scoreLabelSize);
+        scoreLabel_.setPosition(scoreLabelOffset);
         menuButton_.init(restartBtnOffset, restartBtnSize);
         profitLabel_.init(new Size2(screenPart_, screenPart_));
     }
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
-        scoreLabel_.draw(mvpMatrix, shader);
+        scoreLabel_.render(mvpMatrix, shader);
         world_.draw(mvpMatrix, shader);
         menuButton_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
@@ -115,8 +128,9 @@ public class MainWindow {
             world_.update();
             int profit = world_.getProfitByOrbs();
             if (profit > 0) {
-                profitLabel_.setScore(profit, new Vector2(width_ / 2, height_ / 2));
-                scoreLabel_.addScore(profit);
+                profitLabel_.setProfit(profit, new Vector2(width_ / 2, height_ / 2));
+                score_ += profit;
+                scoreLabel_.setValue(score_);
                 world_.deleteSelectedOrbs();
                 world_.removeSelection();
             }
@@ -128,6 +142,6 @@ public class MainWindow {
 
     public void restartLevel() {
         world_.createLevel();
-        scoreLabel_.setScore(0);
+        scoreLabel_.setValue(0);
     }
 }

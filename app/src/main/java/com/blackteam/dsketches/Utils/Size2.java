@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.Utils;
 
 /**
  * 2-х мерный размер.
