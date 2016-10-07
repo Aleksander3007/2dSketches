@@ -53,8 +53,10 @@ public class Texture {
     private boolean load(final Bitmap bitmap) {
         final int[] textureIds = new int[1];
         // В массив запишет свободный номер текстуры.
-        GLES20.glGenTextures(1, textureIds, 0);
-        if (textureIds[0] == 0) {
+        GLES20.glGenTextures(textureIds.length, textureIds, 0);
+        int error = GLES20.glGetError();
+        if (error != GLES20.GL_NO_ERROR) {
+            Log.i("Texture", "error = " + String.valueOf(error));
             return false;
         }
 
