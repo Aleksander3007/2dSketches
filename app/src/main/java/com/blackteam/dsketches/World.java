@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.blackteam.dsketches.Utils.GameMath;
 import com.blackteam.dsketches.Utils.Size2;
+import com.blackteam.dsketches.Utils.SketchesManager;
 import com.blackteam.dsketches.Utils.Vector2;
 
 import java.util.ArrayList;
@@ -26,14 +27,19 @@ public class World extends Observable {
     private Orb[][] orbs_;
     private ArrayList<Orb> selectedOrbs_ = new ArrayList<>();
     private ArrayList<TouchLine> touchLines_ = new ArrayList<>();
+    private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
     private float orbSize_;
     private Size2 touchLineSize_;
 
     private boolean isUpdating_ = false;
 
+    private SketchesManager sketchesManager_;
+
     public World(final Context context) {
+
         loadContent(context);
+        sketchesManager_ = new SketchesManager();
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
@@ -139,7 +145,7 @@ public class World extends Observable {
             orbType = orb.getType();
         }
 
-        return (profit * factor);
+        return (profit * factor + selectedSketch_.getCost());
     }
 
     public void update() {
@@ -147,8 +153,13 @@ public class World extends Observable {
 
         if (selectedOrbs_.size() >= 2) {
 
-            setChanged();
-            notifyObservers(new ArrayList<Orb>(selectedOrbs_));
+            selectedSketch_ = sketchesManager_.findSketch(selectedOrbs_);
+
+            Log.i("World", "sketch's type = " + selectedSketch_.getType().toString());
+            if (selectedSketch_.getType() != Sketch.Types.NONE) {
+                //setChanged();
+                //notifyObservers();
+            }
 
             // Добавленные с помощью спец. Orbs.
             ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
@@ -181,6 +192,7 @@ public class World extends Observable {
     public void removeSelection() {
         touchLines_.clear();
         selectedOrbs_.clear();
+        selectedSketch_ = SketchesManager.SKETCH_NULL_;
     }
 
     /**

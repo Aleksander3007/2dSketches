@@ -68,102 +68,98 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        try {
-            Log.i("GameRender", "onSurfaceChanged begin");
-            GLES20.glViewport(0, 0, width, height);
-            GameRenderer.width = width;
-            GameRenderer.height = height;
+        Log.i("GameRender", "onSurfaceChanged begin");
+        GLES20.glViewport(0, 0, width, height);
+        GameRenderer.width = width;
+        GameRenderer.height = height;
 
-            float aspectRatio = width > height ?
-                    (float) width / height :
-                    (float) height / width;
+        float aspectRatio = width > height ?
+                (float) width / height :
+                (float) height / width;
 
-            // Landscape.
-            if (width > height) {
-                // this projection matrix is applied to object coordinates
-                // in the onDrawFrame() method
-                Matrix.orthoM(mProjectionMatrix_, 0,
-                        0, aspectRatio,
-                        0, 1,
-                        0.3f, // near.
-                        3f // far.
-                );
+        // Landscape.
+        if (width > height) {
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.orthoM(mProjectionMatrix_, 0,
+                    0, aspectRatio,
+                    0, 1,
+                    0.3f, // near.
+                    3f // far.
+            );
 
-                uppX = aspectRatio / width;
-                uppY = 1.0f / height;
+            uppX = aspectRatio / width;
+            uppY = 1.0f / height;
 
-                throw new Exception("Landscape is not available.");
-            }
-            // Portrait or square.
-            else {
-                // this projection matrix is applied to object coordinates
-                // in the onDrawFrame() method
-                Matrix.orthoM(mProjectionMatrix_, 0,
-                        0, 1, // left-right;
-                        0, aspectRatio, // top-bottom;
-                        0.3f, // near.
-                        3f // far.
-                );
-
-                uppX = 1.0f / width;
-                uppY = aspectRatio / height;
-
-                // Тут должен быть mainWindow_.resize.
-                // а в onSurfaceCreated() должен быть передан mainWindow_.setShader(shader_);
-                mainWindow_.init(context_, 1f, aspectRatio);
-                menuWindow_.init(context_, 1f, aspectRatio);
-            }
-
-            // Calculate the projection and view transformation.
-            Matrix.multiplyMM(mMVPMatrix_, 0, mProjectionMatrix_, 0, mViewMatrix_, 0);
-
-            Log.i("GameRender", "onSurfaceChanged end");
+            throw new Error("Landscape is not available.");
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context_, "Internal error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        // Portrait or square.
+        else {
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.orthoM(mProjectionMatrix_, 0,
+                    0, 1, // left-right;
+                    0, aspectRatio, // top-bottom;
+                    0.3f, // near.
+                    3f // far.
+            );
+
+            uppX = 1.0f / width;
+            uppY = aspectRatio / height;
+
+            // TODO: Тут должен быть mainWindow_.resize.
+            // а в onSurfaceCreated() должен быть передан mainWindow_.setShader(shader_);
+            mainWindow_.init(context_, 1f, aspectRatio);
+            menuWindow_.init(context_, 1f, aspectRatio);
         }
+
+        // Calculate the projection and view transformation.
+        Matrix.multiplyMM(mMVPMatrix_, 0, mProjectionMatrix_, 0, mViewMatrix_, 0);
+
+        Log.i("GameRender", "onSurfaceChanged end");
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        try {
-            currentTime_ = GameMath.getCurrentTime();
-            elapsedTime_ = currentTime_ - lastTime_;
-            lastTime_ = currentTime_;
+        currentTime_ = GameMath.getCurrentTime();
+        elapsedTime_ = currentTime_ - lastTime_;
+        lastTime_ = currentTime_;
 
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-            // TODO: mMVPMatrix_, shader_, elapsedTime_ в Graphics.
-            mainWindow_.render(mMVPMatrix_, shader_, elapsedTime_);
-            menuWindow_.render(mMVPMatrix_, shader_);
+        // TODO: mMVPMatrix_, shader_, elapsedTime_ в Graphics.
+        mainWindow_.render(mMVPMatrix_, shader_, elapsedTime_);
+        menuWindow_.render(mMVPMatrix_, shader_);
 
-            elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
-            // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батарии, для меньшей нагрузки проца.
-            // Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
-            if (elapsedTime_ < MS_PER_FRAME_) {
+        elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
+        // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батарии, для меньшей нагрузки проца.
+        // Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
+        if (elapsedTime_ < MS_PER_FRAME_) {
+            try {
                 Thread.sleep(MS_PER_FRAME_ - elapsedTime_);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
+        }
 
-            //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
-        }
-        catch (Exception ex) {
-            Log.i("GameRenderer", "onDrawFrame.Exception");
-            ex.printStackTrace();
-            Toast.makeText(context_, "Internal error.", Toast.LENGTH_LONG).show();
-        }
+        //Log.i("FPS", String.valueOf(FPSCounter.logFrame()));
     }
 
     /**
      * Настройка свойств рендеринга.
      */
     private void configRender() {
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glDepthFunc(GLES20.GL_LEQUAL);
         GLES20.glDepthMask(true);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glEnable(GLES20.GL_BLEND);
+
+        int error = GLES20.glGetError();
+        if (error != GLES20.GL_NO_ERROR) {
+            Log.i("Config Render", "error = " + String.valueOf(error));
+            throw new Error("Configuration render: error = " + String.valueOf(error));
+        }
     }
 
     private void initCamera() {

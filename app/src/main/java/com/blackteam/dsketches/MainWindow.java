@@ -47,6 +47,10 @@ public class MainWindow {
         menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(context);
 
+        Log.i("MainWindow", "init");
+        if (scoreLabel_ == null)
+            Log.i("MainWindow", "init scoreLabel_ == null");
+
         achievementsManager_ = new AchievementsManager();
         world_.addObserver(achievementsManager_);
 
@@ -104,6 +108,9 @@ public class MainWindow {
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
+        if (scoreLabel_ == null)
+            Log.i("MainWindow", "render scoreLabel_ == null");
+
         scoreLabel_.render(mvpMatrix, shader);
         world_.draw(mvpMatrix, shader);
         menuButton_.draw(mvpMatrix, shader);

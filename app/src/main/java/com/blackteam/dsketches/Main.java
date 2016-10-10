@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blackteam.dsketches.Utils.ExceptionHandler;
+
 /**
  * Мысли и развитие.
  * 1. Сделать ачивки - pattern Observer (Наблюдатель). - Собрать фигуру, собрать кол-во очков.
@@ -41,17 +43,13 @@ public class Main extends Activity {
     private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
-        try {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-            gameView_ = new GameView(this);
-            rendererSet = true;
-            setContentView(gameView_);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Internal error.", Toast.LENGTH_LONG).show();
-        }
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+
+        gameView_ = new GameView(this);
+        rendererSet = true;
+        setContentView(gameView_);
     }
 
     @Override
