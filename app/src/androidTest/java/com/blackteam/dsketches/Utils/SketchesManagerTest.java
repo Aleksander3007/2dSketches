@@ -35,8 +35,6 @@ public class SketchesManagerTest {
 
     @Test
     public void testFindSketch() throws Exception {
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
-
         ArrayList<Orb> orbs = new ArrayList<>();
         Vector2 orbPos = new Vector2(0f, 0f);
         Orb.Types orbType = Orb.Types.TYPE1;
