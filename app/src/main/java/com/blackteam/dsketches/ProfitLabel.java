@@ -17,8 +17,8 @@ public class ProfitLabel extends NumberLabel {
 
     private boolean isVisible_ = true;
 
-    public ProfitLabel(final Context context) {
-        super(context);
+    public ProfitLabel(final Texture texture) {
+        super(texture);
     }
 
     public void setProfit(int val, Vector2 pos) {

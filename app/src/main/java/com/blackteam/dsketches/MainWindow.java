@@ -45,7 +45,7 @@ public class MainWindow {
         skillsPanel_ = new SkillsPanel(context);
         scoreLabel_ = new NumberLabel(scoreDigits);
         menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
-        profitLabel_ = new ProfitLabel(context);
+        profitLabel_ = new ProfitLabel(profitDigits);
 
         Log.i("MainWindow", "init");
         if (scoreLabel_ == null)
