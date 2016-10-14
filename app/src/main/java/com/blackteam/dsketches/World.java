@@ -162,8 +162,8 @@ public class World extends Observable {
 
             Log.i("World", "sketch's type = " + selectedSketch_.getType().toString());
             if (selectedSketch_.getType() != Sketch.Types.NONE) {
-                //setChanged();
-                //notifyObservers();
+                setChanged();
+                notifyObservers(selectedSketch_.getType());
             }
 
             // Добавленные с помощью спец. Orbs.
