@@ -4,11 +4,12 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-// TODO: Перенести в отдельный файл.
 public class Sketch {
+    // TODO: Должен тип браться из файла, а не жестко здесь зашит.
     public enum Types {
         NONE,
-        ROW_3
+        ROW_3, // TODO: Удалить.
+        ROW_5
     }
 
     public static class Element {

@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.Utils;
+package com.blackteam.dsketches;
 
 import com.blackteam.dsketches.Orb;
 import com.blackteam.dsketches.Sketch;
@@ -22,12 +22,17 @@ public class SketchesManager {
     public SketchesManager() {
         // TODO: 1. Чтение из файла всех sketches.
         // TODO: STUB: Генерация sketch.
-        Sketch sketch3ElemRow = new Sketch(Sketch.Types.ROW_3, 20);
-        sketch3ElemRow.add(0, 0, Orb.Types.UNIVERSAL);
-        sketch3ElemRow.add(0, 1, Orb.Types.UNIVERSAL);
-        sketch3ElemRow.add(0, 2, Orb.Types.UNIVERSAL);
+        Sketch sketchElemRow3 = new Sketch(Sketch.Types.ROW_3, 20);
+        for (int iElem = 0; iElem < 3; iElem++) {
+            sketchElemRow3.add(0, iElem, Orb.Types.UNIVERSAL);
+        }
+        sketches_.add(sketchElemRow3);
 
-        sketches_.add(sketch3ElemRow);
+        Sketch sketchElemRow5 = new Sketch(Sketch.Types.ROW_5, 50);
+        for (int iElem = 0; iElem < 5; iElem++) {
+            sketchElemRow5.add(0, iElem, Orb.Types.UNIVERSAL);
+        }
+        sketches_.add(sketchElemRow5);
     }
 
     public Sketch findSketch(ArrayList<Orb> orbs) {

@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.blackteam.dsketches.Utils.GameMath;
 import com.blackteam.dsketches.Utils.Size2;
-import com.blackteam.dsketches.Utils.SketchesManager;
 import com.blackteam.dsketches.Utils.Vector2;
 
 import java.util.ArrayList;
@@ -16,6 +15,9 @@ import java.util.Observable;
  * Модель мира.
  */
 public class World extends Observable {
+    public static final int DEFAULT_NUM_ROWS = 9;
+    public static final int DEFAULT_NUM_COLUMNS = 7;
+
     private Texture touchLineTexture_;
     private final ArrayMap<Orb.Types, ArrayMap<Orb.SpecTypes, Texture>> orbTextures_ = new ArrayMap<>();
 
@@ -37,14 +39,17 @@ public class World extends Observable {
     private SketchesManager sketchesManager_;
 
     public World(final Context context) {
-
+        this();
         loadContent(context);
+    }
+
+    protected World() {
+        this.nRows_ = DEFAULT_NUM_ROWS;
+        this.nColumns_ = DEFAULT_NUM_COLUMNS;
         sketchesManager_ = new SketchesManager();
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
-        this.nRows_ = 9; // TODO: Magic number!
-        this.nColumns_ = 7; // TODO: Magic number!
         orbs_ = new Orb[nRows_][nColumns_];
 
         float orbHeight = rectSize.height / nRows_;
@@ -107,7 +112,7 @@ public class World extends Observable {
     public int getProfitByOrbs() {
         // TODO: Возможно это должно быть в классе GameRules.
         // А лучше GameRule, и GameRuleManager.
-        if (selectedOrbs_.size() < 2) {
+        if (selectedOrbs_.size() <= 2) {
             return 0;
         }
 
@@ -189,6 +194,9 @@ public class World extends Observable {
         isUpdating_ = false;
     }
 
+    /**
+     * Снять выделение.
+     */
     public void removeSelection() {
         touchLines_.clear();
         selectedOrbs_.clear();
@@ -221,6 +229,13 @@ public class World extends Observable {
     }
 
     public void createLevel() {
+        createLevel(DEFAULT_NUM_ROWS, DEFAULT_NUM_COLUMNS);
+    }
+
+    public void createLevel(final int nRow, final int nColumn) {
+        this.nRows_ = nRow;
+        this.nColumns_ = nColumn;
+
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
                 createOrb(iRow, iCol);
@@ -329,6 +344,13 @@ public class World extends Observable {
         );
 
         orbs_[rowNo][colNo].setSize(orbSize_);
+    }
+
+    /**
+     * Установка выделенных Orb (Для тестирования).
+     */
+    protected void setSelectedOrbs(ArrayList<Orb> orbs) {
+        selectedOrbs_ = orbs;
     }
 
     // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).

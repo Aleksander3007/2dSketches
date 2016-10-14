@@ -1,14 +1,12 @@
 package com.blackteam.dsketches.Utils;
 
 import android.graphics.Bitmap;
-import android.opengl.GLES20;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.blackteam.dsketches.Orb;
 import com.blackteam.dsketches.Sketch;
+import com.blackteam.dsketches.SketchesManager;
 import com.blackteam.dsketches.Texture;
-
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
