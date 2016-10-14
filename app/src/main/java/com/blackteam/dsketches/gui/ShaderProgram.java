@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
 import android.opengl.GLES20;
 

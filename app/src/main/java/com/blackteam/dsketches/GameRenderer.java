@@ -5,9 +5,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.blackteam.dsketches.Utils.GameMath;
+import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.utils.GameMath;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

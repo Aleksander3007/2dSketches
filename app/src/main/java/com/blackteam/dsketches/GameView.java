@@ -6,7 +6,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.utils.Vector2;
 
 /**
  * Отрисовка мира, а также обработка событий пользователя.

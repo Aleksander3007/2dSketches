@@ -1,8 +1,8 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
 // TODO: Нужен ли?
 
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.utils.Vector2;
 
 /**
  * Цифра для отрисовки счёта.

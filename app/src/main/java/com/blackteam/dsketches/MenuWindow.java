@@ -3,8 +3,12 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.util.Log;
 
-import com.blackteam.dsketches.Utils.Size2;
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.gui.GameButton;
+import com.blackteam.dsketches.gui.GameImage;
+import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 public class MenuWindow {
     private GameController gameController_;

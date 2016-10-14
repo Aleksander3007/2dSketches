@@ -1,8 +1,7 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
-import android.content.Context;
-import com.blackteam.dsketches.Utils.NumberLabel;
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.utils.NumberLabel;
+import com.blackteam.dsketches.utils.Vector2;
 
 /**
  * Количество очков полученное с текущего действия.

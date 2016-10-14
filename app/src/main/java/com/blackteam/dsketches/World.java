@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import com.blackteam.dsketches.Utils.GameMath;
-import com.blackteam.dsketches.Utils.Size2;
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.GameMath;
+import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
 import java.util.Observable;

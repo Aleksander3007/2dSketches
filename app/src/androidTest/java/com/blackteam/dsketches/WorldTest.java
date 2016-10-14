@@ -2,9 +2,9 @@ package com.blackteam.dsketches;
 
 import android.graphics.Bitmap;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.Vector2;
 
 import org.junit.Assert;
 import org.junit.Test;

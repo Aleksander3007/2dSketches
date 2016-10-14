@@ -1,7 +1,7 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
-import com.blackteam.dsketches.Utils.Size2;
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 // TODO: Может extends Sprite.
 // TODO: Вместо Texture использовать TextureRegion.

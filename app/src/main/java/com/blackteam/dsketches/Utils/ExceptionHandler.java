@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.Utils;
+package com.blackteam.dsketches.utils;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     @Override

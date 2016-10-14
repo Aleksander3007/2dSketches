@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
 import android.content.Context;
 import android.graphics.Bitmap;

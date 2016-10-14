@@ -1,6 +1,8 @@
 package com.blackteam.dsketches;
 
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.Vector2;
 
 public class Orb extends DisplayableObject {
     public enum Types {

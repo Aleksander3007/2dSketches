@@ -1,5 +1,8 @@
 package com.blackteam.dsketches;
 
+import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.gui.Texture;
+
 /**
  * Спец. возможность.
  */

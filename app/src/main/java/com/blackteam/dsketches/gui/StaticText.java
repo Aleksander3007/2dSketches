@@ -1,12 +1,12 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.blackteam.dsketches.Utils.Size2;
-import com.blackteam.dsketches.Utils.Vector2;
+import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 public class StaticText extends DisplayableObject {
     private static final int TEXT_COLOR_ = Color.BLACK;
