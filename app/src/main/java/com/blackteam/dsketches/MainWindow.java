@@ -28,10 +28,9 @@ public class MainWindow implements Loadable {
 
     private float screenPart_;
 
-    public MainWindow(World world, Player player, MenuWindow menuWindow) {
+    public MainWindow(World world, Player player) {
         this.world_ = world;
         this.player_ = player;
-        this.menuWindow_ = menuWindow;
     }
 
     public void init(final float screenWidth, final float screenHeight) {
@@ -48,6 +47,10 @@ public class MainWindow implements Loadable {
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         menuButton_ = new RestartButton(contents.get(R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
+    }
+
+    public void setMenu(MenuWindow menuWindow) {
+        this.menuWindow_ = menuWindow;
     }
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.

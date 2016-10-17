@@ -37,8 +37,9 @@ public class GameView extends GLSurfaceView {
 
         Log.d("GameView",  "Models are created.");
 
-        mainWindow_ = new MainWindow(world_, player_, menuWindow_);
+        mainWindow_ = new MainWindow(world_, player_);
         menuWindow_ = new MenuWindow(world_, mainWindow_);
+        mainWindow_.setMenu(menuWindow_);
         loadableObjects_.add(mainWindow_);
         loadableObjects_.add(menuWindow_);
         Log.d("GameView",  "Windows are created.");
