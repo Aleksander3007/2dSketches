@@ -12,7 +12,7 @@ import com.blackteam.dsketches.utils.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
-public class MainWindow {
+public class MainWindow implements Loadable {
     private World world_;
     private Player player_;
     private MenuWindow menuWindow_;

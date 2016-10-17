@@ -16,7 +16,7 @@ import java.util.Observable;
 /**
  * Модель мира.
  */
-public class World extends Observable {
+public class World extends Observable implements Loadable {
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
 

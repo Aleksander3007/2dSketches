@@ -8,12 +8,14 @@ import android.view.MotionEvent;
 
 import com.blackteam.dsketches.utils.Vector2;
 
+import java.sql.Array;
+import java.util.ArrayList;
+
 /**
  * Отрисовка мира, а также обработка событий пользователя.
  */
 public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
-    private ContentManager contents_;
     private MainWindow mainWindow_;
     private MenuWindow menuWindow_;
 
@@ -21,25 +23,27 @@ public class GameView extends GLSurfaceView {
     private World world_;
     private AchievementsManager achievementsManager_;
 
+    private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
+
     public GameView(Context context) {
         super(context);
 
-        contents_ = new ContentManager(context);
-
         player_ = new Player();
         world_ = new World();
+        loadableObjects_.add(world_);
 
         achievementsManager_ = new AchievementsManager();
         world_.addObserver(achievementsManager_);
 
-        Log.i("GameView",  "Models are created.");
+        Log.d("GameView",  "Models are created.");
 
         mainWindow_ = new MainWindow(world_, player_, menuWindow_);
         menuWindow_ = new MenuWindow(world_, mainWindow_);
+        loadableObjects_.add(mainWindow_);
+        loadableObjects_.add(menuWindow_);
+        Log.d("GameView",  "Windows are created.");
 
-        Log.i("GameView",  "Windows are created.");
-
-        gameRenderer_ = new GameRenderer(context, contents_, mainWindow_, menuWindow_, world_);
+        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_, loadableObjects_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);

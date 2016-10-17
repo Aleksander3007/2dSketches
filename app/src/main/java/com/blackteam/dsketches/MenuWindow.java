@@ -10,7 +10,7 @@ import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
-public class MenuWindow {
+public class MenuWindow implements Loadable {
     private World world_;
     private MainWindow mainWindow_;
 

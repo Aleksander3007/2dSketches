@@ -9,6 +9,8 @@ import android.util.Log;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.GameMath;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -36,8 +38,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private MenuWindow menuWindow_;
 
     private ContentManager contents_;
-
-    private World world_;
+    private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
 
     /**
      * Ограничение по FPS.
@@ -53,21 +54,22 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     // TODO: По идеи передавать не такой большой список MainWindow mainWindow, MenuWindow menuWindow,
     // а либо массив ArrayList<GameWindow>, либо WindowManager (можно не услажнять так).
-    public GameRenderer(Context context, ContentManager contents, MainWindow mainWindow, MenuWindow menuWindow, World world) {
+    public GameRenderer(Context context, MainWindow mainWindow, MenuWindow menuWindow,
+                        ArrayList<Loadable> loadableObjects) {
         this.context_ = context;
         this.mainWindow_ = mainWindow;
         this.menuWindow_ = menuWindow;
-        this.contents_ = contents;
-        this.world_ = world;
+        this.loadableObjects_ = loadableObjects;
+        this.contents_ = new ContentManager(context);;
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         loadContent();
 
-        world_.loadContent(contents_);
-        mainWindow_.loadContent(contents_);
-        menuWindow_.loadContent(contents_);
+        for (Loadable loadableObj : loadableObjects_) {
+            loadableObj.loadContent(contents_);
+        }
 
         configRender();
         initCamera();
