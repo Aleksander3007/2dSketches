@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.Utils;
+package com.blackteam.dsketches.utils;
 
 import android.graphics.Bitmap;
 import android.support.test.runner.AndroidJUnit4;
@@ -6,7 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.blackteam.dsketches.Orb;
 import com.blackteam.dsketches.Sketch;
 import com.blackteam.dsketches.SketchesManager;
-import com.blackteam.dsketches.Texture;
+import com.blackteam.dsketches.gui.Texture;
 
 import org.junit.After;
 import org.junit.Before;

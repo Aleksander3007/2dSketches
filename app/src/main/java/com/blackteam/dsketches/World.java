@@ -40,18 +40,15 @@ public class World extends Observable {
 
     private SketchesManager sketchesManager_;
 
-    public World(final Context context) {
-        this();
-        loadContent(context);
-    }
-
-    protected World() {
+    public World() {
         this.nRows_ = DEFAULT_NUM_ROWS;
         this.nColumns_ = DEFAULT_NUM_COLUMNS;
         sketchesManager_ = new SketchesManager();
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
+        //loadContent(context);
+
         orbs_ = new Orb[nRows_][nColumns_];
 
         float orbHeight = rectSize.height / nRows_;
@@ -356,12 +353,12 @@ public class World extends Observable {
     }
 
     // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
-    private void loadContent(Context context) {
+    public void loadContent(ContentManager contents) {
         for (Orb.Types orbType : Orb.Types.values()) {
             for (Orb.SpecTypes orbSpecType : Orb.SpecTypes.values()) {
 
                 int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
-                Texture orbTexture = new Texture(context, orbResourceId);
+                Texture orbTexture = contents.get(orbResourceId);
 
                 if (orbTextures_.get(orbType) != null) {
                     orbTextures_.get(orbType).put(orbSpecType, orbTexture);
@@ -374,7 +371,7 @@ public class World extends Observable {
             }
         }
 
-        touchLineTexture_ = new Texture(context, TouchLine.getResourceId());
+        touchLineTexture_ = contents.get(TouchLine.getResourceId());
 
         if (BuildConfig.DEBUG)
             Log.i("World.Content", "Content of the world are loaded.");

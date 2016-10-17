@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.blackteam.dsketches.utils.ExceptionHandler;
 
 public class Main extends Activity {
+    public static String VERSION;
+
     private GameView gameView_;
 
     private boolean rendererSet = false;
@@ -14,6 +16,8 @@ public class Main extends Activity {
         super.onCreate(savedInstanceState);
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+
+        VERSION = getApplicationContext().getResources().getString(R.string.version_str);
 
         gameView_ = new GameView(this);
         rendererSet = true;

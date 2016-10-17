@@ -35,6 +35,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private MainWindow mainWindow_;
     private MenuWindow menuWindow_;
 
+    private ContentManager contents_;
+
+    private World world_;
+
     /**
      * Ограничение по FPS.
      * Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
@@ -49,14 +53,22 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     // TODO: По идеи передавать не такой большой список MainWindow mainWindow, MenuWindow menuWindow,
     // а либо массив ArrayList<GameWindow>, либо WindowManager (можно не услажнять так).
-    public GameRenderer(Context context, MainWindow mainWindow, MenuWindow menuWindow) {
+    public GameRenderer(Context context, ContentManager contents, MainWindow mainWindow, MenuWindow menuWindow, World world) {
         this.context_ = context;
         this.mainWindow_ = mainWindow;
         this.menuWindow_ = menuWindow;
+        this.contents_ = contents;
+        this.world_ = world;
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        loadContent();
+
+        world_.loadContent(contents_);
+        mainWindow_.loadContent(contents_);
+        menuWindow_.loadContent(contents_);
+
         configRender();
         initCamera();
         createShader();
@@ -65,7 +77,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         lastTime_ = GameMath.getCurrentTime();
     }
-
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.i("GameRender", "onSurfaceChanged begin");
@@ -109,8 +120,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
             // TODO: Тут должен быть mainWindow_.resize.
             // а в onSurfaceCreated() должен быть передан mainWindow_.setShader(shader_);
-            mainWindow_.init(context_, 1f, aspectRatio);
-            menuWindow_.init(context_, 1f, aspectRatio);
+            mainWindow_.init(1f, aspectRatio);
+            menuWindow_.init(1f, aspectRatio);
         }
 
         // Calculate the projection and view transformation.
@@ -176,5 +187,28 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         boolean isShaderCompiled = shader_.compile();
         if (!isShaderCompiled) throw new IllegalArgumentException("Error compiling shader.");
         shader_.begin();
+    }
+
+    private void loadContent() {
+        contents_.load(R.drawable.achievement_btn);
+        contents_.load(R.drawable.blue_orb_3);
+        contents_.load(R.drawable.chasm);
+        contents_.load(R.drawable.double_orb);
+        contents_.load(R.drawable.error);
+        contents_.load(R.drawable.exit_btn);
+        contents_.load(R.drawable.good_neighbour);
+        contents_.load(R.drawable.green_bubble_3);
+        contents_.load(R.drawable.menu_btn);
+        contents_.load(R.drawable.menu_window);
+        contents_.load(R.drawable.numbers);
+        contents_.load(R.drawable.profit_numbers);
+        contents_.load(R.drawable.red_double_orb);
+        contents_.load(R.drawable.red_orb);
+        contents_.load(R.drawable.red_rows_eater_orb);
+        contents_.load(R.drawable.reshuffle);
+        contents_.load(R.drawable.restart_btn);
+        contents_.load(R.drawable.touch_line);
+        contents_.load(R.drawable.universal);
+        contents_.load(R.drawable.x_close);
     }
 }

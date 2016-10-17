@@ -17,8 +17,8 @@ public class SkillsPanel {
     private ArrayList<Skill> skills_ = new ArrayList<>();
     private Skill selectedSkill_;
 
-    public SkillsPanel(Context context) {
-        loadContent(context);
+    public SkillsPanel(ContentManager contents) {
+        loadContent(contents);
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
@@ -53,9 +53,9 @@ public class SkillsPanel {
         selectedSkill_ = null;
     }
 
-    private void loadContent(Context context) {
+    private void loadContent(ContentManager contents) {
         for (SkillType skillType : SkillType.values()) {
-            skills_.add(new Skill(skillType, 100, new Texture(context, Skill.getResourceId(skillType))));
+            skills_.add(new Skill(skillType, 100, contents.get(Skill.getResourceId(skillType))));
         }
     }
 

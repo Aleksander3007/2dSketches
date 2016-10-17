@@ -13,55 +13,91 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 public class MainWindow {
-    public static String VERSION_;
-
-    private GameController gameController_;
-
     private World world_;
+    private Player player_;
+    private MenuWindow menuWindow_;
+
     private NumberLabel scoreLabel_;
     private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
     private StaticText versionLabel_;
-    private AchievementsManager achievementsManager_;
 
     private float width_;
     private float height_;
 
     private float screenPart_;
 
-    // TODO: Это должно быт не здесь.
-    private int score_;
-
-    public MainWindow(GameController gameController) {
-        this.gameController_ = gameController;
+    public MainWindow(World world, Player player, MenuWindow menuWindow) {
+        this.world_ = world;
+        this.player_ = player;
+        this.menuWindow_ = menuWindow;
     }
 
-    public void init(final Context context, final float screenWidth, final float screenHeight) {
-        VERSION_ = context.getResources().getString(R.string.version_str);
-
+    public void init(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
-
-        Texture profitDigits = new Texture(context, R.drawable.profit_numbers);
-        Texture scoreDigits = new Texture(context, R.drawable.numbers);
-
-        world_ = new World(context);
-        skillsPanel_ = new SkillsPanel(context);
-        scoreLabel_ = new NumberLabel(scoreDigits);
-        menuButton_ = new RestartButton(new Texture(context, R.drawable.menu_btn));
-        profitLabel_ = new ProfitLabel(profitDigits);
-
-        Log.i("MainWindow", "init");
-        if (scoreLabel_ == null)
-            Log.i("MainWindow", "init scoreLabel_ == null");
-
-        achievementsManager_ = new AchievementsManager();
-        world_.addObserver(achievementsManager_);
 
         setSize(screenWidth, screenHeight);
 
         restartLevel();
+    }
+
+    public void loadContent(ContentManager contents) {
+        skillsPanel_ = new SkillsPanel(contents);
+        scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
+        menuButton_ = new RestartButton(contents.get(R.drawable.menu_btn));
+        profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
+    }
+
+    // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
+    public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
+        if (scoreLabel_ == null)
+            Log.i("MainWindow", "render scoreLabel_ == null");
+
+        scoreLabel_.render(mvpMatrix, shader);
+        world_.draw(mvpMatrix, shader);
+        menuButton_.draw(mvpMatrix, shader);
+        skillsPanel_.draw(mvpMatrix, shader);
+        profitLabel_.render(mvpMatrix, shader, elapsedTime);
+        versionLabel_.draw(mvpMatrix, shader);
+    }
+
+    public boolean hit(Vector2 worldCoords) {
+        return world_.hit(worldCoords);
+    }
+
+    public void touchUp(Vector2 worldCoords) {
+        Log.i("MainWindow", "touchUp begin");
+        if (menuButton_.hit(worldCoords)) {
+            menuWindow_.show();
+        }
+        else if (skillsPanel_.hit(worldCoords)) {
+            skillsPanel_.applySelectedSkill(world_);
+        }
+        else {
+            world_.update();
+            int profit = world_.getProfitByOrbs();
+            if (profit > 0) {
+                profitLabel_.setProfit(profit, new Vector2(worldCoords));
+                player_.addScore(profit);
+                scoreLabel_.setValue(player_.getScore());
+                world_.deleteSelectedOrbs();
+                world_.removeSelection();
+            }
+            else {
+                world_.removeSelection();
+            }
+        }
+    }
+
+    public void restartLevel() {
+        world_.createLevel();
+        reset();
+    }
+
+    public void reset() {
+        scoreLabel_.setValue(0);
     }
 
     private void setSize(final float screenWidth, final float screenHeight) {
@@ -98,7 +134,7 @@ public class MainWindow {
         );
 
         versionLabel_ = new StaticText(
-                VERSION_,
+                Main.VERSION,
                 new Vector2(width_ / 2,  height_ - screenPart_),
                 new Size2(width_ / 4, screenPart_)
         );
@@ -109,51 +145,5 @@ public class MainWindow {
         scoreLabel_.setPosition(scoreLabelOffset);
         menuButton_.init(restartBtnOffset, restartBtnSize);
         profitLabel_.init(new Size2(screenPart_, screenPart_));
-    }
-
-    // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
-    public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
-        if (scoreLabel_ == null)
-            Log.i("MainWindow", "render scoreLabel_ == null");
-
-        scoreLabel_.render(mvpMatrix, shader);
-        world_.draw(mvpMatrix, shader);
-        menuButton_.draw(mvpMatrix, shader);
-        skillsPanel_.draw(mvpMatrix, shader);
-        profitLabel_.render(mvpMatrix, shader, elapsedTime);
-        versionLabel_.draw(mvpMatrix, shader);
-    }
-
-    public boolean hit(Vector2 worldCoords) {
-        return world_.hit(worldCoords);
-    }
-
-    public void touchUp(Vector2 worldCoords) {
-        Log.i("MainWindow", "touchUp begin");
-        if (menuButton_.hit(worldCoords)) {
-            gameController_.openMenu();
-        }
-        else if (skillsPanel_.hit(worldCoords)) {
-            skillsPanel_.applySelectedSkill(world_);
-        }
-        else {
-            world_.update();
-            int profit = world_.getProfitByOrbs();
-            if (profit > 0) {
-                profitLabel_.setProfit(profit, new Vector2(worldCoords));
-                score_ += profit;
-                scoreLabel_.setValue(score_);
-                world_.deleteSelectedOrbs();
-                world_.removeSelection();
-            }
-            else {
-                world_.removeSelection();
-            }
-        }
-    }
-
-    public void restartLevel() {
-        world_.createLevel();
-        scoreLabel_.setValue(0);
     }
 }

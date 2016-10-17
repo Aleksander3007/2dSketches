@@ -105,6 +105,13 @@ public class DisplayableObject {
         // TODO: Не реализован метод DisplayableObject.dispose().
     };
 
+    public void setTexture(Texture texture) {
+        if (sprite_ == null)
+            sprite_ = new Sprite(texture);
+        else
+            sprite_.setTexture(texture);
+    }
+
     public float getX() { return pos_.x; }
     public float getY() { return pos_.y; }
 

@@ -1,14 +1,13 @@
-package com.blackteam.dsketches.Utils;
+package com.blackteam.dsketches.utils;
 
 
 import android.content.Context;
-import android.util.Log;
 
-import com.blackteam.dsketches.DisplayableObject;
+import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.R;
-import com.blackteam.dsketches.ScoreNumber;
-import com.blackteam.dsketches.ShaderProgram;
-import com.blackteam.dsketches.Texture;
+import com.blackteam.dsketches.gui.ScoreNumber;
+import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.gui.Texture;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

@@ -13,21 +13,33 @@ import com.blackteam.dsketches.utils.Vector2;
  */
 public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
+    private ContentManager contents_;
     private MainWindow mainWindow_;
     private MenuWindow menuWindow_;
-    private GameController gameController_;
+
+    private Player player_;
+    private World world_;
+    private AchievementsManager achievementsManager_;
 
     public GameView(Context context) {
         super(context);
 
-        gameController_ = new GameController();
+        contents_ = new ContentManager(context);
 
-        mainWindow_ = new MainWindow(gameController_);
-        menuWindow_ = new MenuWindow(gameController_);
+        player_ = new Player();
+        world_ = new World();
 
-        gameController_.setViews(mainWindow_, menuWindow_);
+        achievementsManager_ = new AchievementsManager();
+        world_.addObserver(achievementsManager_);
 
-        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_);
+        Log.i("GameView",  "Models are created.");
+
+        mainWindow_ = new MainWindow(world_, player_, menuWindow_);
+        menuWindow_ = new MenuWindow(world_, mainWindow_);
+
+        Log.i("GameView",  "Windows are created.");
+
+        gameRenderer_ = new GameRenderer(context, contents_, mainWindow_, menuWindow_, world_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);

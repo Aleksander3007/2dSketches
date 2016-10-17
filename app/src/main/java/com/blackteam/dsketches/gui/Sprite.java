@@ -65,6 +65,8 @@ public class Sprite {
      * @param height Высота региона в пикселях из указанной текстуры.
      */
     public Sprite(Texture texture, float x, float y, float width, float height) {
+        this.texture_ = texture;
+
         // Units per pixel.
         float uppX = 1.0f / texture.getWidth();
         float uppY = 1.0f / texture.getHeight();
@@ -87,11 +89,13 @@ public class Sprite {
         textureCoords[6] = xUnits + widthUnits;
         textureCoords[7] = yUnits + heightUnits;
 
-        this.texture_ = texture;
         prepareData();
         resetMatrices();
     }
 
+    public void setTexture(Texture texture) {
+        texture_ = texture;
+    }
     /**
      * Отрисовка спрайта.
      * <br/><b>Note: На shader можно ссылаться только в потоке Open GL ES.</b>
