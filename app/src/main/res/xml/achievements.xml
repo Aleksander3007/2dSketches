@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<achievements>
+    <achievement name="Три в ряд">
+        <conditions>
+            <condition name="sketch" value="ROW_3"/>
+        </conditions>
+    </achievement>
+    <achievement name="Пять в ряд">
+        <conditions>
+            <condition name="sketch" value="ROW_5"/>
+        </conditions>
+    </achievement>
+    <achievement name="Первая тысяча">
+        <conditions>
+            <condition name="score" value="1000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Сто за раз">
+        <conditions>
+            <condition name="profit" value="100"/>
+        </conditions>
+    </achievement>
+</achievements>

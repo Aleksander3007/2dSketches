@@ -8,6 +8,9 @@ import android.view.MotionEvent;
 
 import com.blackteam.dsketches.utils.Vector2;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.sql.Array;
 import java.util.ArrayList;
 
@@ -25,7 +28,7 @@ public class GameView extends GLSurfaceView {
 
     private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
 
-    public GameView(Context context) {
+    public GameView(Context context) throws IOException, XmlPullParserException {
         super(context);
 
         player_ = new Player();
@@ -33,6 +36,7 @@ public class GameView extends GLSurfaceView {
         loadableObjects_.add(world_);
 
         achievementsManager_ = new AchievementsManager();
+        achievementsManager_.loadContent(context);
         world_.addObserver(achievementsManager_);
 
         Log.d("GameView",  "Models are created.");
