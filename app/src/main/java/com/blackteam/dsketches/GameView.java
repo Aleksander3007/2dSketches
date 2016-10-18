@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.blackteam.dsketches.utils.Vector2;
+import com.blackteam.dsketches.windows.AchievementWindow;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -21,6 +22,7 @@ public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
     private MainWindow mainWindow_;
     private MenuWindow menuWindow_;
+    private AchievementWindow achievementWindow_;
 
     private Player player_;
     private World world_;
@@ -43,12 +45,15 @@ public class GameView extends GLSurfaceView {
 
         mainWindow_ = new MainWindow(world_, player_);
         menuWindow_ = new MenuWindow(world_, mainWindow_);
+        achievementWindow_ = new AchievementWindow();
         mainWindow_.setMenu(menuWindow_);
+        menuWindow_.setAchievementMenu(achievementWindow_);
         loadableObjects_.add(mainWindow_);
         loadableObjects_.add(menuWindow_);
+        loadableObjects_.add(achievementWindow_);
         Log.d("GameView",  "Windows are created.");
 
-        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_, loadableObjects_);
+        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_, achievementWindow_, loadableObjects_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);

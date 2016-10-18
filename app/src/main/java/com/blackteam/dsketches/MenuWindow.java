@@ -9,10 +9,12 @@ import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
+import com.blackteam.dsketches.windows.AchievementWindow;
 
 public class MenuWindow implements Loadable {
     private World world_;
     private MainWindow mainWindow_;
+    private AchievementWindow achievementWindow_;
 
     private GameButton closeButton_;
     private GameButton restartBtn_;
@@ -95,10 +97,17 @@ public class MenuWindow implements Loadable {
             world_.createLevel();
             mainWindow_.reset();
         }
+        else if (achievementButton_.hit(worldCoords)) {
+            Log.i("MenuWindow", "achievementButton is clicked.");
+            achievementWindow_.show();
+        }
     }
 
     public void show() {
         setVisible();
     }
 
+    public void setAchievementMenu(AchievementWindow achievementWindow) {
+        this.achievementWindow_ = achievementWindow;
+    }
 }
