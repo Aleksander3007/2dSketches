@@ -1,20 +1,19 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.GameButton;
 import com.blackteam.dsketches.gui.GameImage;
 import com.blackteam.dsketches.gui.ShaderProgram;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
-import com.blackteam.dsketches.windows.AchievementWindow;
+import com.blackteam.dsketches.windows.MenuManager;
+import com.blackteam.dsketches.windows.Window;
 
-public class MenuWindow implements Loadable {
+public class MenuWindow extends Window {
     private World world_;
     private MainWindow mainWindow_;
-    private AchievementWindow achievementWindow_;
+    private MenuManager menuManager_;
 
     private GameButton closeButton_;
     private GameButton restartBtn_;
@@ -24,12 +23,10 @@ public class MenuWindow implements Loadable {
     private GameButton exitButton_;
     private GameImage backgroundImage_;
 
-
-    private boolean isVisible_;
-
-    public MenuWindow(World world, MainWindow mainWindow) {
+    public MenuWindow(World world, MainWindow mainWindow, MenuManager menuManager) {
         this.world_ = world;
         this.mainWindow_ = mainWindow;
+        this.menuManager_ = menuManager;
 
         closeButton_ = new GameButton();
         restartBtn_ = new GameButton();
@@ -39,8 +36,10 @@ public class MenuWindow implements Loadable {
 
     // TODO: Бред, что передаём windowWidth, windowHeight а позицию нет.
     // либо передавть еще позицию, либо вообще убрать размеры.
-    public void init(final float windowWidth, final float windowHeight) {
-
+    @Override
+    public void resize(final float windowWidth, final float windowHeight) {
+        this.pos_ = new Vector2(0, 0);
+        this.size_ = new Size2(windowWidth, windowHeight);
 
         Size2 btnSize = new Size2(windowWidth / 3f, windowHeight / 5f);
 
@@ -63,6 +62,7 @@ public class MenuWindow implements Loadable {
         exitButton_.setSize(btnSize);
     }
 
+    @Override
     public void loadContent(ContentManager contents) {
         backgroundImage_ = new GameImage(new Vector2(0, 0),
                 contents.get(R.drawable.menu_window)
@@ -73,24 +73,20 @@ public class MenuWindow implements Loadable {
         exitButton_.setTexture(contents.get(R.drawable.exit_btn));
     }
 
+    @Override
     public void render(float[] mvpMatrix, final ShaderProgram shader) {
-        if (isVisible_) {
-            backgroundImage_.draw(mvpMatrix, shader);
-            closeButton_.draw(mvpMatrix, shader);
-            restartBtn_.draw(mvpMatrix, shader);
-            achievementButton_.draw(mvpMatrix, shader);
-            exitButton_.draw(mvpMatrix, shader);
-        }
+        backgroundImage_.draw(mvpMatrix, shader);
+        closeButton_.draw(mvpMatrix, shader);
+        restartBtn_.draw(mvpMatrix, shader);
+        achievementButton_.draw(mvpMatrix, shader);
+        exitButton_.draw(mvpMatrix, shader);
     }
 
-    public boolean isVisible() { return isVisible_; }
-    public void setVisible() { isVisible_ = true; }
-    public void setInvisible() { isVisible_ = false; }
-
-    public void touchUp(Vector2 worldCoords) {
+    @Override
+    public void touchUpHandle(Vector2 worldCoords) {
         if (closeButton_.hit(worldCoords)) {
             Log.i("MenuWindow", "closeButton is clicked.");
-            setInvisible();
+            menuManager_.close(MenuManager.MenuTypes.MAIN);
         }
         else if (restartBtn_.hit(worldCoords)) {
             Log.i("MenuWindow", "restartButton is clicked.");
@@ -99,15 +95,7 @@ public class MenuWindow implements Loadable {
         }
         else if (achievementButton_.hit(worldCoords)) {
             Log.i("MenuWindow", "achievementButton is clicked.");
-            achievementWindow_.show();
+            menuManager_.show(MenuManager.MenuTypes.ACHIEVEMENT);
         }
-    }
-
-    public void show() {
-        setVisible();
-    }
-
-    public void setAchievementMenu(AchievementWindow achievementWindow) {
-        this.achievementWindow_ = achievementWindow;
     }
 }

@@ -1,21 +1,21 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.gui.RestartButton;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
+import com.blackteam.dsketches.windows.MenuManager;
 
 public class MainWindow implements Loadable {
     private World world_;
     private Player player_;
-    private MenuWindow menuWindow_;
+
+    private MenuManager menuManager_;
 
     private NumberLabel scoreLabel_;
     private RestartButton menuButton_;
@@ -49,8 +49,8 @@ public class MainWindow implements Loadable {
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
     }
 
-    public void setMenu(MenuWindow menuWindow) {
-        this.menuWindow_ = menuWindow;
+    public void setMenuManager(MenuManager menuManager) {
+        this.menuManager_= menuManager;
     }
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
@@ -71,9 +71,9 @@ public class MainWindow implements Loadable {
     }
 
     public void touchUp(Vector2 worldCoords) {
-        Log.i("MainWindow", "touchUp begin");
+        Log.i("MainWindow", "touchUpHandle begin");
         if (menuButton_.hit(worldCoords)) {
-            menuWindow_.show();
+            menuManager_.show(MenuManager.MenuTypes.MAIN);
         }
         else if (skillsPanel_.hit(worldCoords)) {
             skillsPanel_.applySelectedSkill(world_);

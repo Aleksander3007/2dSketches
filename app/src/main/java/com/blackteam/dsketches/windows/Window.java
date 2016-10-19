@@ -2,16 +2,37 @@ package com.blackteam.dsketches.windows;
 
 import com.blackteam.dsketches.Loadable;
 import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 public abstract class Window implements Loadable {
-    protected boolean isVisible_;
+    protected Vector2 pos_;
+    protected Size2 size_;
 
     public abstract void resize(final float windowWidth, final float windowHeight);
     public abstract void render(float[] mvpMatrix, final ShaderProgram shader);
-    public abstract void touchUp(Vector2 worldCoords);
-    public void show() { setVisible(); }
-    public boolean isVisible() { return isVisible_; }
-    public void setVisible() { isVisible_ = true; }
-    public void setInvisible() { isVisible_ = false; }
+    public abstract void touchUpHandle(Vector2 worldCoords);
+
+    public boolean hit(Vector2 coords) {
+        boolean hitX = (coords.x >= pos_.x) && (coords.x <= pos_.x + size_.width);
+        boolean hitY = (coords.y >= pos_.y) && (coords.y <= pos_.y + size_.height);
+
+        return (hitX && hitY);
+    }
+
+    public Vector2 getPos() {
+        return pos_;
+    }
+
+    public void setPos(Vector2 pos) {
+        this.pos_ = pos;
+    }
+
+    public Size2 getSize() {
+        return size_;
+    }
+
+    public void setSize(Size2 size) {
+        this.size_ = size;
+    }
 }

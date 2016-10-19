@@ -9,6 +9,7 @@ import android.util.Log;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.windows.AchievementWindow;
+import com.blackteam.dsketches.windows.MenuManager;
 
 import java.util.ArrayList;
 
@@ -35,9 +36,9 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix_ = new float[16];
 
     private ShaderProgram shader_;
+
     private MainWindow mainWindow_;
-    private MenuWindow menuWindow_;
-    private AchievementWindow achievementWindow_;
+    private MenuManager menuManager_;
 
     private ContentManager contents_;
     private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
@@ -55,14 +56,12 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private long elapsedTime_;
 
     // TODO: По идеи передавать не такой большой список MainWindow mainWindow, MenuWindow menuWindow,
-    // а либо массив ArrayList<GameWindow>, либо WindowManager (можно не услажнять так).
-    public GameRenderer(Context context, MainWindow mainWindow, MenuWindow menuWindow,
-                        AchievementWindow achievementWindow,
+    // а либо массив ArrayList<GameWindow>, либо MenuManager (можно не услажнять так).
+    public GameRenderer(Context context, MainWindow mainWindow, MenuManager menuManager,
                         ArrayList<Loadable> loadableObjects) {
         this.context_ = context;
         this.mainWindow_ = mainWindow;
-        this.menuWindow_ = menuWindow;
-        this.achievementWindow_ = achievementWindow;
+        this.menuManager_ = menuManager;
         this.loadableObjects_ = loadableObjects;
         this.contents_ = new ContentManager(context);
     }
@@ -70,6 +69,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         loadContent();
+
+        menuManager_.setContent(contents_);
 
         for (Loadable loadableObj : loadableObjects_) {
             loadableObj.loadContent(contents_);
@@ -127,8 +128,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             // TODO: Тут должен быть mainWindow_.resize.
             // а в onSurfaceCreated() должен быть передан mainWindow_.setShader(shader_);
             mainWindow_.init(1f, aspectRatio);
-            menuWindow_.init(1f, aspectRatio);
-            achievementWindow_.resize(1f, aspectRatio);
+            menuManager_.resizeMenus(1f, aspectRatio);
+
         }
 
         // Calculate the projection and view transformation.
@@ -147,8 +148,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         // TODO: mMVPMatrix_, shader_, elapsedTime_ в Graphics.
         mainWindow_.render(mMVPMatrix_, shader_, elapsedTime_);
-        menuWindow_.render(mMVPMatrix_, shader_);
-        achievementWindow_.render(mMVPMatrix_, shader_);
+        menuManager_.renderMenus(mMVPMatrix_, shader_);
 
         elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
         // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батареи, для меньшей нагрузки проца.

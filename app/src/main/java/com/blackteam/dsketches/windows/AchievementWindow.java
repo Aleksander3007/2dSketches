@@ -14,38 +14,43 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 public class AchievementWindow extends Window {
+    private MenuManager menuManager_;
 
     private GameButton closeButton_;
     private GameImage backgroundImage_;
     private GameImage achievementBgNoActive_;
     private GameImage achievementBgActive_;
 
-    public AchievementWindow() {
+    public AchievementWindow(MenuManager menuManager) {
+        this.menuManager_ = menuManager;
         closeButton_ = new GameButton();
     }
 
     @Override
     public void resize(float windowWidth, float windowHeight) {
+        this.pos_ = new Vector2(0, 0);
+        this.size_ = new Size2(windowWidth, windowHeight);
+
         Size2 btnSize = new Size2(windowWidth / 3f, windowHeight / 5f);
 
         closeButton_.setPosition(windowWidth - btnSize.width,
                 windowHeight - btnSize.height - 3 * 0.01f);
 
+        backgroundImage_.setSize(windowWidth, windowHeight);
         closeButton_.setSize(btnSize);
     }
 
     @Override
     public void render(float[] mvpMatrix, ShaderProgram shader) {
-        if (isVisible_) {
-            backgroundImage_.draw(mvpMatrix, shader);
-        }
+        backgroundImage_.draw(mvpMatrix, shader);
+        closeButton_.draw(mvpMatrix, shader);
     }
 
     @Override
-    public void touchUp(Vector2 worldCoords) {
+    public void touchUpHandle(Vector2 worldCoords) {
         if (closeButton_.hit(worldCoords)) {
             Log.i("AchievementWindow", "closeButton is clicked.");
-            setInvisible();
+            menuManager_.close(MenuManager.MenuTypes.ACHIEVEMENT);
         }
     }
 

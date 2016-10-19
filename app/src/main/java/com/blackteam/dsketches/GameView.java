@@ -7,12 +7,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.blackteam.dsketches.utils.Vector2;
-import com.blackteam.dsketches.windows.AchievementWindow;
+import com.blackteam.dsketches.windows.MenuManager;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 
 /**
@@ -20,9 +19,8 @@ import java.util.ArrayList;
  */
 public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
-    private MainWindow mainWindow_;
-    private MenuWindow menuWindow_;
-    private AchievementWindow achievementWindow_;
+    private MainWindow mainWindow_; // TODO: MainWindow - это World, а World - это GameBox, OrbBox ...
+    private MenuManager menuManager_;
 
     private Player player_;
     private World world_;
@@ -44,16 +42,12 @@ public class GameView extends GLSurfaceView {
         Log.d("GameView",  "Models are created.");
 
         mainWindow_ = new MainWindow(world_, player_);
-        menuWindow_ = new MenuWindow(world_, mainWindow_);
-        achievementWindow_ = new AchievementWindow();
-        mainWindow_.setMenu(menuWindow_);
-        menuWindow_.setAchievementMenu(achievementWindow_);
+        menuManager_ = new MenuManager(mainWindow_, world_, player_);
+        mainWindow_.setMenuManager(menuManager_);
         loadableObjects_.add(mainWindow_);
-        loadableObjects_.add(menuWindow_);
-        loadableObjects_.add(achievementWindow_);
         Log.d("GameView",  "Windows are created.");
 
-        gameRenderer_ = new GameRenderer(context, mainWindow_, menuWindow_, achievementWindow_, loadableObjects_);
+        gameRenderer_ = new GameRenderer(context, mainWindow_, menuManager_, loadableObjects_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);
@@ -70,15 +64,14 @@ public class GameView extends GLSurfaceView {
                     if (BuildConfig.DEBUG) {
                         Log.i("GameView", "Action was UP");
                     }
-                    if (menuWindow_.isVisible()) {
-                        menuWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    if (menuManager_.menusTouchUpHandle(getWorldCoords(event.getX(),event.getY()))) {
                         return true;
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
                     mainWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));
-
                     return true;
                 case (MotionEvent.ACTION_MOVE):
+                    // TODO: Тут не учитывается, что может быть открыто меню.
                     mainWindow_.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
