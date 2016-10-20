@@ -2,6 +2,7 @@ package com.blackteam.dsketches.windows;
 
 import android.util.Log;
 
+import com.blackteam.dsketches.AchievementsManager;
 import com.blackteam.dsketches.ContentManager;
 import com.blackteam.dsketches.MainWindow;
 import com.blackteam.dsketches.MenuWindow;
@@ -28,6 +29,7 @@ public class MenuManager {
     private MainWindow mainWindow_;
     private World world_;
     private ContentManager contents_;
+    private AchievementsManager achievementManager_;
 
     private float menuWidth_;
     private float menuHeight_;
@@ -41,9 +43,10 @@ public class MenuManager {
         }
      */
 
-    public MenuManager(MainWindow mainWindow, World world, Player player) {
+    public MenuManager(MainWindow mainWindow, World world, Player player, AchievementsManager achievementManager) {
         this.mainWindow_ = mainWindow;
         this.world_ = world;
+        this.achievementManager_ = achievementManager;
         /*
         mainMenu_ = new MenuWindow(world, mainWindow, this);
         achievementMenu_ = new AchievementWindow();
@@ -98,7 +101,7 @@ public class MenuManager {
             case MAIN:
                 return new MenuWindow(world_, mainWindow_, this);
             case ACHIEVEMENT:
-                return new AchievementWindow(this);
+                return new AchievementWindow(this, achievementManager_.getAchiviements());
             default:
                 return null;
         }

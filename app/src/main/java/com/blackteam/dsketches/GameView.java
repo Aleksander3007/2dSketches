@@ -3,6 +3,7 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.MotionEventCompat;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -28,8 +29,18 @@ public class GameView extends GLSurfaceView {
 
     private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
 
-    public GameView(Context context) throws IOException, XmlPullParserException {
+    public GameView(Context context) throws IOException, XmlPullParserException  {
         super(context);
+        init(context);
+    }
+
+    public GameView(Context context, AttributeSet attrs) throws IOException, XmlPullParserException {
+        super(context, attrs);
+        init(context);
+    }
+
+    private void init(Context context) throws IOException, XmlPullParserException {
+        Log.i("GameView", "begin");
 
         player_ = new Player();
         world_ = new World();
@@ -42,7 +53,7 @@ public class GameView extends GLSurfaceView {
         Log.d("GameView",  "Models are created.");
 
         mainWindow_ = new MainWindow(world_, player_);
-        menuManager_ = new MenuManager(mainWindow_, world_, player_);
+        menuManager_ = new MenuManager(mainWindow_, world_, player_, achievementsManager_);
         mainWindow_.setMenuManager(menuManager_);
         loadableObjects_.add(mainWindow_);
         Log.d("GameView",  "Windows are created.");

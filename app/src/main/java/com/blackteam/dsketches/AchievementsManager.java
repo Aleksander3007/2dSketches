@@ -72,4 +72,8 @@ public class AchievementsManager implements Observer {
             }
         }
     }
+
+    public ArrayList<Achievement> getAchiviements() {
+        return achievements_;
+    }
 }

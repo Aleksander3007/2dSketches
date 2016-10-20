@@ -137,7 +137,7 @@ public class MainWindow implements Loadable {
         );
 
         versionLabel_ = new StaticText(
-                Main.VERSION,
+                MainActivity.VERSION,
                 new Vector2(width_ / 2,  height_ - screenPart_),
                 new Size2(width_ / 4, screenPart_)
         );
