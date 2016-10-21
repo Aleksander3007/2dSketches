@@ -33,9 +33,4 @@ public class StaticText extends DisplayableObject {
         sprite_.setPosition(pos);
         sprite_.setScale(size.width, size.height);
     }
-
-    @Override
-    public void dispose() {
-
-    }
 }

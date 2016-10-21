@@ -20,8 +20,7 @@ import java.util.ArrayList;
  */
 public class GameView extends GLSurfaceView {
     private GameRenderer gameRenderer_;
-    private MainWindow mainWindow_; // TODO: MainWindow - это World, а World - это GameBox, OrbBox ...
-    private MenuManager menuManager_;
+    private Game game_;
 
     private Player player_;
     private World world_;
@@ -40,7 +39,7 @@ public class GameView extends GLSurfaceView {
     }
 
     private void init(Context context) throws IOException, XmlPullParserException {
-        Log.i("GameView", "begin");
+        Log.i("GameView", "init");
 
         player_ = new Player();
         world_ = new World();
@@ -52,13 +51,11 @@ public class GameView extends GLSurfaceView {
 
         Log.d("GameView",  "Models are created.");
 
-        mainWindow_ = new MainWindow(world_, player_);
-        menuManager_ = new MenuManager(mainWindow_, world_, player_, achievementsManager_);
-        mainWindow_.setMenuManager(menuManager_);
-        loadableObjects_.add(mainWindow_);
+        game_ = new Game(world_, player_);
+        loadableObjects_.add(game_);
         Log.d("GameView",  "Windows are created.");
 
-        gameRenderer_ = new GameRenderer(context, mainWindow_, menuManager_, loadableObjects_);
+        gameRenderer_ = new GameRenderer(context, game_, loadableObjects_);
 
         setEGLContextClientVersion(2);
         setRenderer(gameRenderer_);
@@ -75,15 +72,11 @@ public class GameView extends GLSurfaceView {
                     if (BuildConfig.DEBUG) {
                         Log.i("GameView", "Action was UP");
                     }
-                    if (menuManager_.menusTouchUpHandle(getWorldCoords(event.getX(),event.getY()))) {
-                        return true;
-                    }
                     // TODO: По идеи везде hit и необходимо передавать Action.
-                    mainWindow_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    game_.touchUp(getWorldCoords(event.getX(),event.getY()));
                     return true;
                 case (MotionEvent.ACTION_MOVE):
-                    // TODO: Тут не учитывается, что может быть открыто меню.
-                    mainWindow_.hit(getWorldCoords(event.getX(), event.getY()));
+                    game_.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
                     return true;

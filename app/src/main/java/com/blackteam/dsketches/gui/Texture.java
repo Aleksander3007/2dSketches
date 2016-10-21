@@ -17,13 +17,21 @@ public class Texture {
     private int width_;
     private int height_;
 
+    public Texture() {
+        // Пустая текстура.
+    }
+
     public Texture(Context context, int resourceId) {
-        boolean isLoaded = load(context, resourceId);
-        if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
+        create(context, resourceId);
     }
 
     public Texture(Bitmap bitmap) {
         boolean isLoaded = load(bitmap);
+        if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
+    }
+
+    public void create(Context context, int resourceId) {
+        boolean isLoaded = load(context, resourceId);
         if (!isLoaded) throw new IllegalArgumentException("Error loaded texture.");
     }
 

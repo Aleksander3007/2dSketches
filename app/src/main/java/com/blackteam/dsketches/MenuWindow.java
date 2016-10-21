@@ -12,7 +12,7 @@ import com.blackteam.dsketches.windows.Window;
 
 public class MenuWindow extends Window {
     private World world_;
-    private MainWindow mainWindow_;
+    private Game game_;
     private MenuManager menuManager_;
 
     private GameButton closeButton_;
@@ -23,9 +23,9 @@ public class MenuWindow extends Window {
     private GameButton exitButton_;
     private GameImage backgroundImage_;
 
-    public MenuWindow(World world, MainWindow mainWindow, MenuManager menuManager) {
+    public MenuWindow(World world, Game game, MenuManager menuManager) {
         this.world_ = world;
-        this.mainWindow_ = mainWindow;
+        this.game_ = game;
         this.menuManager_ = menuManager;
 
         closeButton_ = new GameButton();
@@ -91,7 +91,7 @@ public class MenuWindow extends Window {
         else if (restartBtn_.hit(worldCoords)) {
             Log.i("MenuWindow", "restartButton is clicked.");
             world_.createLevel();
-            mainWindow_.reset();
+            game_.reset();
         }
         else if (achievementButton_.hit(worldCoords)) {
             Log.i("MenuWindow", "achievementButton is clicked.");

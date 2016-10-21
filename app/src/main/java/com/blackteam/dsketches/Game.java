@@ -3,7 +3,6 @@ package com.blackteam.dsketches;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.ProfitLabel;
-import com.blackteam.dsketches.gui.RestartButton;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
 import com.blackteam.dsketches.utils.NumberLabel;
@@ -11,14 +10,12 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 import com.blackteam.dsketches.windows.MenuManager;
 
-public class MainWindow implements Loadable {
-    private World world_;
+public class Game implements Loadable {
+    private World world_; // TODO: World - это GameBox, OrbBox, GameField ...
     private Player player_;
 
-    private MenuManager menuManager_;
-
+    // TODO: Необходимо все кнопки и индикаторы перенести в MainActivity.
     private NumberLabel scoreLabel_;
-    private RestartButton menuButton_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
     private StaticText versionLabel_;
@@ -28,7 +25,7 @@ public class MainWindow implements Loadable {
 
     private float screenPart_;
 
-    public MainWindow(World world, Player player) {
+    public Game(World world, Player player) {
         this.world_ = world;
         this.player_ = player;
     }
@@ -45,22 +42,16 @@ public class MainWindow implements Loadable {
     public void loadContent(ContentManager contents) {
         skillsPanel_ = new SkillsPanel(contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
-        menuButton_ = new RestartButton(contents.get(R.drawable.menu_btn));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
-    }
-
-    public void setMenuManager(MenuManager menuManager) {
-        this.menuManager_= menuManager;
     }
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
     public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
         if (scoreLabel_ == null)
-            Log.i("MainWindow", "render scoreLabel_ == null");
+            Log.i("Game", "render scoreLabel_ == null");
 
         scoreLabel_.render(mvpMatrix, shader);
         world_.draw(mvpMatrix, shader);
-        menuButton_.draw(mvpMatrix, shader);
         skillsPanel_.draw(mvpMatrix, shader);
         profitLabel_.render(mvpMatrix, shader, elapsedTime);
         versionLabel_.draw(mvpMatrix, shader);
@@ -71,11 +62,8 @@ public class MainWindow implements Loadable {
     }
 
     public void touchUp(Vector2 worldCoords) {
-        Log.i("MainWindow", "touchUpHandle begin");
-        if (menuButton_.hit(worldCoords)) {
-            menuManager_.show(MenuManager.MenuTypes.MAIN);
-        }
-        else if (skillsPanel_.hit(worldCoords)) {
+        Log.i("Game", "touchUpHandle begin");
+        if (skillsPanel_.hit(worldCoords)) {
             skillsPanel_.applySelectedSkill(world_);
         }
         else {
@@ -146,7 +134,6 @@ public class MainWindow implements Loadable {
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(scoreLabelSize);
         scoreLabel_.setPosition(scoreLabelOffset);
-        menuButton_.init(restartBtnOffset, restartBtnSize);
         profitLabel_.init(new Size2(screenPart_, screenPart_));
     }
 }

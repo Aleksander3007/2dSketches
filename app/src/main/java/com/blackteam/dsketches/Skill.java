@@ -18,11 +18,6 @@ public class Skill extends DisplayableObject {
         this.count_ = amount;
     }
 
-    @Override
-    public void dispose() {
-
-    }
-
     public static int getResourceId(SkillType type) {
         switch (type) {
             case RESHUFFLE:

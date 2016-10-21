@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.blackteam.dsketches.AchievementsManager;
 import com.blackteam.dsketches.ContentManager;
-import com.blackteam.dsketches.MainWindow;
+import com.blackteam.dsketches.Game;
 import com.blackteam.dsketches.MenuWindow;
 import com.blackteam.dsketches.Player;
 import com.blackteam.dsketches.World;
@@ -26,7 +26,7 @@ public class MenuManager {
     private TreeMap<MenuTypes, Window> menus_ = new TreeMap<>();
     private MenuWindow mainMenu_;
     private AchievementWindow achievementMenu_;
-    private MainWindow mainWindow_;
+    private Game game_;
     private World world_;
     private ContentManager contents_;
     private AchievementsManager achievementManager_;
@@ -43,12 +43,12 @@ public class MenuManager {
         }
      */
 
-    public MenuManager(MainWindow mainWindow, World world, Player player, AchievementsManager achievementManager) {
-        this.mainWindow_ = mainWindow;
+    public MenuManager(Game game, World world, Player player, AchievementsManager achievementManager) {
+        this.game_ = game;
         this.world_ = world;
         this.achievementManager_ = achievementManager;
         /*
-        mainMenu_ = new MenuWindow(world, mainWindow, this);
+        mainMenu_ = new MenuWindow(world, game, this);
         achievementMenu_ = new AchievementWindow();
         achievementMenu_.setInvisible();
         mainMenu_.setInvisible();*/
@@ -99,7 +99,7 @@ public class MenuManager {
     public Window createMenu(final MenuTypes menuType) {
         switch (menuType) {
             case MAIN:
-                return new MenuWindow(world_, mainWindow_, this);
+                return new MenuWindow(world_, game_, this);
             case ACHIEVEMENT:
                 return new AchievementWindow(this, achievementManager_.getAchiviements());
             default:

@@ -75,8 +75,6 @@ public class NumberLabel {
         }
     }
 
-    // TODO: ProfitLabel наследует от сюда, но использует другую текстуры!
-    // TODO: По идеи должен быть AssetsManager, как в libgdx.
     public void loadContent(Context context) {
         digitsTexture_ = new Texture(context, R.drawable.profit_numbers);
     }

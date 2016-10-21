@@ -26,11 +26,6 @@ public class TouchLine extends DisplayableObject {
         return R.drawable.touch_line;
     }
 
-    @Override
-    public void dispose() {
-        // TODO: Auto-generated method stub
-    }
-
     private Vector2 calculatePos(Orb orb1, Orb orb2) {
         Orb startOrb;
         // Если выделение по вертикали.

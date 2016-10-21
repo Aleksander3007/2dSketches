@@ -101,10 +101,6 @@ public class DisplayableObject {
         sprite_.draw(mvpMatrix, shader);
     }
 
-    public void dispose() {
-        // TODO: Не реализован метод DisplayableObject.dispose().
-    };
-
     public void setTexture(Texture texture) {
         if (sprite_ == null)
             sprite_ = new Sprite(texture);

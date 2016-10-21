@@ -60,8 +60,6 @@ public class AchievementsManager implements Observer {
         final Sketch.Types sketchType = (Sketch.Types) data;
 
         Log.i("Achievement", "update");
-        // TODO: Ачивки могут быть не только за sketch, но еще, например, за набранное.
-        // количество очков в сумме, за раз, и т.д.
 
         for (Achievement achievement : achievements_) {
             if (achievement.equals(sketchType, 0, 0)) {

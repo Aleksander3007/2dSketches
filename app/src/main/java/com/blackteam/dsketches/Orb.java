@@ -126,11 +126,6 @@ public class Orb extends DisplayableObject {
         setSize(size, size);
     }
 
-    @Override
-    public void dispose() {
-
-    }
-
     private Orb(Vector2 pos, Texture texture) {
         super(pos, texture);
     }

@@ -221,9 +221,6 @@ public class World extends Observable implements Loadable {
     }
 
     public void dispose() {
-        for (TouchLine touchLine : touchLines_) {
-            touchLine.dispose();
-        }
         touchLines_.clear();
     }
 
@@ -352,7 +349,6 @@ public class World extends Observable implements Loadable {
         selectedOrbs_ = orbs;
     }
 
-    // TODO: Тут по хорошему нужен аналог AssetsManager из libgdx (грузится в одном месте, а получать в другом).
     public void loadContent(ContentManager contents) {
         for (Orb.Types orbType : Orb.Types.values()) {
             for (Orb.SpecTypes orbSpecType : Orb.SpecTypes.values()) {

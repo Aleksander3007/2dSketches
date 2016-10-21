@@ -16,9 +16,4 @@ public class ScoreNumber extends DisplayableObject {
                        float texX, float texY, float texWidth, float texHeight) {
         super(pos, texture, texX, texY, texWidth, texHeight);
     }
-
-    @Override
-    public void dispose() {
-
-    }
 }

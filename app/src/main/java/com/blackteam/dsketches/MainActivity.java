@@ -1,15 +1,11 @@
 package com.blackteam.dsketches;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 
 import com.blackteam.dsketches.utils.ExceptionHandler;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 public class MainActivity extends Activity {
     public static String VERSION;
@@ -25,22 +21,15 @@ public class MainActivity extends Activity {
 
         VERSION = getApplicationContext().getResources().getString(R.string.version_str);
 
-        /*
-        try {
-            gameView_ = new GameView(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }
-       */
-
-       // setContentView(gameView_);
-
         setContentView(R.layout.main);
         gameView_ = (GameView) findViewById(R.id.gameview);
 
         rendererSet = true;
+    }
+
+    public void menuOpenOnClick(View view) {
+        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -56,5 +45,7 @@ public class MainActivity extends Activity {
             gameView_.onResume();
         }
     }
+
+
 
 }
