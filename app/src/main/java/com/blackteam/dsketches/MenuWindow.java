@@ -62,7 +62,6 @@ public class MenuWindow extends Window {
         exitButton_.setSize(btnSize);
     }
 
-    @Override
     public void loadContent(ContentManager contents) {
         backgroundImage_ = new GameImage(new Vector2(0, 0),
                 contents.get(R.drawable.menu_window)

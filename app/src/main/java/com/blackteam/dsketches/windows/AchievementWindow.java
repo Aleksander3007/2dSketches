@@ -3,17 +3,13 @@ package com.blackteam.dsketches.windows;
 import android.util.Log;
 
 import com.blackteam.dsketches.Achievement;
-import com.blackteam.dsketches.AchievementsManager;
 import com.blackteam.dsketches.ContentManager;
-import com.blackteam.dsketches.Loadable;
 import com.blackteam.dsketches.R;
-import com.blackteam.dsketches.World;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.GameButton;
 import com.blackteam.dsketches.gui.GameImage;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 

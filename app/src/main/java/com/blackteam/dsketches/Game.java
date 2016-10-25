@@ -10,7 +10,9 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 import com.blackteam.dsketches.windows.MenuManager;
 
-public class Game implements Loadable {
+import java.util.Observer;
+
+public class Game {
     private World world_; // TODO: World - это GameBox, OrbBox, GameField ...
     private Player player_;
 
@@ -25,24 +27,19 @@ public class Game implements Loadable {
 
     private float screenPart_;
 
-    public Game(World world, Player player) {
-        this.world_ = world;
+    public Game(Player player, ContentManager contents) {
         this.player_ = player;
+        world_ = new World(contents);
+        skillsPanel_ = new SkillsPanel(contents);
+        scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
+        profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
     }
 
-    public void init(final float screenWidth, final float screenHeight) {
+    public void resize(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
 
         setSize(screenWidth, screenHeight);
-
-        restartLevel();
-    }
-
-    public void loadContent(ContentManager contents) {
-        skillsPanel_ = new SkillsPanel(contents);
-        scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
-        profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
     }
 
     // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
@@ -91,6 +88,10 @@ public class Game implements Loadable {
         scoreLabel_.setValue(0);
     }
 
+    public void addObserver(Observer observer) {
+        world_.addObserver(observer);
+    }
+
     private void setSize(final float screenWidth, final float screenHeight) {
         screenPart_ = this.height_ / (3 + 15 + 3);
 
@@ -132,8 +133,8 @@ public class Game implements Loadable {
 
         skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
         world_.init(worldOffset, worldSize);
-        scoreLabel_.init(scoreLabelSize);
-        scoreLabel_.setPosition(scoreLabelOffset);
-        profitLabel_.init(new Size2(screenPart_, screenPart_));
+        scoreLabel_.init(scoreLabelOffset, scoreLabelSize);
+        profitLabel_.init(new Vector2(0, 0),
+                new Size2(screenPart_, screenPart_));
     }
 }

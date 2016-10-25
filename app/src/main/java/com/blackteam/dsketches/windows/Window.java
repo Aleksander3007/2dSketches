@@ -1,11 +1,11 @@
 package com.blackteam.dsketches.windows;
 
-import com.blackteam.dsketches.Loadable;
+import com.blackteam.dsketches.ContentManager;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
-public abstract class Window implements Loadable {
+public abstract class Window {
     protected Vector2 pos_;
     protected Size2 size_;
 
@@ -19,6 +19,8 @@ public abstract class Window implements Loadable {
 
         return (hitX && hitY);
     }
+
+    public abstract void loadContent(ContentManager contents);
 
     public Vector2 getPos() {
         return pos_;

@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NumberLabel {
     protected Texture digitsTexture_;
-    protected Vector2 pos_;
+    protected Vector2 pos_ = new Vector2(0, 0);
     protected float digitHeight_;
     protected float digitWidth_;
 
@@ -28,10 +28,16 @@ public class NumberLabel {
         loadContent(context);
     }
 
-    public void init(final Size2 rectSize) {
-        digitHeight_ = rectSize.height;
+    public void init(final Vector2 pos, final Size2 rectSize) {
         digitWidth_ = rectSize.height;
+        digitHeight_ = rectSize.height;
         pos_ = new Vector2(0f, 0f);
+
+        for (DisplayableObject digit : digits_) {
+            digit.setSize(digitWidth_, digitHeight_);
+        }
+
+        setPosition(pos);
     }
 
     public void setValue(int val) {
@@ -63,7 +69,7 @@ public class NumberLabel {
         setPosition(pos_);
     }
 
-    public void setPosition(Vector2 pos) {
+    public void setPosition(final Vector2 pos) {
         pos_ = pos;
 
         // Устанавливаем позицию.

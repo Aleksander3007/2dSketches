@@ -83,7 +83,7 @@ public class Texture {
 
         textureId_ = textureIds[0];
 
-        Log.i("Sprite.textureId", String.valueOf(textureId_));
+        Log.i("Texture", "textureId = " + String.valueOf(textureId_));
 
         return true;
     }

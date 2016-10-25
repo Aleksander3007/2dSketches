@@ -15,7 +15,7 @@
         android:onClick="menuOpenOnClick"
         android:background="@drawable/menu_btn" />
 
-    <com.blackteam.dsketches.GameView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.opengl.GLSurfaceView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gameview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

@@ -8,9 +8,6 @@ import android.util.Log;
 
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.GameMath;
-import com.blackteam.dsketches.windows.MenuManager;
-
-import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -37,9 +34,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private ShaderProgram shader_;
 
     private Game game_;
-
     private ContentManager contents_;
-    private ArrayList<Loadable> loadableObjects_ = new ArrayList<>();
 
     /**
      * Ограничение по FPS.
@@ -55,21 +50,15 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     // TODO: По идеи передавать не такой большой список Game game, MenuWindow menuWindow,
     // а либо массив ArrayList<GameWindow>, либо MenuManager (можно не услажнять так).
-    public GameRenderer(Context context, Game game,
-                        ArrayList<Loadable> loadableObjects) {
+    public GameRenderer(Context context, Game game, ContentManager contents) {
         this.context_ = context;
         this.game_ = game;
-        this.loadableObjects_ = loadableObjects;
-        this.contents_ = new ContentManager(context);
+        this.contents_ = contents;
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         loadContent();
-
-        for (Loadable loadableObj : loadableObjects_) {
-            loadableObj.loadContent(contents_);
-        }
 
         configRender();
         initCamera();
@@ -120,9 +109,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             uppX = 1.0f / width;
             uppY = aspectRatio / height;
 
-            // TODO: Тут должен быть game_.resize.
-            // а в onSurfaceCreated() должен быть передан game_.setShader(shader_);
-            game_.init(1f, aspectRatio);
+            game_.resize(1f, aspectRatio);
         }
 
         // Calculate the projection and view transformation.

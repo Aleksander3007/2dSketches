@@ -23,7 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Restart"
-        android:id="@+id/restartBtn" />
+        android:id="@+id/restartBtn"
+        android:onClick="restartBtnOnClick" />
 
     <Button
         android:layout_width="wrap_content"

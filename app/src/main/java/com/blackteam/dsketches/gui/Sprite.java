@@ -2,7 +2,9 @@ package com.blackteam.dsketches.gui;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
+import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.nio.ByteBuffer;
@@ -43,6 +45,8 @@ public class Sprite {
     private int alphaFactorHandle_;
 
     private Texture texture_;
+    private Vector2 texRegionPos_;
+    private Size2 texRegionSize_;
 
     private float[] translateMatrix_ = new float[16];
     private float[] scaleMatrix_ = new float[16];
@@ -66,28 +70,8 @@ public class Sprite {
      */
     public Sprite(Texture texture, float x, float y, float width, float height) {
         this.texture_ = texture;
-
-        // Units per pixel.
-        float uppX = 1.0f / texture.getWidth();
-        float uppY = 1.0f / texture.getHeight();
-
-        float xUnits = x * uppX;
-        float yUnits = y * uppY;
-        float widthUnits = width * uppX;
-        float heightUnits = height * uppY;
-
-        // Bottom left (V1).
-        textureCoords[0] = xUnits;
-        textureCoords[1] = yUnits;
-        // Top left (V2).
-        textureCoords[2] = xUnits;
-        textureCoords[3] = yUnits + heightUnits;
-        // Bottom right (V3).
-        textureCoords[4] = xUnits + widthUnits;
-        textureCoords[5] = yUnits;
-        // Top right (V4).
-        textureCoords[6] = xUnits + widthUnits;
-        textureCoords[7] = yUnits + heightUnits;
+        this.texRegionPos_ = new Vector2(x, y);
+        this.texRegionSize_ = new Size2(width, height);
 
         prepareData();
         resetMatrices();
@@ -96,6 +80,7 @@ public class Sprite {
     public void setTexture(Texture texture) {
         texture_ = texture;
     }
+
     /**
      * Отрисовка спрайта.
      * <br/><b>Note: На shader можно ссылаться только в потоке Open GL ES.</b>
@@ -105,6 +90,7 @@ public class Sprite {
     //
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
 
+        prepareTextureCoords();
         getHandlers(shader);
         bindData();
 
@@ -211,4 +197,47 @@ public class Sprite {
         mvpMatrixHandle_ = shader.getUniformLocation(ShaderProgram.MATRIX_ATTR);
         alphaFactorHandle_ = shader.getUniformLocation(ShaderProgram.ALPHA_FACTOR_ATTR);
     }
+
+    /**
+     * Подготавливаем массив с координатами текстуры.
+     */
+    private void prepareTextureCoords() {
+        // Units per pixel.
+        float uppX = 1.0f / texture_.getWidth();
+        float uppY = 1.0f / texture_.getHeight();
+
+        float xUnits = this.texRegionPos_.x * uppX;
+        float yUnits = this.texRegionPos_.y * uppY;
+
+        float widthUnits = 1.0f;
+        float heightUnits = 1.0f;
+        if ((this.texRegionSize_.width > 0) &&(this.texRegionSize_.height > 0)) {
+            widthUnits = this.texRegionSize_.width * uppX;
+            heightUnits = this.texRegionSize_.height * uppY;
+        }
+        else {
+            this.texRegionSize_.width = texture_.getWidth();
+            this.texRegionSize_.height = texture_.getHeight();
+        }
+
+        // Bottom left (V1).
+        textureCoords[0] = xUnits;
+        textureCoords[1] = yUnits;
+        // Top left (V2).
+        textureCoords[2] = xUnits;
+        textureCoords[3] = yUnits + heightUnits;
+        // Bottom right (V3).
+        textureCoords[4] = xUnits + widthUnits;
+        textureCoords[5] = yUnits;
+        // Top right (V4).
+        textureCoords[6] = xUnits + widthUnits;
+        textureCoords[7] = yUnits + heightUnits;
+
+
+        for (int iCoord = 0; iCoord < textureCoords.length; iCoord++) {
+            textureBuffer_.put(iCoord, textureCoords[iCoord]);
+        }
+        textureBuffer_.position(0);
+    }
+
 }

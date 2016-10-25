@@ -12,45 +12,45 @@ import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Модель мира.
  */
-public class World extends Observable implements Loadable {
+public class World extends Observable {
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
 
     private Texture touchLineTexture_;
     private final ArrayMap<Orb.Types, ArrayMap<Orb.SpecTypes, Texture>> orbTextures_ = new ArrayMap<>();
 
-    private Vector2 pos_;
+    private Vector2 pos_ = new Vector2(0, 0);
     private float width_;
     private float height_;
     private int nRows_;
     private int nColumns_;
     private Orb[][] orbs_;
     private ArrayList<Orb> selectedOrbs_ = new ArrayList<>();
-    private ArrayList<TouchLine> touchLines_ = new ArrayList<>();
+    private CopyOnWriteArrayList<TouchLine> touchLines_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
-    private float orbSize_;
+    private float orbSize_ = 1.0f;
     private Size2 touchLineSize_;
 
     private boolean isUpdating_ = false;
 
     private SketchesManager sketchesManager_;
 
-    public World() {
-        this.nRows_ = DEFAULT_NUM_ROWS;
-        this.nColumns_ = DEFAULT_NUM_COLUMNS;
+    public World(ContentManager contents) {
+        nRows_ = DEFAULT_NUM_ROWS;
+        nColumns_ = DEFAULT_NUM_COLUMNS;
+        orbs_ = new Orb[nRows_][nColumns_];
         sketchesManager_ = new SketchesManager();
+
+        loadContent(contents);
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
-        //loadContent(context);
-
-        orbs_ = new Orb[nRows_][nColumns_];
-
         float orbHeight = rectSize.height / nRows_;
         float orbWidth = rectSize.width / nColumns_;
 
@@ -64,6 +64,17 @@ public class World extends Observable implements Loadable {
                 orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
                 orbSize_ / 4.0f
         );
+
+        Log.i("World", "orbs.length = " + String.valueOf(orbs_.length));
+        for (int iRow = 0; iRow < orbs_.length; iRow++) {
+            for (int iCol = 0; iCol < orbs_[iRow].length; iCol++) {
+                Vector2 orbPos = new Vector2(
+                        this.pos_.x + iCol * orbSize_,
+                        this.pos_.y + iRow * orbSize_);
+                orbs_[iRow][iCol].setPosition(orbPos);
+                orbs_[iRow][iCol].setSize(orbSize_);
+            }
+        }
     }
 
     public void draw(float[] mvpMatrix, final ShaderProgram shader) {
@@ -148,6 +159,14 @@ public class World extends Observable implements Loadable {
 
             orbType = orb.getType();
         }
+
+        Log.i("World", "(profit, factor, sketch) = " +
+                "(" +
+                String.valueOf(profit) + "," +
+                String.valueOf(factor) + "," +
+                String.valueOf(selectedSketch_.getCost()) +
+                ")"
+        );
 
         return (profit * factor + selectedSketch_.getCost());
     }
