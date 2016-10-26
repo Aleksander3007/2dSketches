@@ -18,7 +18,7 @@ public class WorldTest {
     private class WorldTestClass extends World {
 
         public WorldTestClass() {
-            super();
+            super(new ContentManager(null));
         }
 
         public void addSelectedOrbs(ArrayList<GameDot> selectedGameDot) {
