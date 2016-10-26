@@ -1,7 +1,5 @@
 package com.blackteam.dsketches;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class Sketch {
@@ -15,28 +13,28 @@ public class Sketch {
     public static class Element {
         private int rowNo_;
         private int colNo_;
-        private Orb.Types orbType_;
+        private GameDot.Types dotType_;
 
-        public Element(int rowNo, int colNo, Orb.Types orbType) {
+        public Element(int rowNo, int colNo, GameDot.Types dotType) {
             this.rowNo_ = rowNo;
             this.colNo_ = colNo;
-            this.orbType_ = orbType;
+            this.dotType_ = dotType;
         }
 
         public int getRowNo() { return rowNo_; }
         public int getColNo() { return colNo_; }
-        public Orb.Types getOrbType() { return orbType_; }
+        public GameDot.Types getDotType() { return dotType_; }
 
         public boolean isEqual(Sketch.Element elem) {
             boolean isRowEqual = (rowNo_ == elem.getRowNo());
             boolean isColEqual = (colNo_ == elem.getColNo());
-            boolean isOrbTypeEqual = (
-                    (orbType_ == elem.getOrbType()) ||
-                    (orbType_ == Orb.Types.UNIVERSAL) ||
-                    (elem.getOrbType() == Orb.Types.UNIVERSAL)
+            boolean isDotTypeEqual = (
+                    (dotType_ == elem.getDotType()) ||
+                    (dotType_ == GameDot.Types.UNIVERSAL) ||
+                    (elem.getDotType() == GameDot.Types.UNIVERSAL)
             );
 
-            if (isRowEqual && isColEqual && isOrbTypeEqual) {
+            if (isRowEqual && isColEqual && isDotTypeEqual) {
                 return true;
             }
             else
@@ -61,24 +59,24 @@ public class Sketch {
         return cost_;
     }
 
-    public void add(int rowNo, int colNo, Orb.Types orbType) {
-        elements.add(new Element(rowNo, colNo, orbType));
+    public void add(int rowNo, int colNo, GameDot.Types dotType) {
+        elements.add(new Element(rowNo, colNo, dotType));
     }
 
     public void clear() {
         elements.clear();
     }
 
-    public boolean isEqual(ArrayList<Sketch.Element> orbElems_) {
-        if (orbElems_.size() != elements.size())
+    public boolean isEqual(ArrayList<Sketch.Element> dotElems) {
+        if (dotElems.size() != elements.size())
             return false;
 
         // Max кол-во проходов = SUM(orbElems_.size() - i), где (i = [0..elements.size()]).
         boolean isElemFound;
-        for (Element orbElem : orbElems_) {
+        for (Element dotElem : dotElems) {
             isElemFound = false;
             for (Element sketchElem : elements) {
-                if (orbElem.isEqual(sketchElem)) {
+                if (dotElem.isEqual(sketchElem)) {
                     isElemFound = true;
                     break;
                 }

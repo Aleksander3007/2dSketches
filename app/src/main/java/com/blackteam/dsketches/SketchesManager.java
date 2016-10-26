@@ -1,8 +1,5 @@
 package com.blackteam.dsketches;
 
-import com.blackteam.dsketches.Orb;
-import com.blackteam.dsketches.Sketch;
-
 import java.util.ArrayList;
 
 /**
@@ -24,25 +21,25 @@ public class SketchesManager {
         // TODO: STUB: Генерация sketch.
         Sketch sketchElemRow3 = new Sketch(Sketch.Types.ROW_3, 20);
         for (int iElem = 0; iElem < 3; iElem++) {
-            sketchElemRow3.add(0, iElem, Orb.Types.UNIVERSAL);
+            sketchElemRow3.add(0, iElem, GameDot.Types.UNIVERSAL);
         }
         sketches_.add(sketchElemRow3);
 
         Sketch sketchElemRow5 = new Sketch(Sketch.Types.ROW_5, 50);
         for (int iElem = 0; iElem < 5; iElem++) {
-            sketchElemRow5.add(0, iElem, Orb.Types.UNIVERSAL);
+            sketchElemRow5.add(0, iElem, GameDot.Types.UNIVERSAL);
         }
         sketches_.add(sketchElemRow5);
     }
 
-    public Sketch findSketch(ArrayList<Orb> orbs) {
-        if (orbs == null)
+    public Sketch findSketch(ArrayList<GameDot> gameDots) {
+        if (gameDots == null)
             return SKETCH_NULL_;
 
         // Ищём подходящий sketch.
-        ArrayList<Sketch.Element> normalOrbs  = normalize(orbs);
+        ArrayList<Sketch.Element> normalDots  = normalize(gameDots);
         for (Sketch sketch : sketches_) {
-            if (sketch.isEqual(normalOrbs)) {
+            if (sketch.isEqual(normalDots)) {
                 return sketch;
             }
         }
@@ -50,28 +47,28 @@ public class SketchesManager {
         return SKETCH_NULL_;
     }
 
-    private ArrayList<Sketch.Element> normalize(ArrayList<Orb> orbs) {
+    private ArrayList<Sketch.Element> normalize(ArrayList<GameDot> gameDots) {
         // 1. Ищем минимумы.
-        int minRowNo = orbs.get(0).getRowNo();
-        int minColNo = orbs.get(0).getColNo();
-        for (Orb orb : orbs) {
-            if (orb.getRowNo() < minRowNo)
-                minRowNo = orb.getRowNo();
-            if (orb.getColNo() < minColNo)
-                minColNo = orb.getColNo();
+        int minRowNo = gameDots.get(0).getRowNo();
+        int minColNo = gameDots.get(0).getColNo();
+        for (GameDot gameDot : gameDots) {
+            if (gameDot.getRowNo() < minRowNo)
+                minRowNo = gameDot.getRowNo();
+            if (gameDot.getColNo() < minColNo)
+                minColNo = gameDot.getColNo();
         }
 
         // Создаем список нормализованных элементов.
-        ArrayList<Sketch.Element> normalOrbs = new ArrayList<>(orbs.size());
-        for (Orb orb : orbs) {
+        ArrayList<Sketch.Element> normalDots = new ArrayList<>(gameDots.size());
+        for (GameDot gameDot : gameDots) {
             Sketch.Element elem = new Sketch.Element(
-                    orb.getRowNo() - minRowNo,
-                    orb.getColNo() - minColNo,
-                    orb.getType()
+                    gameDot.getRowNo() - minRowNo,
+                    gameDot.getColNo() - minColNo,
+                    gameDot.getType()
             );
-            normalOrbs.add(elem);
+            normalDots.add(elem);
         }
 
-        return normalOrbs;
+        return normalDots;
     }
 }

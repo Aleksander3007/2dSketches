@@ -8,12 +8,11 @@ import com.blackteam.dsketches.gui.StaticText;
 import com.blackteam.dsketches.utils.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
-import com.blackteam.dsketches.windows.MenuManager;
 
 import java.util.Observer;
 
 public class Game {
-    private World world_; // TODO: World - это GameBox, OrbBox, GameField ...
+    private World world_; // TODO: World - это GameBox, DotsBox, GameField ...
     private Player player_;
 
     // TODO: Необходимо все кнопки и индикаторы перенести в MainActivity.
@@ -65,12 +64,12 @@ public class Game {
         }
         else {
             world_.update();
-            int profit = world_.getProfitByOrbs();
+            int profit = world_.getProfitByDots();
             if (profit > 0) {
                 profitLabel_.setProfit(profit, new Vector2(worldCoords));
                 player_.addScore(profit);
                 scoreLabel_.setValue(player_.getScore());
-                world_.deleteSelectedOrbs();
+                world_.deleteSelectedDots();
                 world_.removeSelection();
             }
             else {

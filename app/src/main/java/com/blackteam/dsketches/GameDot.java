@@ -4,7 +4,7 @@ import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Vector2;
 
-public class Orb extends DisplayableObject {
+public class GameDot extends DisplayableObject {
     public enum Types {
         TYPE1,
         TYPE2,
@@ -21,16 +21,16 @@ public class Orb extends DisplayableObject {
         COLUMNS_EATER
     }
 
-    private Orb.Types type_;
-    private Orb.SpecTypes specType_;
+    private GameDot.Types type_;
+    private GameDot.SpecTypes specType_;
     private int rowNo_;
     private int colNo_;
 
-    public Orb(Orb.Types orbType, Orb.SpecTypes orbSpecType, Vector2 pos,
-               int rowNo, int colNo, Texture texture) {
+    public GameDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType, Vector2 pos,
+                   int rowNo, int colNo, Texture texture) {
         this(pos, texture);
-        this.type_ = orbType;
-        this.specType_ = orbSpecType;
+        this.type_ = dotType;
+        this.specType_ = dotSpecType;
         this.rowNo_ = rowNo;
         this.colNo_ = colNo;
     }
@@ -43,19 +43,19 @@ public class Orb extends DisplayableObject {
         return rowNo_;
     }
 
-    public Orb.Types getType() {
+    public GameDot.Types getType() {
         return this.type_;
     }
 
-    public void setType(Orb.Types orbType) {
-        this.type_ = orbType;
+    public void setType(GameDot.Types dotType) {
+        this.type_ = dotType;
     }
 
-    public Orb.SpecTypes getSpecType() {
+    public GameDot.SpecTypes getSpecType() {
         return this.specType_;
     }
 
-    public static int getResourceId(Orb.Types type, Orb.SpecTypes specType) {
+    public static int getResourceId(GameDot.Types type, GameDot.SpecTypes specType) {
         switch (type) {
             case TYPE1:
                 switch (specType) {
@@ -126,7 +126,7 @@ public class Orb extends DisplayableObject {
         setSize(size, size);
     }
 
-    private Orb(Vector2 pos, Texture texture) {
+    private GameDot(Vector2 pos, Texture texture) {
         super(pos, texture);
     }
 }

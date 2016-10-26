@@ -1,6 +1,5 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
@@ -22,19 +21,19 @@ public class World extends Observable {
     public static final int DEFAULT_NUM_COLUMNS = 7;
 
     private Texture touchLineTexture_;
-    private final ArrayMap<Orb.Types, ArrayMap<Orb.SpecTypes, Texture>> orbTextures_ = new ArrayMap<>();
+    private final ArrayMap<GameDot.Types, ArrayMap<GameDot.SpecTypes, Texture>> dotTextures_ = new ArrayMap<>();
 
     private Vector2 pos_ = new Vector2(0, 0);
     private float width_;
     private float height_;
     private int nRows_;
     private int nColumns_;
-    private Orb[][] orbs_;
-    private ArrayList<Orb> selectedOrbs_ = new ArrayList<>();
+    private GameDot[][] dots_;
+    private ArrayList<GameDot> selectedDots_ = new ArrayList<>();
     private CopyOnWriteArrayList<TouchLine> touchLines_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
-    private float orbSize_ = 1.0f;
+    private float dotSize_ = 1.0f;
     private Size2 touchLineSize_;
 
     private boolean isUpdating_ = false;
@@ -44,35 +43,35 @@ public class World extends Observable {
     public World(ContentManager contents) {
         nRows_ = DEFAULT_NUM_ROWS;
         nColumns_ = DEFAULT_NUM_COLUMNS;
-        orbs_ = new Orb[nRows_][nColumns_];
+        dots_ = new GameDot[nRows_][nColumns_];
         sketchesManager_ = new SketchesManager();
 
         loadContent(contents);
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
-        float orbHeight = rectSize.height / nRows_;
-        float orbWidth = rectSize.width / nColumns_;
+        float dotHeight = rectSize.height / nRows_;
+        float dotWidth = rectSize.width / nColumns_;
 
-        orbSize_ = (orbWidth < orbHeight) ? orbWidth : orbHeight;
+        dotSize_ = (dotWidth < dotHeight) ? dotWidth : dotHeight;
 
-        this.height_ = orbSize_ * nRows_;
-        this.width_ = orbSize_ * nColumns_;
+        this.height_ = dotSize_ * nRows_;
+        this.width_ = dotSize_ * nColumns_;
         this.pos_ = new Vector2(pos.x + (rectSize.width / 2) - (this.width_ / 2), pos.y);
 
         touchLineSize_ = new Size2(
-                orbSize_, /* (Orb.WIDTH / 2) + (Orb.WIDTH / 2) */
-                orbSize_ / 4.0f
+                dotSize_, /* (GameDot.WIDTH / 2) + (GameDot.WIDTH / 2) */
+                dotSize_ / 4.0f
         );
 
-        Log.i("World", "orbs.length = " + String.valueOf(orbs_.length));
-        for (int iRow = 0; iRow < orbs_.length; iRow++) {
-            for (int iCol = 0; iCol < orbs_[iRow].length; iCol++) {
-                Vector2 orbPos = new Vector2(
-                        this.pos_.x + iCol * orbSize_,
-                        this.pos_.y + iRow * orbSize_);
-                orbs_[iRow][iCol].setPosition(orbPos);
-                orbs_[iRow][iCol].setSize(orbSize_);
+        Log.i("World", "dots.length = " + String.valueOf(dots_.length));
+        for (int iRow = 0; iRow < dots_.length; iRow++) {
+            for (int iCol = 0; iCol < dots_[iRow].length; iCol++) {
+                Vector2 dotPos = new Vector2(
+                        this.pos_.x + iCol * dotSize_,
+                        this.pos_.y + iRow * dotSize_);
+                dots_[iRow][iCol].setPosition(dotPos);
+                dots_[iRow][iCol].setSize(dotSize_);
             }
         }
     }
@@ -81,7 +80,7 @@ public class World extends Observable {
         if (!isUpdating_) {
             for (int iRow = 0; iRow < nRows_; iRow++) {
                 for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    orbs_[iRow][iCol].draw(mvpMatrix, shader);
+                    dots_[iRow][iCol].draw(mvpMatrix, shader);
                 }
             }
             for (TouchLine touchLine : touchLines_) {
@@ -98,7 +97,7 @@ public class World extends Observable {
             // Определяем был ли нажат на элемент.
             for (int iRow = 0; iRow < nRows_; iRow++) {
                 for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    if (hitOrb(orbs_[iRow][iCol], coords))
+                    if (hitDot(dots_[iRow][iCol], coords))
                         return true;
                 }
             }
@@ -115,31 +114,31 @@ public class World extends Observable {
         return nColumns_;
     }
 
-    public Orb getOrb(int rowNo, int colNo) {
-        return orbs_[rowNo][colNo];
+    public GameDot getDot(int rowNo, int colNo) {
+        return dots_[rowNo][colNo];
     }
 
-    public int getProfitByOrbs() {
+    public int getProfitByDots() {
         // TODO: Возможно это должно быть в классе GameRules.
         // А лучше GameRule, и GameRuleManager.
-        if (selectedOrbs_.size() <= 2) {
+        if (selectedDots_.size() <= 2) {
             return 0;
         }
 
         int profit = 0;
         int factor = 1;
-        Orb.Types orbType = selectedOrbs_.get(0).getType();
-        for (Orb orb : selectedOrbs_) {
-            if ((orb.getType() == orbType) ||
-                    (orb.getType() == Orb.Types.UNIVERSAL) || (orbType == Orb.Types.UNIVERSAL)) {
+        GameDot.Types dotType = selectedDots_.get(0).getType();
+        for (GameDot gameDot : selectedDots_) {
+            if ((gameDot.getType() == dotType) ||
+                    (gameDot.getType() == GameDot.Types.UNIVERSAL) || (dotType == GameDot.Types.UNIVERSAL)) {
                 profit += 10; // TODO: Magic number!
             }
-            // Все элементы должны быть одинакового Orb's Type.
+            // Все элементы должны быть одинакового GameDot's Type.
             else {
                 return 0;
             }
 
-            switch (orb.getSpecType()) {
+            switch (gameDot.getSpecType()) {
                 case DOUBLE: {
                     factor *= 2;
                     break;
@@ -157,7 +156,7 @@ public class World extends Observable {
                     break;
             }
 
-            orbType = orb.getType();
+            dotType = gameDot.getType();
         }
 
         Log.i("World", "(profit, factor, sketch) = " +
@@ -174,9 +173,9 @@ public class World extends Observable {
     public void update() {
         isUpdating_ = true;
 
-        if (selectedOrbs_.size() >= 2) {
+        if (selectedDots_.size() >= 2) {
 
-            selectedSketch_ = sketchesManager_.findSketch(selectedOrbs_);
+            selectedSketch_ = sketchesManager_.findSketch(selectedDots_);
 
             Log.i("World", "sketch's type = " + selectedSketch_.getType().toString());
             if (selectedSketch_.getType() != Sketch.Types.NONE) {
@@ -184,19 +183,19 @@ public class World extends Observable {
                 notifyObservers(selectedSketch_.getType());
             }
 
-            // Добавленные с помощью спец. Orbs.
-            ArrayList<Orb> addSpecOrbs_ = new ArrayList<>();
-            // Ищем спец. Orbs.
-            for (Orb orb : selectedOrbs_) {
-                switch (orb.getSpecType()) {
+            // Добавленные с помощью спец. Dots.
+            ArrayList<GameDot> addSpecDots_ = new ArrayList<>();
+            // Ищем спец. Dots.
+            for (GameDot gameDot : selectedDots_) {
+                switch (gameDot.getSpecType()) {
                     case ROWS_EATER: {
                         // Добавляем все элементы строки как выделенные.
                         for (int iCol = 0; iCol < nColumns_; iCol++) {
                             // ... без повтора в массиве.
-                            if (!selectedOrbs_.contains(orbs_[orb.getRowNo()][iCol])) {
+                            if (!selectedDots_.contains(dots_[gameDot.getRowNo()][iCol])) {
                                 // ... и делаем их уникальным, чтобы считался Profit и для них.
-                                orbs_[orb.getRowNo()][iCol].setType(Orb.Types.UNIVERSAL);
-                                addSpecOrbs_.add(orbs_[orb.getRowNo()][iCol]);
+                                dots_[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
+                                addSpecDots_.add(dots_[gameDot.getRowNo()][iCol]);
                             }
                         }
                     }
@@ -206,7 +205,7 @@ public class World extends Observable {
                 }
             }
 
-            selectedOrbs_.addAll(addSpecOrbs_);
+            selectedDots_.addAll(addSpecDots_);
         }
 
         isUpdating_ = false;
@@ -217,25 +216,25 @@ public class World extends Observable {
      */
     public void removeSelection() {
         touchLines_.clear();
-        selectedOrbs_.clear();
+        selectedDots_.clear();
         selectedSketch_ = SketchesManager.SKETCH_NULL_;
     }
 
     /**
-     * Удалить выделенные Orbs.
+     * Удалить выделенные Dots.
      */
-    public void deleteSelectedOrbs() {
+    public void deleteSelectedDots() {
         // Определяем верхних соседей.
-        for (Orb orb : selectedOrbs_) {
-            for (int iRow = orb.getRowNo() + 1; iRow < nRows_; iRow++) {
+        for (GameDot gameDot : selectedDots_) {
+            for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
                 // Опускаем все элементы колонки на клетку ниже.
-                createOrb(orbs_[iRow][orb.getColNo()].getType(),
-                        orbs_[iRow][orb.getColNo()].getSpecType(),
-                        iRow - 1, orb.getColNo());
+                createDot(dots_[iRow][gameDot.getColNo()].getType(),
+                        dots_[iRow][gameDot.getColNo()].getSpecType(),
+                        iRow - 1, gameDot.getColNo());
             }
 
             // На пустую верхную часть генерируем новые.
-            createOrb(nRows_ - 1, orb.getColNo());
+            createDot(nRows_ - 1, gameDot.getColNo());
         }
     }
 
@@ -253,7 +252,7 @@ public class World extends Observable {
 
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
-                createOrb(iRow, iCol);
+                createDot(iRow, iCol);
             }
         }
 
@@ -262,44 +261,44 @@ public class World extends Observable {
         }
     }
 
-    private Orb.Types generateOrbType() {
+    private GameDot.Types generateDotType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<Orb.Types, Float> orbTypeProbabilities = new ArrayMap<>();
-        orbTypeProbabilities.put(Orb.Types.TYPE1, 32f);
-        orbTypeProbabilities.put(Orb.Types.TYPE2, 32f);
-        orbTypeProbabilities.put(Orb.Types.TYPE3, 32f);
-        orbTypeProbabilities.put(Orb.Types.UNIVERSAL, 4f);
+        ArrayMap<GameDot.Types, Float> dotTypeProbabilities = new ArrayMap<>();
+        dotTypeProbabilities.put(GameDot.Types.TYPE1, 32f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE2, 32f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE3, 32f);
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 4f);
 
-        return GameMath.generateValue(orbTypeProbabilities);
+        return GameMath.generateValue(dotTypeProbabilities);
     }
 
-    private Orb.SpecTypes generateOrbSpecType() {
+    private GameDot.SpecTypes generateDotSpecType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<Orb.SpecTypes, Float> orbTypeProbabilities = new ArrayMap<>();
-        orbTypeProbabilities.put(Orb.SpecTypes.NONE, 80f);
-        orbTypeProbabilities.put(Orb.SpecTypes.DOUBLE, 10f);
-        orbTypeProbabilities.put(Orb.SpecTypes.TRIPLE, 0f);
-        orbTypeProbabilities.put(Orb.SpecTypes.AROUND_EATER, 0f);
-        orbTypeProbabilities.put(Orb.SpecTypes.ROWS_EATER, 10f);
-        orbTypeProbabilities.put(Orb.SpecTypes.COLUMNS_EATER, 0f);
+        ArrayMap<GameDot.SpecTypes, Float> dotTypeProbabilities = new ArrayMap<>();
+        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 80f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 10f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 0f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROWS_EATER, 10f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMNS_EATER, 0f);
 
-        return GameMath.generateValue(orbTypeProbabilities);
+        return GameMath.generateValue(dotTypeProbabilities);
     }
 
-    private boolean hitOrb(Orb orb, Vector2 coords) {
-        if (orb.hit(coords)) {
-            if (!isOrbSelected(orb)) {
+    private boolean hitDot(GameDot gameDot, Vector2 coords) {
+        if (gameDot.hit(coords)) {
+            if (!isDotSelected(gameDot)) {
                 // Если выбран до этого как минимум еще один.
-                if (selectedOrbs_.size() > 0) {
-                    Orb prevOrb = selectedOrbs_.get(selectedOrbs_.size() - 1);
+                if (selectedDots_.size() > 0) {
+                    GameDot prevGameDot = selectedDots_.get(selectedDots_.size() - 1);
 
                     // Если соседний, то выделяем (защита от нажатий несколькими пальцами в разных местах).
-                    if ((Math.abs((orb.getColNo() - prevOrb.getColNo())) == 1) ||
-                            (Math.abs((orb.getRowNo() - prevOrb.getRowNo())) == 1)) {
-                        selectedOrbs_.add(orb);
+                    if ((Math.abs((gameDot.getColNo() - prevGameDot.getColNo())) == 1) ||
+                            (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1)) {
+                        selectedDots_.add(gameDot);
 
                         TouchLine touchLine = new TouchLine(
-                                prevOrb, orb,
+                                prevGameDot, gameDot,
                                 touchLineSize_,
                                 touchLineTexture_
                         );
@@ -307,7 +306,7 @@ public class World extends Observable {
                     }
                 }
                 else {
-                    selectedOrbs_.add(orb);
+                    selectedDots_.add(gameDot);
                 }
             }
 
@@ -318,9 +317,9 @@ public class World extends Observable {
         }
     }
 
-    private boolean isOrbSelected(Orb orb) {
-        for (Orb selectedOrb : selectedOrbs_) {
-            if (orb == selectedOrb) {
+    private boolean isDotSelected(GameDot gameDot) {
+        for (GameDot selectedGameDot : selectedDots_) {
+            if (gameDot == selectedGameDot) {
                 return true;
             }
         }
@@ -328,60 +327,60 @@ public class World extends Observable {
     }
 
     /**
-     * Создать Orb.
+     * Создать GameDot.
      * @param rowNo Номер строки.
      * @param colNo Номер столбца.
      */
-    private void createOrb(final int rowNo, final int colNo) {
-        Orb.Types orbType = generateOrbType();
-        Orb.SpecTypes orbSpecType = generateOrbSpecType();
-        createOrb(orbType, orbSpecType, rowNo, colNo);
+    private void createDot(final int rowNo, final int colNo) {
+        GameDot.Types dotType = generateDotType();
+        GameDot.SpecTypes dotSpecType = generateDotSpecType();
+        createDot(dotType, dotSpecType, rowNo, colNo);
     }
 
     /**
-     * Создать Orb.
-     * @param orbType Тип.
-     * @param orbSpecType Специальный тип.
+     * Создать GameDot.
+     * @param dotType Тип.
+     * @param dotSpecType Специальный тип.
      * @param rowNo Номер строки.
      * @param colNo Номер столбца.
      */
-    public void createOrb(final Orb.Types orbType, final Orb.SpecTypes orbSpecType,
-                           final int rowNo, final int colNo
+    public void createDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType,
+                          final int rowNo, final int colNo
     ) {
-        Texture orbTexture = orbTextures_.get(orbType).get(orbSpecType);
-        Vector2 orbPos = new Vector2(
-                this.pos_.x + colNo * orbSize_,
-                this.pos_.y + rowNo * orbSize_);
-        orbs_[rowNo][colNo] = new Orb(orbType, orbSpecType,
-                orbPos,
+        Texture dotTexture = dotTextures_.get(dotType).get(dotSpecType);
+        Vector2 dotPos = new Vector2(
+                this.pos_.x + colNo * dotSize_,
+                this.pos_.y + rowNo * dotSize_);
+        dots_[rowNo][colNo] = new GameDot(dotType, dotSpecType,
+                dotPos,
                 rowNo, colNo,
-                orbTexture
+                dotTexture
         );
 
-        orbs_[rowNo][colNo].setSize(orbSize_);
+        dots_[rowNo][colNo].setSize(dotSize_);
     }
 
     /**
-     * Установка выделенных Orb (Для тестирования).
+     * Установка выделенных GameDot (Для тестирования).
      */
-    protected void setSelectedOrbs(ArrayList<Orb> orbs) {
-        selectedOrbs_ = orbs;
+    protected void setSelectedDots(ArrayList<GameDot> gameDots) {
+        selectedDots_ = gameDots;
     }
 
     public void loadContent(ContentManager contents) {
-        for (Orb.Types orbType : Orb.Types.values()) {
-            for (Orb.SpecTypes orbSpecType : Orb.SpecTypes.values()) {
+        for (GameDot.Types dotType : GameDot.Types.values()) {
+            for (GameDot.SpecTypes dotSpecType : GameDot.SpecTypes.values()) {
 
-                int orbResourceId = Orb.getResourceId(orbType, orbSpecType);
-                Texture orbTexture = contents.get(orbResourceId);
+                int dotResourceId = GameDot.getResourceId(dotType, dotSpecType);
+                Texture dotTexture = contents.get(dotResourceId);
 
-                if (orbTextures_.get(orbType) != null) {
-                    orbTextures_.get(orbType).put(orbSpecType, orbTexture);
+                if (dotTextures_.get(dotType) != null) {
+                    dotTextures_.get(dotType).put(dotSpecType, dotTexture);
                 }
                 else {
-                    ArrayMap<Orb.SpecTypes, Texture> orbSpecTypeTextures = new ArrayMap<>();
-                    orbSpecTypeTextures.put(orbSpecType, orbTexture);
-                    orbTextures_.put(orbType, orbSpecTypeTextures);
+                    ArrayMap<GameDot.SpecTypes, Texture> dotSpecTypeTextures = new ArrayMap<>();
+                    dotSpecTypeTextures.put(dotSpecType, dotTexture);
+                    dotTextures_.put(dotType, dotSpecTypeTextures);
                 }
             }
         }

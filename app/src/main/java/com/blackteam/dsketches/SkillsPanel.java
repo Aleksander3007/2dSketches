@@ -1,10 +1,8 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.ShaderProgram;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -75,15 +73,15 @@ public class SkillsPanel {
                         int randomRow = (int) (Math.random() * world.getNumRows());
                         int randomCol = (int) (Math.random() * world.getNumCols());
 
-                        Orb.Types tempOrbType = world.getOrb(iRow, iCol).getType();
-                        Orb.SpecTypes tempOrbSpecType = world.getOrb(iRow, iCol).getSpecType();
+                        GameDot.Types tempOrbType = world.getDot(iRow, iCol).getType();
+                        GameDot.SpecTypes tempOrbSpecType = world.getDot(iRow, iCol).getSpecType();
 
-                        world.createOrb(world.getOrb(randomRow, randomCol).getType(),
-                                world.getOrb(randomRow, randomCol).getSpecType(),
+                        world.createDot(world.getDot(randomRow, randomCol).getType(),
+                                world.getDot(randomRow, randomCol).getSpecType(),
                                 iRow, iCol
                         );
 
-                        world.createOrb(tempOrbType,
+                        world.createDot(tempOrbType,
                                 tempOrbSpecType,
                                 randomRow, randomCol
                         );

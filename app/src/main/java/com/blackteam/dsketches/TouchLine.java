@@ -8,67 +8,67 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 /**
- * Линия при выделении Orbs.
+ * Линия при выделении игровых точек.
  */
 public class TouchLine extends DisplayableObject {
     public TouchLine(Size2 size, Texture texture) {
         super(texture);
     }
 
-    public TouchLine(Orb orb1, Orb orb2, Size2 size, Texture texture) {
+    public TouchLine(GameDot gameDot1, GameDot gameDot2, Size2 size, Texture texture) {
         super(texture);
         setSize(size.width, size.height);
-        setPosition(calculatePos(orb1, orb2));
-        setRotationDeg(calculateRotationDeg(orb1, orb2));
+        setPosition(calculatePos(gameDot1, gameDot2));
+        setRotationDeg(calculateRotationDeg(gameDot1, gameDot2));
     }
 
     public static int getResourceId() {
         return R.drawable.touch_line;
     }
 
-    private Vector2 calculatePos(Orb orb1, Orb orb2) {
-        Orb startOrb;
+    private Vector2 calculatePos(GameDot gameDot1, GameDot gameDot2) {
+        GameDot startGameDot;
         // Если выделение по вертикали.
-        if (orb2.getY() != orb1.getY()) {
+        if (gameDot2.getY() != gameDot1.getY()) {
             // Если выделение идёт снизу вверх.
-            if (orb2.getY() > orb1.getY()) {
+            if (gameDot2.getY() > gameDot1.getY()) {
                 Log.i("World.hit", "bottom to top");
-                startOrb = orb1;
+                startGameDot = gameDot1;
             }
             // Если выделение идёт сверху вниз.
             else {
                 Log.i("World.hit", "top to bottom");
-                startOrb = orb2;
+                startGameDot = gameDot2;
             }
 
             return new Vector2(
-                    startOrb.getX() + (startOrb.getWidth() / 2) + (height_ / 2),
-                    startOrb.getY() + (startOrb.getHeight() / 2)
+                    startGameDot.getX() + (startGameDot.getWidth() / 2) + (height_ / 2),
+                    startGameDot.getY() + (startGameDot.getHeight() / 2)
             );
         }
         // По горизонтали.
         else {
             // Если выделение идёт слево направо.
-            if (orb2.getX() > orb1.getX()) {
+            if (gameDot2.getX() > gameDot1.getX()) {
                 Log.i("World.hit", "left to right");
-                startOrb = orb1;
+                startGameDot = gameDot1;
             }
             // Если выделение идёт справо налево.
             else {
                 Log.i("World.hit", "right to left");
-                startOrb = orb2;
+                startGameDot = gameDot2;
             }
 
             return new Vector2(
-                    startOrb.getX() + (startOrb.getWidth() / 2),
-                    startOrb.getY() + (startOrb.getHeight() / 2) - (height_ / 2)
+                    startGameDot.getX() + (startGameDot.getWidth() / 2),
+                    startGameDot.getY() + (startGameDot.getHeight() / 2) - (height_ / 2)
             );
         }
     }
 
-    private float calculateRotationDeg(Orb orb1, Orb orb2) {
+    private float calculateRotationDeg(GameDot gameDot1, GameDot gameDot2) {
         // Если выделение идёт снизу вверх.
-        if (orb2.getY() != orb1.getY()) {
+        if (gameDot2.getY() != gameDot1.getY()) {
             return 90;
         }
         else {

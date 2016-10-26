@@ -21,15 +21,15 @@ public class WorldTest {
             super();
         }
 
-        public void addSelectedOrbs(ArrayList<Orb> selectedOrb) {
-            setSelectedOrbs(selectedOrb);
+        public void addSelectedOrbs(ArrayList<GameDot> selectedGameDot) {
+            setSelectedDots(selectedGameDot);
         }
     }
 
-    public int getProfit(WorldTestClass worldTestClass, ArrayList<Orb> selectedOrb) {
-        worldTestClass.addSelectedOrbs(selectedOrb);
+    public int getProfit(WorldTestClass worldTestClass, ArrayList<GameDot> selectedGameDot) {
+        worldTestClass.addSelectedOrbs(selectedGameDot);
         worldTestClass.update();
-        int profit = worldTestClass.getProfitByOrbs();
+        int profit = worldTestClass.getProfitByDots();
         worldTestClass.removeSelection();
         return profit;
     }
@@ -37,7 +37,7 @@ public class WorldTest {
     @Test
     public void testGetProfitByOrbs() {
         WorldTestClass worldTestClass = new WorldTestClass();
-        ArrayList<Orb> selectedOrb = new ArrayList<Orb>();
+        ArrayList<GameDot> selectedGameDot = new ArrayList<GameDot>();
         int profit = -1;
 
         Vector2 facePos = new Vector2(0, 0);
@@ -47,37 +47,37 @@ public class WorldTest {
         final int ORB_COST = 10;
 
         // Проверка, что при выделении меньше трёх, profit = 0.
-        selectedOrb.clear();
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
-        profit = getProfit(worldTestClass, selectedOrb);
+        selectedGameDot.clear();
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
+        profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Выделено меньше трёх", 0, profit);
 
         // Проверка, когда выделены три.
-        for (Orb.Types orbType : Orb.Types.values()) {
+        for (GameDot.Types orbType : GameDot.Types.values()) {
             int rowNo = (int) (World.DEFAULT_NUM_ROWS * Math.random());
-            selectedOrb.clear();
-            selectedOrb.add(new Orb(orbType, Orb.SpecTypes.NONE, facePos, rowNo, 0, fakedTexture));
-            selectedOrb.add(new Orb(orbType, Orb.SpecTypes.NONE, facePos, rowNo + 1, 0, fakedTexture));
-            selectedOrb.add(new Orb(orbType, Orb.SpecTypes.NONE, facePos, rowNo + 2, 0, fakedTexture));
-            profit = getProfit(worldTestClass, selectedOrb);
-            Assert.assertEquals("Выделено три Orb типа " + orbType.toString(), 3 * ORB_COST, profit);
+            selectedGameDot.clear();
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo, 0, fakedTexture));
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo + 1, 0, fakedTexture));
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo + 2, 0, fakedTexture));
+            profit = getProfit(worldTestClass, selectedGameDot);
+            Assert.assertEquals("Выделено три GameDot типа " + orbType.toString(), 3 * ORB_COST, profit);
         }
 
         // Проверка, когда выделены три разных.
-        selectedOrb.clear();
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE2, Orb.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE2, Orb.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
-        profit = getProfit(worldTestClass, selectedOrb);
-        Assert.assertEquals("Выделено три Orb разного типа", 0, profit);
+        selectedGameDot.clear();
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
+        profit = getProfit(worldTestClass, selectedGameDot);
+        Assert.assertEquals("Выделено три GameDot разного типа", 0, profit);
 
         // Проверка универсального типа.
-        selectedOrb.clear();
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.UNIVERSAL, Orb.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
-        profit = getProfit(worldTestClass, selectedOrb);
+        selectedGameDot.clear();
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.UNIVERSAL, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
+        profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Проверка универсального типа", 3 * ORB_COST, profit);
 
         // Проверка если не все соседи.
@@ -86,18 +86,18 @@ public class WorldTest {
          */
 
         // Проверка спец. типов.
-        /* Невозможна, т.к. для спец. типов необходимо создать уровень, который содержит Orb для
+        /* Невозможна, т.к. для спец. типов необходимо создать уровень, который содержит GameDot для
          * создания которых требуется Context.
          */
 
         // Проверка с подсчетом sketch.
-        selectedOrb.clear();
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 1, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 2, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 3, fakedTexture));
-        selectedOrb.add(new Orb(Orb.Types.TYPE1, Orb.SpecTypes.NONE, facePos, 0, 4, fakedTexture));
-        profit = getProfit(worldTestClass, selectedOrb);
+        selectedGameDot.clear();
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 1, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 2, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 3, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 4, fakedTexture));
+        profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Sketch ROW_5", 5 * ORB_COST + 50, profit);
     }
 }
