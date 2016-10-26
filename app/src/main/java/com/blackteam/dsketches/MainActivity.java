@@ -19,6 +19,9 @@ import java.io.IOException;
 public class MainActivity extends Activity implements View.OnTouchListener {
     public static String VERSION;
 
+    // TODO: Надо хранить в res/values/strings.
+    public final static String ACHIEVEMENT_DATA = "com.blackteam.dsketches.ACHIEVEMENT_DATA";
+
     private static final int MAIN_MENU_ACTIVITY_ = 0;
 
     private GLSurfaceView gameView_;
@@ -65,7 +68,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     public void menuOpenOnClick(View view) {
+        Log.i("MainActivity", "menuOpenOnClick");
+
+        Bundle achievementsBundle = new Bundle();
+        achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
+
         Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
+        menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
         startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
     }
 

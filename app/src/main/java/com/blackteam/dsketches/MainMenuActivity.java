@@ -27,4 +27,12 @@ public class MainMenuActivity extends Activity {
         setResult(RESULT_OK, answerIntent);
         this.finish();
     }
+
+    public void achievementsBtnOnClick(View view) {
+        Intent achievementsIntent = new Intent(getBaseContext(), AchievementsActivity.class);
+        achievementsIntent.putExtra(MainActivity.ACHIEVEMENT_DATA,
+                getIntent().getExtras().getBundle(MainActivity.ACHIEVEMENT_DATA)
+        );
+        startActivity(achievementsIntent);
+    }
 }

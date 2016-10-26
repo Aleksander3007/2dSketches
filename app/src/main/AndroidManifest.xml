@@ -31,11 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainMenuActivity"
-            android:theme="@style/Theme.Transparent">
-        </activity>
+            android:theme="@style/Theme.Transparent"></activity>
+        <activity android:name=".AchievementsActivity"></activity>
     </application>
 
 </manifest>

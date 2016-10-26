@@ -1,6 +1,8 @@
 package com.blackteam.dsketches;
 
-public class Achievement {
+import java.io.Serializable;
+
+public class Achievement implements Serializable {
     public static final Sketch.Types ANY_SKETCH_TYPE = Sketch.Types.NONE;
     public static final int ANY_SCORE = 0;
     public static final int ANY_PROFIT = 0;

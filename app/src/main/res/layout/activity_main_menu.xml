@@ -13,28 +13,29 @@
     tools:context="com.blackteam.dsketches.MainMenuActivity">
 
     <Button
+        android:id="@+id/closeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Close"
-        android:id="@+id/closeBtn"
         android:onClick="closeBtnOnClick"/>
 
     <Button
+        android:id="@+id/restartBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Restart"
-        android:id="@+id/restartBtn"
         android:onClick="restartBtnOnClick" />
 
     <Button
+        android:id="@+id/achievementsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Achievements"
-        android:id="@+id/achievementsBtn" />
+        android:onClick="achievementsBtnOnClick" />
 
     <Button
+        android:id="@+id/exitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Exit"
-        android:id="@+id/exitBtn" />
+        android:text="Exit" />
 </LinearLayout>
