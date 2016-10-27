@@ -1,14 +1,21 @@
 package com.blackteam.dsketches;
 
+import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,9 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class World extends Observable {
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
-
-    private Texture touchLineTexture_;
-    private final ArrayMap<GameDot.Types, ArrayMap<GameDot.SpecTypes, Texture>> dotTextures_ = new ArrayMap<>();
 
     private Vector2 pos_ = new Vector2(0, 0);
     private float width_;
@@ -39,14 +43,14 @@ public class World extends Observable {
     private boolean isUpdating_ = false;
 
     private SketchesManager sketchesManager_;
+    private ContentManager contents_;
 
     public World(ContentManager contents) {
+        this.contents_ = contents;
         nRows_ = DEFAULT_NUM_ROWS;
         nColumns_ = DEFAULT_NUM_COLUMNS;
         dots_ = new GameDot[nRows_][nColumns_];
         sketchesManager_ = new SketchesManager();
-
-        loadContent(contents);
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
@@ -264,10 +268,11 @@ public class World extends Observable {
     private GameDot.Types generateDotType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
         ArrayMap<GameDot.Types, Float> dotTypeProbabilities = new ArrayMap<>();
-        dotTypeProbabilities.put(GameDot.Types.TYPE1, 32f);
-        dotTypeProbabilities.put(GameDot.Types.TYPE2, 32f);
-        dotTypeProbabilities.put(GameDot.Types.TYPE3, 32f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 4f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE1, 25f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE2, 25f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE3, 25f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE4, 25f);
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 0f);
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -275,11 +280,11 @@ public class World extends Observable {
     private GameDot.SpecTypes generateDotSpecType() {
         // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
         ArrayMap<GameDot.SpecTypes, Float> dotTypeProbabilities = new ArrayMap<>();
-        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 80f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 10f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 100f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 0f);
         dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0f);
         dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 0f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROWS_EATER, 10f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROWS_EATER, 0f);
         dotTypeProbabilities.put(GameDot.SpecTypes.COLUMNS_EATER, 0f);
 
         return GameMath.generateValue(dotTypeProbabilities);
@@ -300,7 +305,7 @@ public class World extends Observable {
                         TouchLine touchLine = new TouchLine(
                                 prevGameDot, gameDot,
                                 touchLineSize_,
-                                touchLineTexture_
+                                contents_
                         );
                         touchLines_.add(touchLine);
                     }
@@ -347,47 +352,23 @@ public class World extends Observable {
     public void createDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType,
                           final int rowNo, final int colNo
     ) {
-        Texture dotTexture = dotTextures_.get(dotType).get(dotSpecType);
         Vector2 dotPos = new Vector2(
                 this.pos_.x + colNo * dotSize_,
                 this.pos_.y + rowNo * dotSize_);
         dots_[rowNo][colNo] = new GameDot(dotType, dotSpecType,
                 dotPos,
                 rowNo, colNo,
-                dotTexture
+                contents_
         );
 
         dots_[rowNo][colNo].setSize(dotSize_);
     }
 
     /**
-     * Установка выделенных GameDot (Для тестирования).
+     * Установка выделенных GameDot.
+     * <br><strong>NOTE</strong>: Только для тестирования.
      */
     protected void setSelectedDots(ArrayList<GameDot> gameDots) {
         selectedDots_ = gameDots;
-    }
-
-    public void loadContent(ContentManager contents) {
-        for (GameDot.Types dotType : GameDot.Types.values()) {
-            for (GameDot.SpecTypes dotSpecType : GameDot.SpecTypes.values()) {
-
-                int dotResourceId = GameDot.getResourceId(dotType, dotSpecType);
-                Texture dotTexture = contents.get(dotResourceId);
-
-                if (dotTextures_.get(dotType) != null) {
-                    dotTextures_.get(dotType).put(dotSpecType, dotTexture);
-                }
-                else {
-                    ArrayMap<GameDot.SpecTypes, Texture> dotSpecTypeTextures = new ArrayMap<>();
-                    dotSpecTypeTextures.put(dotSpecType, dotTexture);
-                    dotTextures_.put(dotType, dotSpecTypeTextures);
-                }
-            }
-        }
-
-        touchLineTexture_ = contents.get(TouchLine.getResourceId());
-
-        if (BuildConfig.DEBUG)
-            Log.i("World.Content", "Content of the world are loaded.");
     }
 }

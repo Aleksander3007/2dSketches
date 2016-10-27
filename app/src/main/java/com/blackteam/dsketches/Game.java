@@ -1,5 +1,6 @@
 package com.blackteam.dsketches;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.ProfitLabel;
@@ -26,7 +27,7 @@ public class Game {
 
     private float screenPart_;
 
-    public Game(Player player, ContentManager contents) {
+    public Game(final Player player, final ContentManager contents) {
         this.player_ = player;
         world_ = new World(contents);
         skillsPanel_ = new SkillsPanel(contents);

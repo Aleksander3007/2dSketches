@@ -46,9 +46,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         game_ = new Game(player_, contents_);
         game_.restartLevel();
 
-        achievementsManager_ = new AchievementsManager();
+
         try {
-            achievementsManager_.loadContent(getApplicationContext());
+            achievementsManager_ = new AchievementsManager(getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {

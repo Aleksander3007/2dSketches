@@ -18,6 +18,10 @@ public class AchievementsManager implements Observer {
 
     public ArrayList<Achievement> achievements_ = new ArrayList<>();
 
+    public AchievementsManager(Context context) throws XmlPullParserException, IOException {
+        loadContent(context);
+    }
+
     public void loadContent(Context context) throws XmlPullParserException, IOException {
         Achievement achievement = new Achievement();
         XmlResourceParser xpp = context.getResources().getXml(R.xml.achievements);

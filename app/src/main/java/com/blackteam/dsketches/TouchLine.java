@@ -15,15 +15,11 @@ public class TouchLine extends DisplayableObject {
         super(texture);
     }
 
-    public TouchLine(GameDot gameDot1, GameDot gameDot2, Size2 size, Texture texture) {
-        super(texture);
+    public TouchLine(GameDot gameDot1, GameDot gameDot2, Size2 size, ContentManager contents) {
+        super(contents.get(R.drawable.touch_line));
         setSize(size.width, size.height);
         setPosition(calculatePos(gameDot1, gameDot2));
         setRotationDeg(calculateRotationDeg(gameDot1, gameDot2));
-    }
-
-    public static int getResourceId() {
-        return R.drawable.touch_line;
     }
 
     private Vector2 calculatePos(GameDot gameDot1, GameDot gameDot2) {
