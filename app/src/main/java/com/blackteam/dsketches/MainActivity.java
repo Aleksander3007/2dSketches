@@ -103,6 +103,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 boolean restart = data.getBooleanExtra(MainMenuActivity.CMD_RESTART_LVL, false);
                 if (restart) {
                     Log.i("MainActivity", "restart");
+                    game_.restartLevel();
                 }
                 else {
                     Log.i("MainActivity", "false");
