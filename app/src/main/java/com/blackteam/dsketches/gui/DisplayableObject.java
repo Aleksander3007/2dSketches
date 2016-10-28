@@ -124,6 +124,15 @@ public class DisplayableObject {
         sprite_.setScale(width, height);
     }
 
+    public void setSizeCenter(float newWidth, float newHeight) {
+        Vector2 newPos = new Vector2(
+                pos_.x - (newWidth - width_) / 2,
+                pos_.y - (newHeight - height_) / 2
+        );
+        setSize(newWidth, newHeight);
+        setPosition(newPos);
+    }
+
     public void setPosition(final float x, final float y) {
         setPosition(new Vector2(x, y));
     }

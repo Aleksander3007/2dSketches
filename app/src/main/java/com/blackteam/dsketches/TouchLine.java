@@ -16,7 +16,7 @@ public class TouchLine extends DisplayableObject {
     }
 
     public TouchLine(GameDot gameDot1, GameDot gameDot2, Size2 size, ContentManager contents) {
-        super(contents.get(R.drawable.touch_line));
+        super(contents.get(R.drawable.dots_selector));
         setSize(size.width, size.height);
         setPosition(calculatePos(gameDot1, gameDot2));
         setRotationDeg(calculateRotationDeg(gameDot1, gameDot2));

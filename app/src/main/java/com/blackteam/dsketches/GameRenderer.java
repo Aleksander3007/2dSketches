@@ -181,24 +181,16 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         contents_.load(R.drawable.achievement_bg_noactive);
         contents_.load(R.drawable.achievement_btn);
         contents_.load(R.drawable.achievement_window_bg);
-        contents_.load(R.drawable.blue_orb_3);
         contents_.load(R.drawable.chasm);
-        contents_.load(R.drawable.double_orb);
         contents_.load(R.drawable.error);
         contents_.load(R.drawable.exit_btn);
         contents_.load(R.drawable.good_neighbour);
-        contents_.load(R.drawable.green_bubble_3);
-        contents_.load(R.drawable.menu_btn);
         contents_.load(R.drawable.menu_window);
         contents_.load(R.drawable.numbers);
         contents_.load(R.drawable.profit_numbers);
-        contents_.load(R.drawable.red_double_orb);
-        contents_.load(R.drawable.red_orb);
-        contents_.load(R.drawable.red_rows_eater_orb);
         contents_.load(R.drawable.reshuffle);
         contents_.load(R.drawable.restart_btn);
-        contents_.load(R.drawable.touch_line);
-        contents_.load(R.drawable.universal);
+        contents_.load(R.drawable.dots_selector);
         contents_.load(R.drawable.x_close);
         contents_.load(R.drawable.dots_theme1);
     }

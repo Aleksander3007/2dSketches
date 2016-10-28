@@ -1,10 +1,7 @@
 package com.blackteam.dsketches;
 
-import android.widget.GridLayout;
-
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.ShaderProgram;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -22,15 +19,18 @@ public class GameDot {
         NONE, // Без эффекта.
         DOUBLE, // Удвоение profit.
         TRIPLE, // Утроение profit.
-        AROUND_EATER, // Разрушаются вокруг все соседи.
-        ROWS_EATER, // Разрушаются соседи по строке.
-        COLUMNS_EATER // Разрушаются соседи по столбцу.
+        ROW_EATER, // Разрушаются соседи по строке.
+        COLUMN_EATER, // Разрушаются соседи по столбцу.
+        AROUND_EATER // Разрушаются вокруг все соседи.
     }
 
     /** Ширина текстуры. */
     public static final int TEX_WIDTH = 256;
     /** Высота текстуры. */
     public static final int TEX_HEIGHT = 256;
+
+    /** Количество очков, которое приносит игровая точка. */
+    public static final int COST = 10;
 
     private GameDot.Types type_;
     private GameDot.SpecTypes specType_;
@@ -114,8 +114,9 @@ public class GameDot {
             case TYPE4:
                 x = 3 * GameDot.TEX_HEIGHT;
                 break;
-            default:
-                x = 0;
+            case UNIVERSAL:
+                x = 4 * GameDot.TEX_HEIGHT;
+                break;
         }
 
         return new Vector2(x, 0);
@@ -129,14 +130,19 @@ public class GameDot {
                 x = 0; // Берём этот, но на деле мы ничего не отрисовываем.
                 break;
             case DOUBLE:
+                x = 0;
                 break;
             case TRIPLE:
+                x = GameDot.TEX_WIDTH;
+                break;
+            case ROW_EATER:
+                x = 2 * GameDot.TEX_WIDTH;
+                break;
+            case COLUMN_EATER:
+                x = 3 * GameDot.TEX_WIDTH;
                 break;
             case AROUND_EATER:
-                break;
-            case ROWS_EATER:
-                break;
-            case COLUMNS_EATER:
+                x = 4 * GameDot.TEX_WIDTH;
                 break;
         }
 
@@ -149,18 +155,24 @@ public class GameDot {
             specObject_.setSize(size, size);
     }
 
-    public static Types convertToType(String gameDotTypeStr) {
-        return Enum.valueOf(GameDot.Types.class, gameDotTypeStr);
-    }
-
-    public static SpecTypes convertToSpecType(String gameDotSpecTypeStr) {
-        return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
+    public void setSizeCenter(float size) {
+        mainObject_.setSizeCenter(size, size);
+        if (specType_ != SpecTypes.NONE)
+            specObject_.setSizeCenter(size, size);
     }
 
     public void setPosition(Vector2 dotPos) {
         mainObject_.setPosition(dotPos);
         if (specType_ != SpecTypes.NONE)
             specObject_.setPosition(dotPos);
+    }
+
+    public static Types convertToType(String gameDotTypeStr) {
+        return Enum.valueOf(GameDot.Types.class, gameDotTypeStr);
+    }
+
+    public static SpecTypes convertToSpecType(String gameDotSpecTypeStr) {
+        return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
     }
 
     public void draw(float[] mvpMatrix, ShaderProgram shader) {
@@ -187,5 +199,15 @@ public class GameDot {
 
     public float getHeight() {
         return mainObject_.getHeight();
+    }
+
+    public boolean isIdenticalType(GameDot.Types dotType) {
+        if ((type_ == dotType) ||
+                (type_ == GameDot.Types.UNIVERSAL) || (dotType == GameDot.Types.UNIVERSAL)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

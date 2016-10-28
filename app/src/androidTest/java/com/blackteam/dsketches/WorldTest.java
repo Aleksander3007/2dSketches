@@ -15,10 +15,12 @@ import java.util.ArrayList;
 @RunWith(AndroidJUnit4.class)
 public class WorldTest {
 
+    private ContentManager fakeContents_ = new ContentManager(null);
+
     private class WorldTestClass extends World {
 
         public WorldTestClass() {
-            super(new ContentManager(null));
+            super(fakeContents_);
         }
 
         public void addSelectedOrbs(ArrayList<GameDot> selectedGameDot) {
@@ -40,16 +42,16 @@ public class WorldTest {
         ArrayList<GameDot> selectedGameDot = new ArrayList<GameDot>();
         int profit = -1;
 
-        Vector2 facePos = new Vector2(0, 0);
-        Bitmap fakedBitmap = Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_4444);
-        Texture fakedTexture = new Texture(fakedBitmap);
+        Vector2 fakePos = new Vector2(0, 0);
+        //Bitmap fakedBitmap = Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_4444);
+        //Texture fakedTexture = new Texture(fakedBitmap);
 
         final int ORB_COST = 10;
 
         // Проверка, что при выделении меньше трёх, profit = 0.
         selectedGameDot.clear();
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 1, 0, fakeContents_));
         profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Выделено меньше трёх", 0, profit);
 
@@ -57,26 +59,26 @@ public class WorldTest {
         for (GameDot.Types orbType : GameDot.Types.values()) {
             int rowNo = (int) (World.DEFAULT_NUM_ROWS * Math.random());
             selectedGameDot.clear();
-            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo, 0, fakedTexture));
-            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo + 1, 0, fakedTexture));
-            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, facePos, rowNo + 2, 0, fakedTexture));
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, fakePos, rowNo, 0, fakeContents_));
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, fakePos, rowNo + 1, 0, fakeContents_));
+            selectedGameDot.add(new GameDot(orbType, GameDot.SpecTypes.NONE, fakePos, rowNo + 2, 0, fakeContents_));
             profit = getProfit(worldTestClass, selectedGameDot);
             Assert.assertEquals("Выделено три GameDot типа " + orbType.toString(), 3 * ORB_COST, profit);
         }
 
-        // Проверка, когда выделены три разных.
-        selectedGameDot.clear();
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
+        // Проверка, когда выделены три разных. - Не может быть, т.к. теперь проверяется при выделении.
+        /*selectedGameDot.clear();
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, fakePos, 1, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE2, GameDot.SpecTypes.NONE, fakePos, 2, 0, fakeContents_));
         profit = getProfit(worldTestClass, selectedGameDot);
-        Assert.assertEquals("Выделено три GameDot разного типа", 0, profit);
+        Assert.assertEquals("Выделено три GameDot разного типа", 0, profit);*/
 
         // Проверка универсального типа.
         selectedGameDot.clear();
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.UNIVERSAL, GameDot.SpecTypes.NONE, facePos, 1, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 2, 0, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.UNIVERSAL, GameDot.SpecTypes.NONE, fakePos, 1, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 2, 0, fakeContents_));
         profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Проверка универсального типа", 3 * ORB_COST, profit);
 
@@ -92,11 +94,11 @@ public class WorldTest {
 
         // Проверка с подсчетом sketch.
         selectedGameDot.clear();
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 0, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 1, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 2, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 3, fakedTexture));
-        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, facePos, 0, 4, fakedTexture));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 0, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 1, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 2, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 3, fakeContents_));
+        selectedGameDot.add(new GameDot(GameDot.Types.TYPE1, GameDot.SpecTypes.NONE, fakePos, 0, 4, fakeContents_));
         profit = getProfit(worldTestClass, selectedGameDot);
         Assert.assertEquals("Sketch ROW_5", 5 * ORB_COST + 50, profit);
     }
