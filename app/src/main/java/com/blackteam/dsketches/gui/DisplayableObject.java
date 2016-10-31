@@ -84,7 +84,7 @@ public class DisplayableObject {
         if (texture == null) {
             throw new IllegalArgumentException("Texture is not loaded.");
         }
-        this.pos_ = pos;
+        this.pos_ = new Vector2(pos.x, pos.y);
         this.sprite_ = new Sprite(texture, texX, texY, texWidth, texHeight);
         this.rotationDeg_ = rotationDeg;
 
@@ -137,16 +137,16 @@ public class DisplayableObject {
         setPosition(new Vector2(x, y));
     }
 
-    public void setPosition(Vector2 pos) {
-        pos_ = pos;
+    public void setPosition(final Vector2 pos) {
+        pos_ = new Vector2(pos.x, pos.y);
         sprite_.setPosition(pos);
     }
 
-    public void addPosition(Vector2 pos) {
+    public void addPosition(final Vector2 amount) {
         // TODO: Переопределить операцию "+".
-        pos_.x = pos.x;
-        pos_.y = pos.y;
-        sprite_.addPosition(pos);
+        pos_.x += amount.x;
+        pos_.y += amount.y;
+        sprite_.addPosition(amount);
     }
 
     public Vector2 getPosition() {

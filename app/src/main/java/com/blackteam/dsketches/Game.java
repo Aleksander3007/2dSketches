@@ -48,7 +48,7 @@ public class Game {
             Log.i("Game", "render scoreLabel_ == null");
 
         scoreLabel_.render(mvpMatrix, shader);
-        world_.draw(mvpMatrix, shader);
+        world_.draw(mvpMatrix, shader, elapsedTime);
         skillsPanel_.draw(mvpMatrix, shader);
         profitLabel_.render(mvpMatrix, shader, elapsedTime);
         versionLabel_.draw(mvpMatrix, shader);

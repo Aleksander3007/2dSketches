@@ -110,29 +110,29 @@ public class Sprite {
         alphaFactor_ = alpha;
     }
 
-    public void setPosition(Vector2 pos) {
+    public void setPosition(final Vector2 pos) {
         Matrix.setIdentityM(translateMatrix_, 0);
         addPosition(pos);
     }
 
-    public void addPosition(Vector2 pos) {
-        Matrix.translateM(translateMatrix_, 0, pos.x, pos.y, 0.0f);
+    public void addPosition(final Vector2 amount) {
+        Matrix.translateM(translateMatrix_, 0, amount.x, amount.y, 0.0f);
         buildModelMatrix();
     }
 
-    public void setRotate(float angleDeg) {
+    public void setRotate(final float angleDeg) {
         Matrix.setIdentityM(rotateMatrix_, 0);
         Matrix.rotateM(rotateMatrix_, 0, angleDeg, 0.0f, 0.0f, 1.0f);
         buildModelMatrix();
     }
 
-    public void setScale(float scaleX, float scaleY) {
+    public void setScale(final float scaleX, final float scaleY) {
         Matrix.setIdentityM(scaleMatrix_, 0);
         Matrix.scaleM(scaleMatrix_, 0, scaleX, scaleY, 0.0f);
         buildModelMatrix();
     }
 
-    public void setScale(float scaleVal) {
+    public void setScale(final float scaleVal) {
         Matrix.setIdentityM(scaleMatrix_, 0);
         Matrix.scaleM(scaleMatrix_, 0, scaleVal, scaleVal, 0.0f);
         buildModelMatrix();

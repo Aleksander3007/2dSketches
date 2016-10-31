@@ -57,7 +57,7 @@ public class World extends Observable {
         return nColumns_;
     }
 
-    public GameDot getDot(int rowNo, int colNo) {
+    public synchronized GameDot getDot(int rowNo, int colNo) {
         return dots_[rowNo][colNo];
     }
 
@@ -67,6 +67,7 @@ public class World extends Observable {
 
         dotSize_ = (dotWidth < dotHeight) ? dotWidth : dotHeight;
         selectedDotSize_ = dotSize_ * SELECTION_SCALE_; // При выделении точки: она увеличивается.
+        GameDot.setAbsTranslateSpeed(dotSize_ / GameDot.TRANSLATE_TIME_);
 
         this.height_ = dotSize_ * nRows_;
         this.width_ = dotSize_ * nColumns_;
@@ -79,24 +80,23 @@ public class World extends Observable {
 
         for (int iRow = 0; iRow < dots_.length; iRow++) {
             for (int iCol = 0; iCol < dots_[iRow].length; iCol++) {
-                Vector2 dotPos = new Vector2(
-                        this.pos_.x + iCol * dotSize_,
-                        this.pos_.y + iRow * dotSize_);
+                Vector2 dotPos = convertToPos(iRow, iCol);
                 dots_[iRow][iCol].setPosition(dotPos);
                 dots_[iRow][iCol].setSize(dotSize_);
             }
         }
     }
 
-    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
+    public void draw(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
         if (!isUpdating_) {
             for (int iRow = 0; iRow < nRows_; iRow++) {
                 for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    dots_[iRow][iCol].draw(mvpMatrix, shader);
+                    if (!selectedDots_.contains(dots_[iRow][iCol]))
+                        dots_[iRow][iCol].draw(mvpMatrix, shader, elapsedTime);
                 }
             }
             for (GameDot dot : selectedDots_) {
-                dot.draw(mvpMatrix, shader);
+                dot.draw(mvpMatrix, shader, elapsedTime);
             }
             for (TouchLine touchLine : touchLines_) {
                 touchLine.draw(mvpMatrix, shader);
@@ -128,7 +128,7 @@ public class World extends Observable {
                 if (selectedDots_.size() > 0) {
                     GameDot prevGameDot = selectedDots_.get(selectedDots_.size() - 1);
 
-                    // Если соседний, то выделяем (защита от нажатий несколькими пальцами в разных местах).
+                    // Если соседний, то выделяем (плюс защита от нажатий несколькими пальцами в разных местах).
                     boolean rowNeighbour = (gameDot.getColNo() == prevGameDot.getColNo()) &&
                             (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1);
                     boolean columnNeighbour = (gameDot.getRowNo() == prevGameDot.getRowNo()) &&
@@ -266,18 +266,19 @@ public class World extends Observable {
      * Удалить выделенные Dots.
      */
     public void deleteSelectedDots() {
-        // Определяем верхних соседей.
-        for (GameDot gameDot : selectedDots_) {
-            for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
-                // Опускаем все элементы колонки на клетку ниже.
-                createDot(dots_[iRow][gameDot.getColNo()].getType(),
-                        dots_[iRow][gameDot.getColNo()].getSpecType(),
-                        iRow - 1, gameDot.getColNo());
-            }
+        isUpdating_ = true;
 
-            // На пустую верхную часть генерируем новые.
-            createDot(nRows_ - 1, gameDot.getColNo());
+        for (GameDot gameDot : selectedDots_) {
+            int translateCol = gameDot.getColNo();
+            for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
+                dots_[iRow][translateCol].moveTo(convertToPos(iRow - 1, translateCol));
+                dots_[iRow][translateCol].setRowNo(iRow - 1); // TODO: Row хранится в двух местах - ОЧЕНЬ ПЛОХО!
+                dots_[iRow - 1][translateCol] = dots_[iRow][translateCol];
+            }
+            createDot(nRows_ - 1, translateCol);
         }
+
+        isUpdating_ = false;
     }
 
     /**
@@ -374,5 +375,11 @@ public class World extends Observable {
      */
     protected void setSelectedDots(ArrayList<GameDot> gameDots) {
         selectedDots_ = gameDots;
+    }
+
+    private Vector2 convertToPos(final int rowNo, final int colNo) {
+        return new Vector2(
+                this.pos_.x + colNo * dotSize_,
+                this.pos_.y + rowNo * dotSize_);
     }
 }
