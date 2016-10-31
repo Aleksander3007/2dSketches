@@ -35,4 +35,14 @@ public class GameMath {
     public static long getCurrentTime() {
         return System.currentTimeMillis();
     }
+
+    /**
+     * Возращает случайное число в пределах заданных границ.
+     * @param min Нижняя граница возращаемого числа.
+     * @param max Верхняя граница возращаемого числа.
+     * @return Случайное число.
+     */
+    public static double getRandom(double min, double max) {
+        return Math.random() * (max - min) + min;
+    }
 }
