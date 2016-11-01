@@ -1,6 +1,8 @@
 package com.blackteam.dsketches;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Управление скетчами.
@@ -32,7 +34,7 @@ public class SketchesManager {
         sketches_.add(sketchElemRow5);
     }
 
-    public Sketch findSketch(ArrayList<GameDot> gameDots) {
+    public Sketch findSketch(List<GameDot> gameDots) {
         if (gameDots == null)
             return SKETCH_NULL_;
 
@@ -47,7 +49,7 @@ public class SketchesManager {
         return SKETCH_NULL_;
     }
 
-    private ArrayList<Sketch.Element> normalize(ArrayList<GameDot> gameDots) {
+    private ArrayList<Sketch.Element> normalize(List<GameDot> gameDots) {
         // 1. Ищем минимумы.
         int minRowNo = gameDots.get(0).getRowNo();
         int minColNo = gameDots.get(0).getColNo();

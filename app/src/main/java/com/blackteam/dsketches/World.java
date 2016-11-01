@@ -31,7 +31,7 @@ public class World extends Observable {
     private int nRows_;
     private int nColumns_;
     private GameDot[][] dots_;
-    private ArrayList<GameDot> selectedDots_ = new ArrayList<>();
+    private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
     private CopyOnWriteArrayList<TouchLine> touchLines_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
@@ -321,9 +321,9 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
         dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
         dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 2f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 2f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 0.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.75f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.75f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.0f);
         return GameMath.generateValue(dotTypeProbabilities);
     }
 
@@ -373,7 +373,7 @@ public class World extends Observable {
      * Установка выделенных GameDot.
      * <br><strong>NOTE</strong>: Только для тестирования.
      */
-    protected void setSelectedDots(ArrayList<GameDot> gameDots) {
+    protected void setSelectedDots(CopyOnWriteArrayList<GameDot> gameDots) {
         selectedDots_ = gameDots;
     }
 

@@ -69,16 +69,31 @@ public class Sprite {
      * @param height Высота региона в пикселях из указанной текстуры.
      */
     public Sprite(Texture texture, float x, float y, float width, float height) {
-        this.texture_ = texture;
-        this.texRegionPos_ = new Vector2(x, y);
-        this.texRegionSize_ = new Size2(width, height);
-
+        setTexture(texture, x, y, width, height);
         prepareData();
         resetMatrices();
     }
 
+    /**
+     * Установка текстуры.
+     * @param texture Текстура.
+     */
     public void setTexture(Texture texture) {
+        setTexture(texture, 0f, 0f, texture.getWidth(), texture.getHeight());
+    }
+
+    /**
+     * Установка текстуры.
+     * @param texture Текстура.
+     * @param x X-позиция региона в пикселях из указанной текстуры.
+     * @param y Y-позиция региона в пикселях из указанной текстуры.
+     * @param width Ширина региона в пикселях из указанной текстуры.
+     * @param height Высота региона в пикселях из указанной текстуры.
+     */
+    public void setTexture(Texture texture, float x, float y, float width, float height) {
         texture_ = texture;
+        this.texRegionPos_ = new Vector2(x, y);
+        this.texRegionSize_ = new Size2(width, height);
     }
 
     /**

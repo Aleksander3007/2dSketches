@@ -1,7 +1,7 @@
 package com.blackteam.dsketches;
 
-import android.util.Log;
-
+import com.blackteam.dsketches.animation.AnimationController;
+import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.TextureRegion;
@@ -28,21 +28,26 @@ public class GameDot {
     }
     private SpecTypes specType_;
 
-    private boolean isMoving;
-    private boolean isFilmDevelopment;
+    private boolean isMoving = false;
     private Vector2 finishPos_;
 
     /** Количество очков, которое приносит игровая точка. */
     public static final int COST = 10;
 
-    private static final float START_ALPHA_ = 0.0f;
-    private static final float END_ALPHA_ = 1.0f;
-    private static final float ALPHA_TIME_ = 500.0f; // ms. Время на изменения alpha-канала.
-    private static final float ALPHA_SPEED_ = (END_ALPHA_ - START_ALPHA_) / ALPHA_TIME_; // units per ms.
-    public static final float TRANSLATE_TIME_ = 200.0f; // ms. Время на перемещение.
-    private static float ABS_TRANSLATE_SPEED_ = 1f / TRANSLATE_TIME_; // абсолютная ненаправленная, units per ms.
+    /** Параметры для эффекта плавного появления игровых точек. */
+    private static final float MIN_ALPHA_ = 0.0f;
+    private static final float MAX_ALPHA_ = 1.0f;
+    private static final float ALPHA_TIME_ = 500.0f; // Время на изменения alpha-канала, ms.
+    private static final float ALPHA_SPEED_ = (MAX_ALPHA_ - MIN_ALPHA_) / ALPHA_TIME_; // units per ms.
+    private static final AnimationSet FILM_DEVELOPMENT_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
+            AnimationSet.PlayMode.NORMAL,
+            MIN_ALPHA_, MAX_ALPHA_, ALPHA_SPEED_);
 
-    private float curAlpha_;
+    /** Время на перемещение, мс. */
+    public static final float TRANSLATE_TIME_ = 200.0f;
+    /** Абсолютная ненаправленная скорость, units per ms. */
+    private static float ABS_TRANSLATE_SPEED_ = 1f / TRANSLATE_TIME_;
+
     private Vector2 translateSpeed_ = new Vector2(0, 0); // units per ms.
 
     /** Ширина текстуры. */
@@ -58,6 +63,10 @@ public class GameDot {
     private int rowNo_;
     private int colNo_;
 
+    /** Анимация эффекта плавного появления игровых точек. */
+    private AnimationController filmDevelopmentAnim_;
+    private AnimationController specTypeAnim_;
+
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
 
@@ -65,10 +74,6 @@ public class GameDot {
         this.specType_ = dotSpecType;
         this.rowNo_ = rowNo;
         this.colNo_ = colNo;
-
-        curAlpha_ = START_ALPHA_;
-        isMoving = false;
-        isFilmDevelopment = true;
 
         TextureRegion textureRegion = new TextureRegion(
                 contents.get(R.drawable.dots_theme1),
@@ -82,6 +87,8 @@ public class GameDot {
                 textureRegion.getSize().width, textureRegion.getSize().height
         );
 
+        filmDevelopmentAnim_ = new AnimationController(mainObject_, FILM_DEVELOPMENT_ANIM_SET_);
+
         if (specType_ != SpecTypes.NONE) {
             TextureRegion specTextureRegion = new TextureRegion(
                     contents.get(R.drawable.dots_theme1),
@@ -93,6 +100,11 @@ public class GameDot {
                     specTextureRegion.getPos().x, specTextureRegion.getPos().y,
                     specTextureRegion.getSize().width, specTextureRegion.getSize().height
             );
+
+            AnimationSet animationSet = new AnimationSet(AnimationSet.ValueType.ALPHA,
+                    AnimationSet.PlayMode.LOOP_PINGPONG,
+                    0.5f, 1.0f, 0.0003f);
+            specTypeAnim_ = new AnimationController(specObject_, animationSet);
         }
     }
 
@@ -232,12 +244,15 @@ public class GameDot {
     public void draw(float[] mvpMatrix, ShaderProgram shader, float elapsedTime) {
         if (isMoving)
             moving(elapsedTime);
-        if (isFilmDevelopment)
-            filmDevelopment(elapsedTime);
+
+        if (filmDevelopmentAnim_ != null)
+            filmDevelopmentAnim_.update(elapsedTime);
 
         mainObject_.draw(mvpMatrix, shader);
-        if (specType_ != SpecTypes.NONE)
+        if (specType_ != SpecTypes.NONE) {
             specObject_.draw(mvpMatrix, shader);
+            specTypeAnim_.update(elapsedTime);
+        }
     }
 
     public boolean hit(Vector2 coords) {
@@ -310,16 +325,5 @@ public class GameDot {
             specObject_.addPosition(distance);
 
         isMoving = isMovedX || isMovedY;
-    }
-
-    private void filmDevelopment(final float elapsedTime) {
-        curAlpha_ += ALPHA_SPEED_ * elapsedTime;
-        if (curAlpha_ < END_ALPHA_) {
-            setAlpha(curAlpha_);
-        }
-        else {
-            setAlpha(END_ALPHA_);
-            isFilmDevelopment = false;
-        }
     }
 }

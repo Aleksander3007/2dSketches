@@ -108,6 +108,17 @@ public class DisplayableObject {
             sprite_.setTexture(texture);
     }
 
+    public void setTexture(TextureRegion textureRegion) {
+        if (sprite_ == null)
+            sprite_ = new Sprite(textureRegion.getTexture(),
+                    textureRegion.getPos().x, textureRegion.getPos().y,
+                    textureRegion.getSize().width, textureRegion.getSize().height);
+        else
+            sprite_.setTexture(textureRegion.getTexture(),
+                    textureRegion.getPos().x, textureRegion.getPos().y,
+                    textureRegion.getSize().width, textureRegion.getSize().height);
+    }
+
     public float getX() { return pos_.x; }
     public float getY() { return pos_.y; }
 
