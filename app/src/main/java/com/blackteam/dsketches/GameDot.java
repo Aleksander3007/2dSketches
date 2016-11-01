@@ -63,10 +63,6 @@ public class GameDot {
     private int rowNo_;
     private int colNo_;
 
-    /** Анимация эффекта плавного появления игровых точек. */
-    private AnimationController filmDevelopmentAnim_;
-    private AnimationController specTypeAnim_;
-
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
 
@@ -87,7 +83,7 @@ public class GameDot {
                 textureRegion.getSize().width, textureRegion.getSize().height
         );
 
-        filmDevelopmentAnim_ = new AnimationController(mainObject_, FILM_DEVELOPMENT_ANIM_SET_);
+        mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
 
         if (specType_ != SpecTypes.NONE) {
             TextureRegion specTextureRegion = new TextureRegion(
@@ -104,16 +100,14 @@ public class GameDot {
             AnimationSet animationSet = new AnimationSet(AnimationSet.ValueType.ALPHA,
                     AnimationSet.PlayMode.LOOP_PINGPONG,
                     0.5f, 1.0f, 0.0003f);
-            specTypeAnim_ = new AnimationController(specObject_, animationSet);
+            specObject_.setAnimation(new AnimationController(
+                    FILM_DEVELOPMENT_ANIM_SET_, animationSet
+            ));
         }
     }
 
     public int getColNo() {
         return colNo_;
-    }
-
-    public void setColNo(final int colNo) {
-        colNo_ = colNo;
     }
 
     public int getRowNo() {
@@ -217,8 +211,9 @@ public class GameDot {
 
     public void setSizeCenter(float size) {
         mainObject_.setSizeCenter(size, size);
-        if (specType_ != SpecTypes.NONE)
+        if (specType_ != SpecTypes.NONE) {
             specObject_.setSizeCenter(size, size);
+        }
     }
 
     public void setPosition(Vector2 dotPos) {
@@ -245,13 +240,9 @@ public class GameDot {
         if (isMoving)
             moving(elapsedTime);
 
-        if (filmDevelopmentAnim_ != null)
-            filmDevelopmentAnim_.update(elapsedTime);
-
-        mainObject_.draw(mvpMatrix, shader);
+        mainObject_.draw(mvpMatrix, shader, elapsedTime);
         if (specType_ != SpecTypes.NONE) {
-            specObject_.draw(mvpMatrix, shader);
-            specTypeAnim_.update(elapsedTime);
+            specObject_.draw(mvpMatrix, shader, elapsedTime);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.blackteam.dsketches.gui;
 
+import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -7,21 +8,15 @@ import com.blackteam.dsketches.utils.Vector2;
 // TODO: Вместо Texture использовать TextureRegion.
 public class DisplayableObject {
     protected Sprite sprite_;
-    /**
-     * Координаты левого нижнего угла.
-     */
+    /** Координаты левого нижнего угла. */
     protected Vector2 pos_;
-    /**
-     * По умолчанию - без масштабирования.
-     */
+    /** По умолчанию - без масштабирования. */
     protected Vector2 scale_ = new Vector2(1, 1);
-    /**
-     * Вращение вокруг центра объекта. По умолчанию - без вращения.
-     */
+    /** Вращение вокруг центра объекта. По умолчанию - без вращения. */
     protected float rotationDeg_ = 0;
-
     protected float width_ = 1.0f;
     protected float height_ = 1.0f;
+    protected AnimationController animationController_;
 
     /**
      * Конструктор.
@@ -101,6 +96,13 @@ public class DisplayableObject {
         sprite_.draw(mvpMatrix, shader);
     }
 
+    public void draw(float[] mvpMatrix, final ShaderProgram shader, final float elapsedTime) {
+        if (animationController_ != null)
+            animationController_.update(this, elapsedTime);
+
+        sprite_.draw(mvpMatrix, shader);
+    }
+
     public void setTexture(Texture texture) {
         if (sprite_ == null)
             sprite_ = new Sprite(texture);
@@ -117,6 +119,10 @@ public class DisplayableObject {
             sprite_.setTexture(textureRegion.getTexture(),
                     textureRegion.getPos().x, textureRegion.getPos().y,
                     textureRegion.getSize().width, textureRegion.getSize().height);
+    }
+
+    public void setAnimation(AnimationController animationController) {
+        this.animationController_ = animationController;
     }
 
     public float getX() { return pos_.x; }

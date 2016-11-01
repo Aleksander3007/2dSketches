@@ -6,14 +6,18 @@ import android.util.Log;
  * Хранение данных для анимации объекта.
  */
 public class AnimationSet {
+    /** Тип трансформации. */
     public enum ValueType {
         TRANSLATE,
         ROTATE,
+        SCALE_X,
+        SCALE_Y,
         SCALE,
         ALPHA
     }
     private ValueType valueType_;
 
+    /** Режим проигрывания анимации. */
     public enum PlayMode {
         NORMAL,
         LOOP,
@@ -28,7 +32,16 @@ public class AnimationSet {
 
     private float lastVal_;
     private boolean isForward_;
+    private boolean isFinished_;
 
+    /**
+     * Конструктор.
+     * @param valType Тип трансформации.
+     * @param playMode Режим проигрывания анимации.
+     * @param minVal Минимальная величина.
+     * @param maxVal Максимальная величина.
+     * @param speed Скорость изменения величины.
+     */
     public AnimationSet(final AnimationSet.ValueType valType,
                         final PlayMode playMode,
                         final float minVal, final float maxVal,
@@ -49,6 +62,7 @@ public class AnimationSet {
 
         this.isForward_ = true;
         this.lastVal_ = getMinVal();
+        isFinished_ = false;
     }
 
     public AnimationSet(AnimationSet animationSet) {
@@ -90,16 +104,11 @@ public class AnimationSet {
         boolean overflow = (isForward_ && (value >= getMaxVal())) ||
                 (!isForward_ && (value <= getMinVal()));
 
-        switch (getPlayMode()) {
-            case NORMAL:
-                if (value <= getMaxVal())
-                    Log.i("AnimationSet", String.format("value = %f", value));
-                break;
-        }
         if (overflow) {
             switch (getPlayMode()) {
                 case NORMAL:
                     value = getMaxVal();
+                    isFinished_ = true;
                     break;
                 case LOOP:
                     value = getMinVal();
@@ -112,5 +121,9 @@ public class AnimationSet {
         }
 
         lastVal_ = value;
+    }
+
+    public boolean isFinished() {
+        return isFinished_;
     }
 }

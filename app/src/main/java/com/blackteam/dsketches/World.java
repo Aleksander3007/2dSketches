@@ -3,6 +3,9 @@ package com.blackteam.dsketches;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.blackteam.dsketches.animation.AnimationController;
+import com.blackteam.dsketches.animation.AnimationSet;
+import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
@@ -31,6 +34,7 @@ public class World extends Observable {
     private int nRows_;
     private int nColumns_;
     private GameDot[][] dots_;
+
     private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
     private CopyOnWriteArrayList<TouchLine> touchLines_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
@@ -40,6 +44,8 @@ public class World extends Observable {
     private Size2 touchLineSize_;
 
     private boolean isUpdating_ = false;
+
+    private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
 
     public World(ContentManager contents) {
         this.contents_ = contents;
@@ -101,6 +107,10 @@ public class World extends Observable {
             for (TouchLine touchLine : touchLines_) {
                 touchLine.draw(mvpMatrix, shader);
             }
+
+            for (DisplayableObject effect : effects_)
+                effect.draw(mvpMatrix, shader);
+
         }
     }
 
@@ -269,6 +279,20 @@ public class World extends Observable {
         isUpdating_ = true;
 
         for (GameDot gameDot : selectedDots_) {
+
+            switch (gameDot.getSpecType()) {
+                case ROW_EATER:
+                    // Запустить анимацию.
+                    AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_X,
+                            AnimationSet.PlayMode.NORMAL,
+                            dotSize_, dotSize_ * nColumns_, 0.004f);
+                    break;
+                case COLUMN_EATER:
+                    break;
+                case AROUND_EATER:
+                    break;
+            }
+
             int translateCol = gameDot.getColNo();
             for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
                 dots_[iRow][translateCol].moveTo(convertToPos(iRow - 1, translateCol));
