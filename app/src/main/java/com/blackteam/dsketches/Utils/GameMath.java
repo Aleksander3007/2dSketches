@@ -14,7 +14,7 @@ public class GameMath {
      * @return Случайный объект из списка.
      */
     public static <T> T generateValue(ArrayMap<T, Float> objectProbabilities) {
-        int sumProbabilities = 0;
+        float sumProbabilities = 0;
 
         for (float probability : objectProbabilities.values()) {
             sumProbabilities += probability;
