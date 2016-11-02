@@ -10,6 +10,7 @@ import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -232,6 +233,37 @@ public class World extends Observable {
                     selectedDots_.addAll(addSpecDots_);
                     // Среди только что добавленных точек ищем спец. точки.
                     addSpecDots_.addAll(searchSpecDots(addSpecDots_));
+                    break;
+                }
+                case COLUMN_EATER: {
+                    // Тоже самое, что ROW_EATER, только столбец (см. выше).
+                    for (int iRow = 0; iRow < nRows_; iRow++) {
+                        if (!selectedDots_.contains(dots_[iRow][gameDot.getColNo()])) {
+                            dots_[iRow][gameDot.getColNo()].setType(GameDot.Types.UNIVERSAL);
+                            addSpecDots_.add(dots_[iRow][gameDot.getColNo()]);
+                        }
+                    }
+                    selectedDots_.addAll(addSpecDots_);
+                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
+                    break;
+                }
+                case AROUND_EATER: {
+                    // Добавляем все соседние элементы как выделенные.
+                    for (int iRow = -1; iRow <= 1; iRow++) {
+                        for (int iCol = -1; iCol <= 1; iCol++) {
+                            int rowNo = gameDot.getRowNo() + iRow;
+                            int colNo = gameDot.getColNo() + iCol;
+                            if (!isOutOfBounds(rowNo, colNo)) {
+                                if (!selectedDots_.contains(dots_[rowNo][colNo])) {
+                                    dots_[rowNo][colNo].setType(GameDot.Types.UNIVERSAL);
+                                    addSpecDots_.add(dots_[rowNo][colNo]);
+                                }
+                            }
+                        }
+                    }
+                    selectedDots_.addAll(addSpecDots_);
+                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
+                    break;
                 }
                 default:
                     // В остальных случаях ничего не делаем.
@@ -240,6 +272,17 @@ public class World extends Observable {
         }
 
         return addSpecDots_;
+    }
+
+    /**
+     * Находится ли индексы за пределами диапазона.
+     * @param rowNo Номер строки.
+     * @param colNo Номер столбца.
+     * @return true - если за пределами.
+     */
+    public boolean isOutOfBounds(final int rowNo, final int colNo) {
+        return ((rowNo < 0) || (rowNo >= nRows_) ||
+                (colNo < 0) || (colNo >= nColumns_));
     }
 
     public int getProfitByDots() {
@@ -311,8 +354,14 @@ public class World extends Observable {
         isUpdating_ = false;
     }
 
-    private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 effectPos) {
-        Texture texture;
+    /**
+     * Отобразить эффект от специальной игровой точки.
+     * @param dotSpecType Тип специальной игровой точки.
+     * @param dotPos Позиция игровой точки, которая порадила эффект.
+     */
+    private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 dotPos) {
+        Size2 newSize;
+        float speed;
         switch (dotSpecType) {
             case NONE:
                 return;
@@ -321,20 +370,37 @@ public class World extends Observable {
             case TRIPLE:
                 return;
             case ROW_EATER:
-                texture = contents_.get(R.drawable.effect_roweater);
+                newSize = new Size2(dotSize_ * 2 * nColumns_, dotSize_);
+                speed = (dotSize_ * 2 * nColumns_ - dotSize_) / EFFECT_TIME_;
+                break;
+            case COLUMN_EATER:
+                newSize = new Size2(dotSize_, dotSize_ * 2 * nRows_);
+                speed = (dotSize_ * 2 * nRows_ - dotSize_) / EFFECT_TIME_;
+                break;
+            case AROUND_EATER:
+                newSize = new Size2(3 * dotSize_, 3 * dotSize_);
+                speed = (2 * dotSize_) / EFFECT_TIME_;
                 break;
             default:
                 return;
         }
+
+        TextureRegion textureRegion = new TextureRegion(
+                contents_.get(R.drawable.dots_theme1),
+                GameDot.getSpecTexturePosition(dotSpecType),
+                new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
+        );
+        DisplayableObject effect = new DisplayableObject(textureRegion);
+        effect.setSize(dotSize_, dotSize_);
+        effect.setPosition(dotPos);
+
         AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_CENTER,
                 AnimationSet.PlayMode.NORMAL,
                 new Vector2(dotSize_, dotSize_),
-                new Vector2(dotSize_ * 2 * nColumns_, dotSize_),
-                (dotSize_ * 2 * nColumns_ - dotSize_) / EFFECT_TIME_);
-        DisplayableObject effect = new DisplayableObject(texture);
-        effect.setSize(dotSize_, dotSize_);
-        effect.setPosition(effectPos);
+                new Vector2(newSize.width, newSize.height),
+                speed);
         effect.setAnimation(new AnimationController(animSet));
+
         effects_.add(effect);
     }
 
@@ -367,7 +433,7 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 1004f); // 4f
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 504f); // 4f
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -378,9 +444,9 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
         dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
         dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 15f); // 1.75f
-        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.75f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.0f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f);
 
         return GameMath.generateValue(dotTypeProbabilities);
     }

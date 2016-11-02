@@ -33,6 +33,14 @@ public class DisplayableObject {
 
     /**
      * Конструктор.
+     * @param textureRegion Регион текстуры.
+     */
+    public DisplayableObject (TextureRegion textureRegion) {
+        this(new Vector2(0.0f, 0.0f), textureRegion);
+    }
+
+    /**
+     * Конструктор.
      * @param pos Позиция объекта.
      * @param texture Текстура.
      */
@@ -48,6 +56,17 @@ public class DisplayableObject {
      */
     public DisplayableObject(Vector2 pos, float rotationDeg, Texture texture) {
         this(pos, rotationDeg, texture, 0, 0, texture.getWidth(), texture.getHeight());
+    }
+
+    /**
+     * Конструктор.
+     * @param pos Позиция объекта.
+     * @param textureRegion Регион текстуры.
+     */
+    public DisplayableObject(Vector2 pos, TextureRegion textureRegion) {
+        this(pos, 0.0f, textureRegion.getTexture(),
+                textureRegion.getPos().x, textureRegion.getPos().y,
+                textureRegion.getSize().width, textureRegion.getSize().height);
     }
 
     /**

@@ -77,12 +77,7 @@ public class GameDot {
                 getTexturePosition(dotType),
                 new Size2(TEX_WIDTH, TEX_HEIGHT)
         );
-
-        // TODO: Сделать конструктор DisplayableObject в которой подается сразу TextureRegion.
-        mainObject_ = new DisplayableObject(pos, textureRegion.getTexture(),
-                textureRegion.getPos().x, textureRegion.getPos().y,
-                textureRegion.getSize().width, textureRegion.getSize().height
-        );
+        mainObject_ = new DisplayableObject(pos, textureRegion);
 
         mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
 
@@ -92,11 +87,7 @@ public class GameDot {
                     getSpecTexturePosition(dotSpecType),
                     new Size2(TEX_WIDTH, TEX_HEIGHT)
             );
-
-            specObject_ = new DisplayableObject(pos, specTextureRegion.getTexture(),
-                    specTextureRegion.getPos().x, specTextureRegion.getPos().y,
-                    specTextureRegion.getSize().width, specTextureRegion.getSize().height
-            );
+            specObject_ = new DisplayableObject(pos, specTextureRegion);
 
             AnimationSet animationSet = new AnimationSet(AnimationSet.ValueType.ALPHA,
                     AnimationSet.PlayMode.LOOP_PINGPONG,
