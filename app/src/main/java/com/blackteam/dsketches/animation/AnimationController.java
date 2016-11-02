@@ -1,6 +1,9 @@
 package com.blackteam.dsketches.animation;
 
+import android.util.Log;
+
 import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.utils.Size2;
 
 import java.util.ArrayList;
 
@@ -14,8 +17,9 @@ public class AnimationController {
 
     public AnimationController(AnimationSet... animationSets) {
         this.animation_ = null;
-        for (AnimationSet animationSet : animationSets)
+        for (AnimationSet animationSet : animationSets) {
             this.animationSets_.add(new AnimationSet(animationSet));
+        }
     }
 
     public AnimationController(Animation animation) {
@@ -41,14 +45,27 @@ public class AnimationController {
                 break;
             case ROTATE:
                 break;
-            case SCALE_X:
-                animationObject.setSize(animationSet.getValue(), animationObject.getHeight());
-                break;
             case SCALE:
+                Size2 newSize = new Size2(animationSet.getValue2().x, animationSet.getValue2().y);
+                animationObject.setSize(newSize);
+                break;
+            case SCALE_CENTER:
+                newSize = new Size2(animationSet.getValue2().x, animationSet.getValue2().y);
+                animationObject.setSizeCenter(newSize);
                 break;
             case ALPHA:
-                animationObject.setAlpha(animationSet.getValue());
+                // Берем любое значение, т.к. x и y одинаковые в данном случае.
+                animationObject.setAlpha(animationSet.getMinVal().x + animationSet.getValue());
                 break;
         }
+    }
+
+    public boolean isFinished() {
+        for (AnimationSet animationSet : animationSets_) {
+            if (!animationSet.isFinished())
+                return false;
+        }
+
+        return  true;
     }
 }

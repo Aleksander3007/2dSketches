@@ -1,5 +1,6 @@
 package com.blackteam.dsketches;
 
+import android.media.effect.Effect;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -45,6 +47,8 @@ public class World extends Observable {
 
     private boolean isUpdating_ = false;
 
+    /** Время отображения эффекта, мс. */
+    private static final float EFFECT_TIME_ = 200f;
     private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
 
     public World(ContentManager contents) {
@@ -108,9 +112,16 @@ public class World extends Observable {
                 touchLine.draw(mvpMatrix, shader);
             }
 
-            for (DisplayableObject effect : effects_)
-                effect.draw(mvpMatrix, shader);
-
+            ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
+            for (DisplayableObject effect : effects_) {
+                if (!effect.isAnimationFinished())
+                    effect.draw(mvpMatrix, shader, elapsedTime);
+                else {
+                    finishedEffects.add(effect);
+                }
+            }
+            effects_.removeAll(finishedEffects);
+            finishedEffects.clear();
         }
     }
 
@@ -280,18 +291,7 @@ public class World extends Observable {
 
         for (GameDot gameDot : selectedDots_) {
 
-            switch (gameDot.getSpecType()) {
-                case ROW_EATER:
-                    // Запустить анимацию.
-                    AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_X,
-                            AnimationSet.PlayMode.NORMAL,
-                            dotSize_, dotSize_ * nColumns_, 0.004f);
-                    break;
-                case COLUMN_EATER:
-                    break;
-                case AROUND_EATER:
-                    break;
-            }
+            addEffect(gameDot.getSpecType(), gameDot.getPosition());
 
             int translateCol = gameDot.getColNo();
             for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
@@ -303,6 +303,33 @@ public class World extends Observable {
         }
 
         isUpdating_ = false;
+    }
+
+    private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 effectPos) {
+        Texture texture;
+        switch (dotSpecType) {
+            case NONE:
+                return;
+            case DOUBLE:
+                return;
+            case TRIPLE:
+                return;
+            case ROW_EATER:
+                texture = contents_.get(R.drawable.effect_roweater);
+                break;
+            default:
+                return;
+        }
+        AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_CENTER,
+                AnimationSet.PlayMode.NORMAL,
+                new Vector2(dotSize_, dotSize_),
+                new Vector2(dotSize_ * 2 * nColumns_, dotSize_),
+                (dotSize_ * 2 * nColumns_ - dotSize_) / EFFECT_TIME_);
+        DisplayableObject effect = new DisplayableObject(texture);
+        effect.setSize(dotSize_, dotSize_);
+        effect.setPosition(effectPos);
+        effect.setAnimation(new AnimationController(animSet));
+        effects_.add(effect);
     }
 
     /**
@@ -334,7 +361,7 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 4f);
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 1004f); // 4f
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -345,9 +372,10 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
         dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
         dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.75f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 15f); // 1.75f
         dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.75f);
         dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.0f);
+
         return GameMath.generateValue(dotTypeProbabilities);
     }
 

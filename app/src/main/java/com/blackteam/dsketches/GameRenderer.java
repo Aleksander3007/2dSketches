@@ -194,5 +194,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         contents_.load(R.drawable.x_close);
         contents_.load(R.drawable.dots_theme1);
         contents_.load(R.drawable.anim_spec_roweater);
+        contents_.load(R.drawable.effect_roweater);
     }
 }

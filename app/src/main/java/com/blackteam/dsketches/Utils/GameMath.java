@@ -45,4 +45,24 @@ public class GameMath {
     public static double getRandom(double min, double max) {
         return Math.random() * (max - min) + min;
     }
+
+    public static Vector2 add(final Vector2 v1, final Vector2 v2) {
+        return new Vector2(v1.x + v2.x, v1.y + v2.y);
+    }
+
+    public static Vector2 sub(final Vector2 v1, final Vector2 v2) {
+        return new Vector2(v1.x - v2.x, v1.y - v2.y);
+    }
+
+    public static Vector2 mult(final Vector2 v1, final Vector2 v2) {
+        return new Vector2(v1.x * v2.x, v1.y * v2.y);
+    }
+
+    public static Vector2 mult(final Vector2 v, final float factor) {
+        return new Vector2(v.x * factor, v.y * factor);
+    }
+
+    public static Vector2 div(final Vector2 v, final float divider) {
+        return new Vector2(v.x / divider, v.y / divider);
+    }
 }

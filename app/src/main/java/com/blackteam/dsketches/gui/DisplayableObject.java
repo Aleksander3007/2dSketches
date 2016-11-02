@@ -125,20 +125,31 @@ public class DisplayableObject {
         this.animationController_ = animationController;
     }
 
+    public boolean isAnimationFinished() {
+        if (animationController_ != null)
+            return animationController_.isFinished();
+        else
+            return true;
+    }
+
     public float getX() { return pos_.x; }
     public float getY() { return pos_.y; }
 
     public float getWidth() { return width_; }
     public float getHeight() { return height_; }
 
-    public void setSize(Size2 size) {
+    public void setSize(final Size2 size) {
         setSize(size.width, size.height);
     }
 
-    public void setSize(float width, float height) {
+    public void setSize(final float width, final float height) {
         width_ = width;
         height_ = height;
         sprite_.setScale(width, height);
+    }
+
+    public void setSizeCenter(final Size2 size) {
+        setSizeCenter(size.width, size.height);
     }
 
     public void setSizeCenter(float newWidth, float newHeight) {
@@ -155,14 +166,12 @@ public class DisplayableObject {
     }
 
     public void setPosition(final Vector2 pos) {
-        pos_ = new Vector2(pos.x, pos.y);
+        pos_ = new Vector2(pos);
         sprite_.setPosition(pos);
     }
 
     public void addPosition(final Vector2 amount) {
-        // TODO: Переопределить операцию "+".
-        pos_.x += amount.x;
-        pos_.y += amount.y;
+        pos_.add(amount);
         sprite_.addPosition(amount);
     }
 
