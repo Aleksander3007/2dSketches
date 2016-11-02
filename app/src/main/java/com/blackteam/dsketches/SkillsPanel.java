@@ -2,6 +2,7 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -57,9 +58,9 @@ public class SkillsPanel {
         }
     }
 
-    public void draw(float[] mvpMatrix, ShaderProgram shader) {
+    public void draw(Graphics graphics) {
         for (Skill skill : skills_) {
-            skill.draw(mvpMatrix, shader);
+            skill.draw(graphics);
         }
     }
 

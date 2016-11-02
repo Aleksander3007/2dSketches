@@ -1,6 +1,7 @@
 package com.blackteam.dsketches.windows;
 
 import com.blackteam.dsketches.ContentManager;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -10,7 +11,7 @@ public abstract class Window {
     protected Size2 size_;
 
     public abstract void resize(final float windowWidth, final float windowHeight);
-    public abstract void render(float[] mvpMatrix, final ShaderProgram shader);
+    public abstract void render(Graphics graphics);
     public abstract void touchUpHandle(Vector2 worldCoords);
 
     public boolean hit(Vector2 coords) {

@@ -3,6 +3,7 @@ package com.blackteam.dsketches;
 import android.content.Context;
 import android.util.Log;
 
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
@@ -42,16 +43,15 @@ public class Game {
         setSize(screenWidth, screenHeight);
     }
 
-    // TODO: mvpMatrix, shader, elapsedTime в класс Graphics упаковать.
-    public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
+    public void render(Graphics graphics) {
         if (scoreLabel_ == null)
             Log.i("Game", "render scoreLabel_ == null");
 
-        scoreLabel_.render(mvpMatrix, shader);
-        world_.draw(mvpMatrix, shader, elapsedTime);
-        skillsPanel_.draw(mvpMatrix, shader);
-        profitLabel_.render(mvpMatrix, shader, elapsedTime);
-        versionLabel_.draw(mvpMatrix, shader);
+        scoreLabel_.render(graphics);
+        world_.draw(graphics);
+        skillsPanel_.draw(graphics);
+        profitLabel_.render(graphics);
+        versionLabel_.draw(graphics);
     }
 
     public boolean hit(Vector2 worldCoords) {

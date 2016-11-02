@@ -8,6 +8,7 @@ import com.blackteam.dsketches.Game;
 import com.blackteam.dsketches.MenuWindow;
 import com.blackteam.dsketches.Player;
 import com.blackteam.dsketches.World;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -66,9 +67,9 @@ public class MenuManager {
         menuHeight_ = menuHeight;
     }
 
-    public void renderMenus(float[] mMVPMatrix, ShaderProgram shader) {
+    public void renderMenus(Graphics graphics) {
         for (Window menu : menus_.values()) {
-            menu.render(mMVPMatrix, shader);
+            menu.render(graphics);
         }
     }
 

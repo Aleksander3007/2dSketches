@@ -32,17 +32,18 @@ public class ProfitLabel extends NumberLabel {
         return new Vector2(pos.x - numberSize / 2f, pos.y);
     }
 
-    public void render(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
+    // TODO: Изменение alpha должно быть через анимацию теперь.
+    public void render(Graphics graphics) {
         if (isVisible_) {
-            curAlpha_ += ALPHA_SPEED_ * elapsedTime;
+            curAlpha_ += ALPHA_SPEED_ * graphics.getElapsedTime();
             for (DisplayableObject number : digits_) {
                 if (Math.abs(curAlpha_ - END_ALPHA_) > 0) {
                     number.setAlpha(curAlpha_);
-                    number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * elapsedTime));
+                    number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * graphics.getElapsedTime()));
                 } else {
                     isVisible_ = false;
                 }
-                number.draw(mvpMatrix, shader);
+                number.draw(graphics);
             }
         }
     }

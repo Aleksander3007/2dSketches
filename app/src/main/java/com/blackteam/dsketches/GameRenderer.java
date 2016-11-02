@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.GameMath;
 
@@ -27,14 +28,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private Context context_;
 
     /** Model View Projection Matrix. */
-    private final float[] mMVPMatrix_ = new float[16];
-    private final float[] mProjectionMatrix_ = new float[16];
-    private final float[] mViewMatrix_ = new float[16];
+    private final float[] mvpMatrix_ = new float[16];
+    private final float[] projectionMatrix_ = new float[16];
+    private final float[] viewMatrix_ = new float[16];
 
     private ShaderProgram shader_;
-
-    private Game game_;
-    private ContentManager contents_;
 
     /**
      * Ограничение по FPS.
@@ -47,6 +45,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private long lastTime_;
     /** Сколько времени прошло с последнего обновления, мс.. */
     private long elapsedTime_;
+
+    private Graphics graphics_;
+    private Game game_;
+    private ContentManager contents_;
 
     // TODO: По идеи передавать не такой большой список Game game, MenuWindow menuWindow,
     // а либо массив ArrayList<GameWindow>, либо MenuManager (можно не услажнять так).
@@ -64,9 +66,11 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         initCamera();
         createShader();
 
-        GLES20.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+        GLES20.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 
         lastTime_ = GameMath.getCurrentTime();
+
+        graphics_ = new Graphics(mvpMatrix_, shader_);
     }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -83,7 +87,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         if (width > height) {
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.orthoM(mProjectionMatrix_, 0,
+            Matrix.orthoM(projectionMatrix_, 0,
                     0, aspectRatio,
                     0, 1,
                     0.3f, // near.
@@ -99,7 +103,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         else {
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.orthoM(mProjectionMatrix_, 0,
+            Matrix.orthoM(projectionMatrix_, 0,
                     0, 1, // left-right;
                     0, aspectRatio, // top-bottom;
                     0.3f, // near.
@@ -113,7 +117,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         }
 
         // Calculate the projection and view transformation.
-        Matrix.multiplyMM(mMVPMatrix_, 0, mProjectionMatrix_, 0, mViewMatrix_, 0);
+        Matrix.multiplyMM(mvpMatrix_, 0, projectionMatrix_, 0, viewMatrix_, 0);
 
         Log.i("GameRender", "onSurfaceChanged end");
     }
@@ -126,8 +130,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // TODO: mMVPMatrix_, shader_, elapsedTime_ в Graphics.
-        game_.render(mMVPMatrix_, shader_, elapsedTime_);
+        graphics_.setElapsedTime(elapsedTime_);
+        game_.render(graphics_);
 
         elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
         // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батареи, для меньшей нагрузки проца.
@@ -162,7 +166,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     private void initCamera() {
         // Set the camera position.
-        Matrix.setLookAtM(mViewMatrix_, 0,
+        Matrix.setLookAtM(viewMatrix_, 0,
                 0f, 0f, 1f, // eye. Положение точки наблюдения в пространстве.
                 0f, 0f, 0f,  // look. Координаты куда смотреть.
                 0f, 1f, 0f   // up-vector смотрит вверх, вдоль оси Y.

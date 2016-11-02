@@ -3,6 +3,7 @@ package com.blackteam.dsketches;
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.Size2;
@@ -236,13 +237,13 @@ public class GameDot {
         return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
     }
 
-    public void draw(float[] mvpMatrix, ShaderProgram shader, float elapsedTime) {
+    public void draw(Graphics graphics) {
         if (isMoving)
-            moving(elapsedTime);
+            moving(graphics.getElapsedTime());
 
-        mainObject_.draw(mvpMatrix, shader, elapsedTime);
+        mainObject_.draw(graphics);
         if (specType_ != SpecTypes.NONE) {
-            specObject_.draw(mvpMatrix, shader, elapsedTime);
+            specObject_.draw(graphics);
         }
     }
 

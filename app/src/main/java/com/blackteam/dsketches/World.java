@@ -7,6 +7,7 @@ import android.util.Log;
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.utils.GameMath;
@@ -97,25 +98,25 @@ public class World extends Observable {
         }
     }
 
-    public void draw(float[] mvpMatrix, final ShaderProgram shader, float elapsedTime) {
+    public void draw(Graphics graphics) {
         if (!isUpdating_) {
             for (int iRow = 0; iRow < nRows_; iRow++) {
                 for (int iCol = 0; iCol < nColumns_; iCol++) {
                     if (!selectedDots_.contains(dots_[iRow][iCol]))
-                        dots_[iRow][iCol].draw(mvpMatrix, shader, elapsedTime);
+                        dots_[iRow][iCol].draw(graphics);
                 }
             }
             for (GameDot dot : selectedDots_) {
-                dot.draw(mvpMatrix, shader, elapsedTime);
+                dot.draw(graphics);
             }
             for (TouchLine touchLine : touchLines_) {
-                touchLine.draw(mvpMatrix, shader);
+                touchLine.draw(graphics);
             }
 
             ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
             for (DisplayableObject effect : effects_) {
                 if (!effect.isAnimationFinished())
-                    effect.draw(mvpMatrix, shader, elapsedTime);
+                    effect.draw(graphics);
                 else {
                     finishedEffects.add(effect);
                 }

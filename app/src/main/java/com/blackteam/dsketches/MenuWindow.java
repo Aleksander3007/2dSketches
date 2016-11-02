@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.blackteam.dsketches.gui.GameButton;
 import com.blackteam.dsketches.gui.GameImage;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -73,12 +74,12 @@ public class MenuWindow extends Window {
     }
 
     @Override
-    public void render(float[] mvpMatrix, final ShaderProgram shader) {
-        backgroundImage_.draw(mvpMatrix, shader);
-        closeButton_.draw(mvpMatrix, shader);
-        restartBtn_.draw(mvpMatrix, shader);
-        achievementButton_.draw(mvpMatrix, shader);
-        exitButton_.draw(mvpMatrix, shader);
+    public void render(Graphics graphics) {
+        backgroundImage_.draw(graphics);
+        closeButton_.draw(graphics);
+        restartBtn_.draw(graphics);
+        achievementButton_.draw(graphics);
+        exitButton_.draw(graphics);
     }
 
     @Override

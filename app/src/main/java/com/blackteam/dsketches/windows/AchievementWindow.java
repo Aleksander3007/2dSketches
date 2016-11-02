@@ -8,6 +8,7 @@ import com.blackteam.dsketches.R;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.GameButton;
 import com.blackteam.dsketches.gui.GameImage;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
 import com.blackteam.dsketches.utils.Size2;
@@ -65,11 +66,11 @@ public class AchievementWindow extends Window {
     }
 
     @Override
-    public void render(float[] mvpMatrix, ShaderProgram shader) {
-        backgroundImage_.draw(mvpMatrix, shader);
-        closeButton_.draw(mvpMatrix, shader);
+    public void render(Graphics graphics) {
+        backgroundImage_.draw(graphics);
+        closeButton_.draw(graphics);
         for (AchievementBox achievementBox : achievementBoxes_) {
-            achievementBox.draw(mvpMatrix, shader);
+            achievementBox.draw(graphics);
         }
     }
 

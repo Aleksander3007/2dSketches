@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.R;
+import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ScoreNumber;
 import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.Texture;
@@ -85,9 +86,9 @@ public class NumberLabel {
         digitsTexture_ = new Texture(context, R.drawable.profit_numbers);
     }
 
-    public void render(float[] mvpMatrix, final ShaderProgram shader) {
+    public void render(Graphics graphics) {
         for (DisplayableObject number : digits_) {
-            number.draw(mvpMatrix, shader);
+            number.draw(graphics);
         }
     }
 }

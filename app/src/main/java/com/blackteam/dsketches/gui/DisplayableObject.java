@@ -92,15 +92,11 @@ public class DisplayableObject {
                 ((coords.y >= pos_.y) && (coords.y <= (pos_.y + height_)));
     }
 
-    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
-        sprite_.draw(mvpMatrix, shader);
-    }
-
-    public void draw(float[] mvpMatrix, final ShaderProgram shader, final float elapsedTime) {
+    public void draw(Graphics graphics) {
         if (animationController_ != null)
-            animationController_.update(this, elapsedTime);
+            animationController_.update(this, graphics.getElapsedTime());
 
-        sprite_.draw(mvpMatrix, shader);
+        sprite_.draw(graphics.getMVPMatrix(), graphics.getShader());
     }
 
     public void setTexture(Texture texture) {
