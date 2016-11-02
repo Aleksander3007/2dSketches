@@ -15,6 +15,7 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -193,12 +194,10 @@ public class World extends Observable {
 
     /**
      * Тут идёт анализ выделенных точек.
-     * Все ли они одного цвета, есть ли спец. точки и т.п.
+     * Поиск скетчей, спец. точек и т.п.
      */
     public void update() {
         isUpdating_ = true;
-
-        // TODO: Тут необходимо проверять, что все одного цвета.
 
         if (selectedDots_.size() > 2) {
             selectedSketch_ = sketchesManager_.findSketch(selectedDots_);
@@ -209,32 +208,38 @@ public class World extends Observable {
                 notifyObservers(selectedSketch_.getType());
             }
 
-            // Добавленные с помощью спец. Dots.
-            ArrayList<GameDot> addSpecDots_ = new ArrayList<>();
             // Ищем спец. Dots.
-            for (GameDot gameDot : selectedDots_) {
-                switch (gameDot.getSpecType()) {
-                    case ROW_EATER: {
-                        // Добавляем все элементы строки как выделенные.
-                        for (int iCol = 0; iCol < nColumns_; iCol++) {
-                            // ... без повтора в массиве.
-                            if (!selectedDots_.contains(dots_[gameDot.getRowNo()][iCol])) {
-                                // ... и делаем их уникальным, чтобы считался Profit и для них.
-                                dots_[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
-                                addSpecDots_.add(dots_[gameDot.getRowNo()][iCol]);
-                            }
-                        }
-                    }
-                    default:
-                        // В остальных случаях ничего не делаем.
-                        break;
-                }
-            }
-
-            selectedDots_.addAll(addSpecDots_);
+            searchSpecDots(selectedDots_);
         }
 
         isUpdating_ = false;
+    }
+
+    private List<GameDot> searchSpecDots(List<GameDot> selectedDots) {
+        ArrayList<GameDot> addSpecDots_ = new ArrayList<>();
+        for (GameDot gameDot : selectedDots) {
+            switch (gameDot.getSpecType()) {
+                case ROW_EATER: {
+                    // Добавляем все элементы строки как выделенные.
+                    for (int iCol = 0; iCol < nColumns_; iCol++) {
+                        // ... без повтора в массиве.
+                        if (!selectedDots_.contains(dots_[gameDot.getRowNo()][iCol])) {
+                            // ... и делаем их уникальным, чтобы считался Profit и для них.
+                            dots_[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
+                            addSpecDots_.add(dots_[gameDot.getRowNo()][iCol]);
+                        }
+                    }
+                    selectedDots_.addAll(addSpecDots_);
+                    // Среди только что добавленных точек ищем спец. точки.
+                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
+                }
+                default:
+                    // В остальных случаях ничего не делаем.
+                    break;
+            }
+        }
+
+        return addSpecDots_;
     }
 
     public int getProfitByDots() {
