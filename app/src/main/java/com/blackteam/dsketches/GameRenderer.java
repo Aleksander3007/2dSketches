@@ -50,8 +50,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private Game game_;
     private ContentManager contents_;
 
-    // TODO: По идеи передавать не такой большой список Game game, MenuWindow menuWindow,
-    // а либо массив ArrayList<GameWindow>, либо MenuManager (можно не услажнять так).
     public GameRenderer(Context context, Game game, ContentManager contents) {
         this.context_ = context;
         this.game_ = game;
