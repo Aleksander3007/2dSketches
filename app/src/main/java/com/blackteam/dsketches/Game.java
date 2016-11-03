@@ -14,7 +14,7 @@ import com.blackteam.dsketches.utils.Vector2;
 import java.util.Observer;
 
 public class Game {
-    private World world_; // TODO: World - это GameBox, DotsBox, GameField ...
+    private World world_;
     private Player player_;
 
     // TODO: Необходимо все кнопки и индикаторы перенести в MainActivity.
@@ -28,9 +28,9 @@ public class Game {
 
     private float screenPart_;
 
-    public Game(final Player player, final ContentManager contents) {
+    public Game(final Player player, SketchesManager sketchesManager, final ContentManager contents) {
         this.player_ = player;
-        world_ = new World(contents);
+        world_ = new World(contents, sketchesManager);
         skillsPanel_ = new SkillsPanel(contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
@@ -115,15 +115,6 @@ public class Game {
         Size2 scoreLabelSize = new Size2(
                 width_ - scoreLabelOffset.x,
                 screenPart_);
-
-        Size2 restartBtnSize = new Size2(
-                2.0f * screenPart_,
-                2.0f * screenPart_
-        );
-        Vector2 restartBtnOffset = new Vector2(
-                width_ - restartBtnSize.width,
-                height_ - restartBtnSize.height
-        );
 
         versionLabel_ = new StaticText(
                 MainActivity.VERSION,

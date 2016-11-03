@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,10 +24,11 @@ public class AchievementsActivity extends Activity {
         LinearLayout achievementsContainter = (LinearLayout) findViewById(R.id.achievements);
 
         for (Achievement ach : achievements) {
-            Log.i("Ach...Activity", ach.getName());
             final View achievementView = getLayoutInflater().inflate(R.layout.achievement_layout, null);
-            TextView achievementName = (TextView) achievementView.findViewById(R.id.name);
+            TextView achievementName = (TextView) achievementView.findViewById(R.id.ach_name);
             achievementName.setText(ach.getName());
+            ImageView achievementImage = (ImageView) achievementView.findViewById(R.id.ach_image);
+            achievementImage.setImageResource(R.drawable.star);
             achievementsContainter.addView(achievementView);
         }
     }

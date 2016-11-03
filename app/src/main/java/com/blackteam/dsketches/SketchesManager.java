@@ -1,5 +1,13 @@
 package com.blackteam.dsketches;
 
+import android.content.Context;
+import android.content.res.XmlResourceParser;
+import android.util.Log;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,26 +20,45 @@ public class SketchesManager {
     // TODO: Как действовать если скетч_1 перекрывает скетч_2 какой из них учитывать.
     // Вариант 1. Оба.
     // Вариант 2. Выставлять приоритет для каждого скетча.
+    // Вариант 3. Порядок должен быть учитан в xml-файле.
 
     // Нулевой скетч.
     public static final Sketch SKETCH_NULL_ = Sketch.getNullSketch();
 
     private ArrayList<Sketch> sketches_ = new ArrayList<>();
 
-    public SketchesManager() {
-        // TODO: 1. Чтение из файла всех sketches.
-        // TODO: STUB: Генерация sketch.
-        Sketch sketchElemRow3 = new Sketch(Sketch.Types.ROW_3, 20);
-        for (int iElem = 0; iElem < 3; iElem++) {
-            sketchElemRow3.add(0, iElem, GameDot.Types.UNIVERSAL);
-        }
-        sketches_.add(sketchElemRow3);
+    public SketchesManager(Context context) throws XmlPullParserException, IOException {
+        loadContent(context);
+    }
 
-        Sketch sketchElemRow5 = new Sketch(Sketch.Types.ROW_5, 50);
-        for (int iElem = 0; iElem < 5; iElem++) {
-            sketchElemRow5.add(0, iElem, GameDot.Types.UNIVERSAL);
+    public void loadContent(Context context) throws XmlPullParserException, IOException {
+        Sketch sketch = null;
+        XmlResourceParser xpp = context.getResources().getXml(R.xml.sketches);
+        int eventType = xpp.getEventType();
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_TAG) {
+                if (xpp.getName().equals("sketch")) {
+                    String name = xpp.getAttributeValue(null, "name");
+                    int cost = xpp.getAttributeIntValue(null, "cost", 0);
+                    sketch = new Sketch(name, cost);
+                }
+                else if (xpp.getName().equals("elem")) {
+                    int rowNo = xpp.getAttributeIntValue(null, "row", 0);
+                    int colNo = xpp.getAttributeIntValue(null, "column", 0);
+                    GameDot.Types dotType = GameDot.convertToType(xpp.getAttributeValue(null, "dotType"));
+                    sketch.add(rowNo, colNo, dotType);
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (xpp.getName().equals("sketch")) {
+                    sketches_.add(sketch);
+                }
+            }
+            eventType = xpp.next();
         }
-        sketches_.add(sketchElemRow5);
+        xpp.close();
+
+        Log.i("SketchesManager", "Sketches xml is read.");
     }
 
     public Sketch findSketch(List<GameDot> gameDots) {

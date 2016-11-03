@@ -36,7 +36,7 @@ public class AchievementsManager implements Observer {
                     String conditionName = xpp.getAttributeValue(null, "name");
                     if (TextUtils.equals(conditionName, "sketch")) {
                         String sketchType = xpp.getAttributeValue(null, "value");
-                        achievement.setSketchType(Enum.valueOf(Sketch.Types.class, sketchType));
+                        achievement.setSketchType(sketchType);
                     }
                     else if (TextUtils.equals(conditionName, "score")) {
                         int score = xpp.getAttributeIntValue(null, "value", Achievement.ANY_SCORE);
@@ -56,12 +56,13 @@ public class AchievementsManager implements Observer {
 
             eventType = xpp.next();
         }
-        Log.i("AchievementsManager", "Xml is readed.");
+        xpp.close();
+        Log.i("AchievementsManager", "Xml is read.");
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        final Sketch.Types sketchType = (Sketch.Types) data;
+        final String sketchType = (String) data;
 
         Log.i("Achievement", "update");
 

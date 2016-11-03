@@ -1,6 +1,5 @@
 package com.blackteam.dsketches;
 
-import android.media.effect.Effect;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
@@ -8,8 +7,6 @@ import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
-import com.blackteam.dsketches.gui.ShaderProgram;
-import com.blackteam.dsketches.gui.Texture;
 import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
@@ -54,12 +51,12 @@ public class World extends Observable {
     private static final float EFFECT_TIME_ = 200f;
     private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
 
-    public World(ContentManager contents) {
+    public World(ContentManager contents, SketchesManager sketchesManager) {
         this.contents_ = contents;
-        nRows_ = DEFAULT_NUM_ROWS;
-        nColumns_ = DEFAULT_NUM_COLUMNS;
-        dots_ = new GameDot[nRows_][nColumns_];
-        sketchesManager_ = new SketchesManager();
+        this.nRows_ = DEFAULT_NUM_ROWS;
+        this.nColumns_ = DEFAULT_NUM_COLUMNS;
+        this.dots_ = new GameDot[nRows_][nColumns_];
+        this.sketchesManager_ = sketchesManager;
     }
 
     public int getNumRows() {
@@ -203,10 +200,10 @@ public class World extends Observable {
         if (selectedDots_.size() > 2) {
             selectedSketch_ = sketchesManager_.findSketch(selectedDots_);
 
-            Log.i("World", "sketch's type = " + selectedSketch_.getType().toString());
-            if (selectedSketch_.getType() != Sketch.Types.NONE) {
+            Log.i("World", "sketch's type = " + selectedSketch_.getName().toString());
+            if (selectedSketch_.getName() != null) {
                 setChanged();
-                notifyObservers(selectedSketch_.getType());
+                notifyObservers(selectedSketch_.getName());
             }
 
             // Ищем спец. Dots.

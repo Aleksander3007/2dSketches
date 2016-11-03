@@ -8,8 +8,9 @@ import java.util.ArrayList;
 public class SketchTest {
     @Test
     public void testIsEqual() throws Exception {
+        final String FAKED_SKETCH_NAME = "SKETCH_NAME";
         final int FAKED_SKETCH_COST = 0;
-        Sketch sketch = new Sketch(Sketch.Types.ROW_3, FAKED_SKETCH_COST);
+        Sketch sketch = new Sketch(FAKED_SKETCH_NAME, FAKED_SKETCH_COST);
         sketch.add(0, 0, GameDot.Types.TYPE1);
         sketch.add(0, 1, GameDot.Types.TYPE1);
         sketch.add(0, 2, GameDot.Types.TYPE1);

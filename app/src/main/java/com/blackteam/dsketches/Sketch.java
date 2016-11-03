@@ -3,13 +3,6 @@ package com.blackteam.dsketches;
 import java.util.ArrayList;
 
 public class Sketch {
-    // TODO: Должен тип браться из файла, а не жестко здесь зашит.
-    public enum Types {
-        NONE,
-        ROW_3, // TODO: Удалить.
-        ROW_5
-    }
-
     public static class Element {
         private int rowNo_;
         private int colNo_;
@@ -42,17 +35,17 @@ public class Sketch {
         }
     }
 
-    private Sketch.Types type_;
+    private String name_;
     private ArrayList<Element> elements = new ArrayList<>();
     private int cost_;
 
-    public Sketch(Sketch.Types type, int cost) {
-        this.type_ = type;
+    public Sketch(String name, int cost) {
+        this.name_ = name;
         this.cost_ = cost;
     }
 
-    public Sketch.Types getType() {
-        return type_;
+    public String getName() {
+        return name_;
     }
 
     public int getCost() {
@@ -88,6 +81,6 @@ public class Sketch {
     }
 
     public static Sketch getNullSketch() {
-        return new Sketch(Sketch.Types.NONE, 0);
+        return new Sketch("null", 0);
     }
 }

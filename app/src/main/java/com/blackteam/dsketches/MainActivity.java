@@ -29,6 +29,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private Player player_;
     private Game game_;
     private AchievementsManager achievementsManager_;
+    private SketchesManager sketchesManager_;
     private ContentManager contents_;
 
     private boolean rendererSet = false;
@@ -42,18 +43,21 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         this.contents_ = new ContentManager(getApplicationContext());
 
-        player_ = new Player();
-        game_ = new Game(player_, contents_);
-        game_.restartLevel();
-
 
         try {
             achievementsManager_ = new AchievementsManager(getApplicationContext());
+            sketchesManager_ = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
+            Log.e("Exception", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("Exception", e.getMessage());
         }
+
+        player_ = new Player();
+        game_ = new Game(player_, sketchesManager_, contents_);
+        game_.restartLevel();
         game_.addObserver(achievementsManager_);
 
         gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
