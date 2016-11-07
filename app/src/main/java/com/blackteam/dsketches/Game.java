@@ -1,11 +1,9 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
-import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.StaticText;
 import com.blackteam.dsketches.utils.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;

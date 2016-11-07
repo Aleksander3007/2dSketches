@@ -6,6 +6,8 @@ import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blackteam.dsketches.gui.AchievementToast;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -17,8 +19,10 @@ import java.util.Observer;
 public class AchievementsManager implements Observer {
 
     public ArrayList<Achievement> achievements_ = new ArrayList<>();
+    public Context context_;
 
     public AchievementsManager(Context context) throws XmlPullParserException, IOException {
+        this.context_ = context;
         loadContent(context);
     }
 
@@ -72,6 +76,7 @@ public class AchievementsManager implements Observer {
             if (achievement.equals(sketchType, 0, 0)) {
                 Log.i("Achievement", achievement.getName());
 
+                AchievementToast.makeText(context_, achievement.getName()).show();
                 // TODO: Необходимо проверять есть ли уже такая ачивка.
                 // Если нет, добавляем, и выводим достижение, что получили ачивку.
             }
