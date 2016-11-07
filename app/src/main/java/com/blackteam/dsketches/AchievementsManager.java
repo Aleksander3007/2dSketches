@@ -31,6 +31,8 @@ public class AchievementsManager implements Observer {
                 if (xpp.getName().equals("achievement")) {
                     achievement = new Achievement();
                     achievement.setName(xpp.getAttributeValue(null, "name"));
+                    boolean isEarned = xpp.getAttributeBooleanValue(null, "isEarned", false);
+                    if (isEarned) achievement.earn();
                 }
                 else if (xpp.getName().equals("condition")) {
                     String conditionName = xpp.getAttributeValue(null, "name");

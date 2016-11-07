@@ -28,7 +28,10 @@ public class AchievementsActivity extends Activity {
             TextView achievementName = (TextView) achievementView.findViewById(R.id.ach_name);
             achievementName.setText(ach.getName());
             ImageView achievementImage = (ImageView) achievementView.findViewById(R.id.ach_image);
-            achievementImage.setImageResource(R.drawable.star);
+            if (ach.isEarned())
+                achievementImage.setImageResource(R.drawable.star);
+            else
+                achievementImage.setImageResource(R.drawable.star_noactive);
             achievementsContainter.addView(achievementView);
         }
     }

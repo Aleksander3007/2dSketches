@@ -1,6 +1,7 @@
 package com.blackteam.dsketches.utils;
 
 import android.graphics.Bitmap;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.blackteam.dsketches.ContentManager;
@@ -25,7 +26,7 @@ public class SketchesManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        sketchesManager_ = new SketchesManager();
+        sketchesManager_ = new SketchesManager(InstrumentationRegistry.getContext());
     }
 
     @After
@@ -46,15 +47,17 @@ public class SketchesManagerTest {
         gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 0, 0, fakeContents_));
         gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 0, 1, fakeContents_));
         gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 0, 2, fakeContents_));
+        gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 0, 3, fakeContents_));
+        gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 0, 4, fakeContents_));
 
         // Проверка, что sketch найден.
         Sketch sketch = sketchesManager_.findSketch(gameDots);
-        org.junit.Assert.assertEquals(Sketch.Types.ROW_3, sketch.getType());
+        org.junit.Assert.assertEquals("row_5", sketch.getName());
 
         // Проверка, что sketch НЕ найден.
         gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 3, 0, fakeContents_));
         sketch = sketchesManager_.findSketch(gameDots);
-        org.junit.Assert.assertEquals(Sketch.Types.NONE, sketch.getType());
+        org.junit.Assert.assertEquals(SketchesManager.SKETCH_NULL_.getName(), sketch.getName());
 
         gameDots.clear();
     }

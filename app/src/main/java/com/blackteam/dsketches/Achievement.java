@@ -11,6 +11,7 @@ public class Achievement implements Serializable {
     private String sketchName_ = ANY_SKETCH;
     private int score_ = ANY_SCORE;
     private int profit_ = ANY_PROFIT;
+    private boolean isEarned_ = false;
 
     public String getName() {
         return name_;
@@ -33,6 +34,10 @@ public class Achievement implements Serializable {
     public void setProfit(int profit) {
         this.profit_ = profit;
     }
+
+    public void earn() { isEarned_ = true; }
+
+    public boolean isEarned() { return isEarned_; }
 
     public boolean equals(String sketchName, int score, int profit) {
         assert sketchName != null;
