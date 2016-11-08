@@ -32,6 +32,8 @@ public class Game {
         skillsPanel_ = new SkillsPanel(contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
+
+        scoreLabel_.setValue(player_.getScore());
     }
 
     public void resize(final float screenWidth, final float screenHeight) {
@@ -78,8 +80,12 @@ public class Game {
     }
 
     public void restartLevel() {
-        world_.createLevel();
+        createLevel();
         reset();
+    }
+
+    public void createLevel() {
+        world_.createLevel();
     }
 
     public void reset() {

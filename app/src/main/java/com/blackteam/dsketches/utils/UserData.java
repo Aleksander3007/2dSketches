@@ -1,7 +1,6 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.utils;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
@@ -20,35 +19,15 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 /**
- * Класс содержит информацию игроке,
- * его достижения, кол-во очков, skills и их количество, и т.п.
+ * Чтение, запись и хранение пользовательских данных.
  */
-public class Player {
+public class UserData {
     private static Context context_;
     private static final String fileName_ = "userData.xml";
 
-    private int score_ = 0;
-    private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>();
-    //private ArrayMap<Achievement, Boolean> achievements = new ArrayMap<>();
-    // private Sketch.Types lastSketchType_;
+    public static int score_;
 
-    public Player(Context context) throws IOException, XmlPullParserException {
-        load(context);
-    }
-
-    public void setScore(int newScore) {
-        score_ = newScore;
-    }
-
-    public int getScore() {
-        return score_;
-    }
-
-    public void addScore(int addingScore) {
-        score_ += addingScore;
-    }
-
-    public void load(Context context) throws IOException, XmlPullParserException {
+    public static void load(Context context) throws IOException, XmlPullParserException {
         context_ = context;
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName_);
@@ -56,16 +35,11 @@ public class Player {
         }
         // Если файл не создан необходимо его создать.
         catch (FileNotFoundException ex) {
-            writeFile(context);
+            createFile(context);
         }
     }
 
-    public void save() {
-        writeFile(context_);
-        Log.i("Player", "save is completed.");
-    }
-
-    private void writeFile(Context context) {
+    private static void createFile(Context context) {
         try {
             XmlSerializer xmlSerializer = Xml.newSerializer();
             StringWriter stringWriter = new StringWriter();
@@ -73,8 +47,7 @@ public class Player {
             xmlSerializer.startDocument("UTF-8", true);
             xmlSerializer.startTag(null, "userData");
             xmlSerializer.startTag(null, "score");
-            Log.i("Player", String.format("score = %d", score_));
-            xmlSerializer.attribute(null, "value", String.valueOf(score_));
+            xmlSerializer.attribute(null, "value", "0");
             xmlSerializer.endTag(null, "score");
             xmlSerializer.startTag(null, "gameDots");
             // TODO: Сохранять игровое состояние.
@@ -93,7 +66,7 @@ public class Player {
             fileOutputStream.close();
 
         } catch (FileNotFoundException e) {
-            // Такого быть не может, т.к. если файла не существует, openFileOutput() создаст файл.
+            // Такого быть не может, т.к. если файла не существует openFileOutput() создаст файл.
             e.printStackTrace();
             Log.i("FileNotFoundException", e.getMessage());
             Toast.makeText(context_, "FileNotFoundException: error write user data to file.", Toast.LENGTH_LONG).show();
@@ -104,7 +77,7 @@ public class Player {
         }
     }
 
-    private void readFile(FileInputStream fileInputStream) throws IOException, XmlPullParserException {
+    private static void readFile(FileInputStream fileInputStream) throws IOException, XmlPullParserException {
         // Считываем данные из файла в строку.
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
         char[] inputBuffer = new char[fileInputStream.available()];
@@ -125,7 +98,6 @@ public class Player {
             if (eventType == XmlPullParser.START_TAG) {
                 if (xmlPullParser.getName().equals("score")) {
                     score_ = Integer.parseInt(xmlPullParser.getAttributeValue(null, "value"));
-                    Log.i("Player", String.format("score = %d", score_));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 Log.i("userData", "End tag " + xmlPullParser.getName());
@@ -133,7 +105,5 @@ public class Player {
 
             eventType = xmlPullParser.next();
         }
-
-        Log.i("Player", "read is completed.");
     }
 }

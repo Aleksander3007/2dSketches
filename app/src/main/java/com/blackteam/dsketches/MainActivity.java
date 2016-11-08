@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.blackteam.dsketches.utils.ExceptionHandler;
+import com.blackteam.dsketches.utils.UserData;
 import com.blackteam.dsketches.utils.Vector2;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -31,7 +32,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private AchievementsManager achievementsManager_;
     private SketchesManager sketchesManager_;
     private ContentManager contents_;
-
     private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
 
         try {
+            player_ = new Player(getApplicationContext());
             achievementsManager_ = new AchievementsManager(getApplicationContext());
             sketchesManager_ = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
@@ -55,9 +56,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             Log.e("Exception", e.getMessage());
         }
 
-        player_ = new Player();
+
         game_ = new Game(player_, sketchesManager_, contents_);
-        game_.restartLevel();
+        game_.createLevel();
         game_.addObserver(achievementsManager_);
 
         gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
@@ -67,8 +68,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         gameView_.setOnTouchListener(this);
         gameView_.setEGLContextClientVersion(2);
         gameView_.setRenderer(gameRenderer_);
-
-        rendererSet = true;
     }
 
     public void menuOpenOnClick(View view) {
@@ -83,14 +82,17 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     @Override
-    protected void onPause() { super.onPause();
+    protected void onPause() {
+        super.onPause();
+        player_.save();
         if (rendererSet) {
             gameView_.onPause();
         }
     }
 
     @Override
-    protected void onResume() { super.onResume();
+    protected void onResume() {
+        super.onResume();
         if (rendererSet) {
             gameView_.onResume();
         }
