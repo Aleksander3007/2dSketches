@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 /**
  * Класс содержит информацию игроке,
@@ -29,7 +30,8 @@ public class Player {
 
     private int score_ = 0;
     private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>();
-    //private ArrayMap<Achievement, Boolean> achievements = new ArrayMap<>();
+    /** Список полученных достижений. */
+    private ArrayList<String> achievements_ = new ArrayList<>();
     // private Sketch.Types lastSketchType_;
 
     public Player(Context context) throws IOException, XmlPullParserException {
@@ -46,6 +48,10 @@ public class Player {
 
     public void addScore(int addingScore) {
         score_ += addingScore;
+    }
+
+    public ArrayList<String> getEarnedAchievementsNames() {
+        return achievements_;
     }
 
     public void load(Context context) throws IOException, XmlPullParserException {
@@ -67,27 +73,7 @@ public class Player {
 
     private void writeFile(Context context) {
         try {
-            XmlSerializer xmlSerializer = Xml.newSerializer();
-            StringWriter stringWriter = new StringWriter();
-            xmlSerializer.setOutput(stringWriter);
-            xmlSerializer.startDocument("UTF-8", true);
-            xmlSerializer.startTag(null, "userData");
-            xmlSerializer.startTag(null, "score");
-            Log.i("Player", String.format("score = %d", score_));
-            xmlSerializer.attribute(null, "value", String.valueOf(score_));
-            xmlSerializer.endTag(null, "score");
-            xmlSerializer.startTag(null, "gameDots");
-            // TODO: Сохранять игровое состояние.
-            xmlSerializer.endTag(null, "gameDots");
-            xmlSerializer.startTag(null, "skills");
-            // TODO: Сохранять кол-во оставшихся skill-ов.
-            xmlSerializer.endTag(null, "skills");
-            xmlSerializer.startTag(null, "earned_achievements");
-            xmlSerializer.endTag(null, "earned_achievements");
-            xmlSerializer.endTag(null, "userData");
-            xmlSerializer.flush();
-            String dataWrite = stringWriter.toString();
-
+            String dataWrite = createXmlData();
             FileOutputStream fileOutputStream = context.openFileOutput(fileName_, Context.MODE_PRIVATE);
             fileOutputStream.write(dataWrite.getBytes());
             fileOutputStream.close();
@@ -102,6 +88,40 @@ public class Player {
             Log.i("IOException", e.getMessage());
             Toast.makeText(context_, "IOException: error write user data to file.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String createXmlData() throws IOException {
+        XmlSerializer xmlSerializer = Xml.newSerializer();
+        StringWriter stringWriter = new StringWriter();
+        xmlSerializer.setOutput(stringWriter);
+        xmlSerializer.startDocument("UTF-8", true);
+        xmlSerializer.startTag(null, "userData");
+
+        xmlSerializer.startTag(null, "score");
+        xmlSerializer.attribute(null, "value", String.valueOf(score_));
+        xmlSerializer.endTag(null, "score");
+
+        xmlSerializer.startTag(null, "gameDots");
+        // TODO: Сохранять игровое состояние.
+        xmlSerializer.endTag(null, "gameDots");
+
+        xmlSerializer.startTag(null, "skills");
+        // TODO: Сохранять кол-во оставшихся skill-ов.
+        xmlSerializer.endTag(null, "skills");
+
+        xmlSerializer.startTag(null, "earned_achievements");
+        for (String achievement : achievements_) {
+            xmlSerializer.startTag(null, "achievement");
+            xmlSerializer.attribute(null, "name", achievement);
+            xmlSerializer.endTag(null, "achievement");
+        }
+        xmlSerializer.endTag(null, "earned_achievements");
+
+        xmlSerializer.endTag(null, "userData");
+        xmlSerializer.flush();
+        String dataXml = stringWriter.toString();
+
+        return dataXml;
     }
 
     private void readFile(FileInputStream fileInputStream) throws IOException, XmlPullParserException {
@@ -126,14 +146,20 @@ public class Player {
                 if (xmlPullParser.getName().equals("score")) {
                     score_ = Integer.parseInt(xmlPullParser.getAttributeValue(null, "value"));
                     Log.i("Player", String.format("score = %d", score_));
+                } else if (xmlPullParser.getName().equals("achievement")) {
+                    String achievementName = xmlPullParser.getAttributeValue(null, "name");
+                    if (achievementName != null && !achievementName.equals(""))
+                        achievements_.add(achievementName);
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                Log.i("userData", "End tag " + xmlPullParser.getName());
             }
 
             eventType = xmlPullParser.next();
         }
 
         Log.i("Player", "read is completed.");
+    }
+
+    public void earnAchievement(String achievementName) {
+        achievements_.add(achievementName);
     }
 }

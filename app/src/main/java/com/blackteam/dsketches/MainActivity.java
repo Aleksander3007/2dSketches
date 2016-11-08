@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         try {
             player_ = new Player(getApplicationContext());
-            achievementsManager_ = new AchievementsManager(getApplicationContext());
+            achievementsManager_ = new AchievementsManager(player_, getApplicationContext());
             sketchesManager_ = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();

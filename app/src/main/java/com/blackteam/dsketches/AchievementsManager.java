@@ -25,13 +25,20 @@ public class AchievementsManager implements Observer {
 
     public ArrayList<Achievement> achievements_ = new ArrayList<>();
     public Context context_;
+    private Player player_;
 
-    public AchievementsManager(Context context) throws XmlPullParserException, IOException {
+    public AchievementsManager(Player player, Context context) throws XmlPullParserException, IOException {
+        this.player_ = player;
         this.context_ = context;
         loadContent(context);
     }
 
     public void loadContent(Context context) throws XmlPullParserException, IOException {
+        readFile(context);
+        findEarnedAchievements();
+    }
+
+    private void readFile(Context context) throws XmlPullParserException, IOException {
         Achievement achievement = new Achievement();
         XmlResourceParser xmlResParser = context.getResources().getXml(R.xml.achievements);
         int eventType = xmlResParser.getEventType();
@@ -40,8 +47,6 @@ public class AchievementsManager implements Observer {
                 if (xmlResParser.getName().equals("achievement")) {
                     achievement = new Achievement();
                     achievement.setName(xmlResParser.getAttributeValue(null, "name"));
-                    boolean isEarned = xmlResParser.getAttributeBooleanValue(null, "isEarned", false);
-                    if (isEarned) achievement.earn();
                 } else if (xmlResParser.getName().equals("condition")) {
                     String conditionName = xmlResParser.getAttributeValue(null, "name");
                     if (TextUtils.equals(conditionName, "sketch")) {
@@ -65,13 +70,17 @@ public class AchievementsManager implements Observer {
         }
         xmlResParser.close();
         Log.i("AchievementsManager", "Xml is read.");
+    }
 
-        // TODO: В отдельный класс SavedInfo.
-
-
-        // 1. Пытаемся открыть файл savedInfo.
-        // 2. Если его нет, то создаём.
-        // 3. И тогда всем achievement присваиваем isEarned = false;
+    private void findEarnedAchievements() {
+        for (String achievementName : player_.getEarnedAchievementsNames()) {
+            for (Achievement achievement : achievements_) {
+                if (achievementName.equals(achievement.getName())) {
+                    achievement.earn();
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -85,6 +94,8 @@ public class AchievementsManager implements Observer {
                 Log.i("Achievement", achievement.getName());
 
                 if (!achievement.isEarned()) {
+                    achievement.earn();
+                    player_.earnAchievement(achievement.getName());
                     AchievementToast.makeText(context_, achievement.getName()).show();
                 }
             }
