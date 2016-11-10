@@ -1,14 +1,11 @@
-package com.blackteam.dsketches.utils;
+package com.blackteam.dsketches.gui;
 
 
 import android.content.Context;
 
-import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.R;
-import com.blackteam.dsketches.gui.Graphics;
-import com.blackteam.dsketches.gui.ScoreNumber;
-import com.blackteam.dsketches.gui.ShaderProgram;
-import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -60,7 +57,7 @@ public class NumberLabel {
             int number = rest % 10;
             rest = rest / 10;
 
-            DisplayableObject digit = new ScoreNumber(
+            DisplayableObject digit = new DisplayableObject(
                     new Vector2(0f, 0f), // Правильная позиция устанавливается не здесь.
                     digitsTexture_, number * 32, 0, 32, 32);
             digit.setSize(digitWidth_, digitHeight_);

@@ -1,6 +1,5 @@
 package com.blackteam.dsketches.gui;
 
-import com.blackteam.dsketches.utils.NumberLabel;
 import com.blackteam.dsketches.utils.Vector2;
 
 /**

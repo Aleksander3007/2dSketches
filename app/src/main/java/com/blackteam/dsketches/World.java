@@ -333,9 +333,17 @@ public class World extends Observable {
      * Удалить выделенные Dots.
      */
     public void deleteSelectedDots() {
+        deleteDots(selectedDots_);
+    }
+
+    /**
+     * Удалить указанные Dots.
+     * @param dots Которые необходимо удалить.
+     */
+    public void deleteDots(CopyOnWriteArrayList<GameDot> dots) {
         isUpdating_ = true;
 
-        for (GameDot gameDot : selectedDots_) {
+        for (GameDot gameDot : dots) {
 
             addEffect(gameDot.getSpecType(), gameDot.getPosition());
 
@@ -350,7 +358,6 @@ public class World extends Observable {
 
         isUpdating_ = false;
     }
-
     /**
      * Отобразить эффект от специальной игровой точки.
      * @param dotSpecType Тип специальной игровой точки.
@@ -430,7 +437,7 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 504f); // 4f
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 104f); // 4f
 
         return GameMath.generateValue(dotTypeProbabilities);
     }

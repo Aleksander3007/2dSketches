@@ -186,7 +186,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         contents_.load(R.drawable.chasm);
         contents_.load(R.drawable.error);
         contents_.load(R.drawable.exit_btn);
-        contents_.load(R.drawable.good_neighbour);
         contents_.load(R.drawable.menu_window);
         contents_.load(R.drawable.numbers);
         contents_.load(R.drawable.profit_numbers);
@@ -197,5 +196,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         contents_.load(R.drawable.dots_theme1);
         contents_.load(R.drawable.anim_spec_roweater);
         contents_.load(R.drawable.effect_roweater);
+        contents_.load(R.drawable.skills);
     }
 }

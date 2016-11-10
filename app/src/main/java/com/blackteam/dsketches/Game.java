@@ -5,7 +5,7 @@ import android.util.Log;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.gui.StaticText;
-import com.blackteam.dsketches.utils.NumberLabel;
+import com.blackteam.dsketches.gui.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 

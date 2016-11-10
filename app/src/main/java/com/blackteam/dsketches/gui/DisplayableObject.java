@@ -9,7 +9,7 @@ import com.blackteam.dsketches.utils.Vector2;
 public class DisplayableObject {
     protected Sprite sprite_;
     /** Координаты левого нижнего угла. */
-    protected Vector2 pos_;
+    protected Vector2 pos_ = new Vector2(0, 0);
     /** По умолчанию - без масштабирования. */
     protected Vector2 scale_ = new Vector2(1, 1);
     /** Вращение вокруг центра объекта. По умолчанию - без вращения. */
