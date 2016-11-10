@@ -29,7 +29,7 @@ public class Game {
     public Game(final Player player, SketchesManager sketchesManager, final ContentManager contents) {
         this.player_ = player;
         world_ = new World(contents, sketchesManager);
-        skillsPanel_ = new SkillsPanel(contents);
+        skillsPanel_ = new SkillsPanel(player, contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
 

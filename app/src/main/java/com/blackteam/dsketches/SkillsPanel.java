@@ -1,5 +1,6 @@
 package com.blackteam.dsketches;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.Graphics;
@@ -13,11 +14,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Панель спец. возможностей.
  */
 public class SkillsPanel {
+    private Player player_;
     private ArrayList<Skill> skills_ = new ArrayList<>();
     private Skill selectedSkill_;
 
-    public SkillsPanel(ContentManager contents) {
-        loadContent(contents);
+    public SkillsPanel(Player player, ContentManager contents) {
+        this.player_ = player;
+        ArrayMap<SkillType, Integer> availableSkills = player.getSkills();
+        for (SkillType skillType : SkillType.values()) {
+            int skillCount = 0;
+            if (availableSkills.containsKey(skillType)) {
+                skillCount = availableSkills.get(skillType);
+            }
+            skills_.add(new Skill(skillType, skillCount, contents));
+        }
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
@@ -58,13 +68,8 @@ public class SkillsPanel {
 
     public void useSelectedSkill() {
         selectedSkill_.use();
+        player_.setSkill(selectedSkill_.getType(), selectedSkill_.getAmount());
         selectedSkill_ = null;
-    }
-
-    private void loadContent(ContentManager contents) {
-        for (SkillType skillType : SkillType.values()) {
-            skills_.add(new Skill(skillType, 10, contents));
-        }
     }
 
     public void draw(Graphics graphics) {

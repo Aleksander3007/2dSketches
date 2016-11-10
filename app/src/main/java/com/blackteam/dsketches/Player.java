@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Класс содержит информацию игроке,
@@ -29,12 +30,16 @@ public class Player {
     private static final String fileName_ = "userData.xml";
 
     private int score_ = 0;
-    private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>();
+    /** Список skills с доступным количеством. */
+    private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>(SkillType.values().length);
     /** Список полученных достижений. */
     private ArrayList<String> achievements_ = new ArrayList<>();
     // private Sketch.Types lastSketchType_;
 
     public Player(Context context) throws IOException, XmlPullParserException {
+        for (SkillType skillType : SkillType.values()) {
+            skills_.put(skillType, 2); // Начальное состояние.
+        }
         load(context);
     }
 
@@ -54,6 +59,13 @@ public class Player {
         return achievements_;
     }
 
+    public ArrayMap<SkillType, Integer> getSkills() {
+        return skills_;
+    }
+
+    public void setSkill(SkillType skillType, int skillAmount) {
+        skills_.setValueAt(skills_.indexOfKey(skillType), skillAmount);
+    }
     public void load(Context context) throws IOException, XmlPullParserException {
         context_ = context;
         try {
@@ -106,7 +118,12 @@ public class Player {
         xmlSerializer.endTag(null, "gameDots");
 
         xmlSerializer.startTag(null, "skills");
-        // TODO: Сохранять кол-во оставшихся skill-ов.
+        for (Map.Entry<SkillType, Integer> skillEntry : skills_.entrySet()) {
+            xmlSerializer.startTag(null, "skill");
+            xmlSerializer.attribute(null, "type", String.valueOf(skillEntry.getKey()));
+            xmlSerializer.attribute(null, "amount", String.valueOf(skillEntry.getValue()));
+            xmlSerializer.endTag(null, "skill");
+        }
         xmlSerializer.endTag(null, "skills");
 
         xmlSerializer.startTag(null, "earned_achievements");
@@ -146,10 +163,16 @@ public class Player {
                 if (xmlPullParser.getName().equals("score")) {
                     score_ = Integer.parseInt(xmlPullParser.getAttributeValue(null, "value"));
                     Log.i("Player", String.format("score = %d", score_));
-                } else if (xmlPullParser.getName().equals("achievement")) {
+                }
+                else if (xmlPullParser.getName().equals("achievement")) {
                     String achievementName = xmlPullParser.getAttributeValue(null, "name");
                     if (achievementName != null && !achievementName.equals(""))
                         achievements_.add(achievementName);
+                }
+                else if (xmlPullParser.getName().equals("skill")) {
+                    SkillType skillType = Skill.convertToType(xmlPullParser.getAttributeValue(null, "type"));
+                    int skillCount = Integer.parseInt(xmlPullParser.getAttributeValue(null, "amount"));
+                    skills_.setValueAt(skills_.indexOfKey(skillType), skillCount);
                 }
             }
 

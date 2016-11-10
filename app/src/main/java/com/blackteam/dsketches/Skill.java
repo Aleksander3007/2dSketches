@@ -80,6 +80,10 @@ public class Skill {
         return type_;
     }
 
+    public int getAmount() {
+        return count_;
+    }
+
     public void add() {
         count_++;
         amountLabel_.setValue(count_);
@@ -103,5 +107,9 @@ public class Skill {
 
     public boolean hit(Vector2 coords) {
         return mainObject_.hit(coords);
+    }
+
+    public static SkillType convertToType(String skillTypeStr) {
+        return Enum.valueOf(SkillType.class, skillTypeStr);
     }
 }
