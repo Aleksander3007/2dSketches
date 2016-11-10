@@ -181,7 +181,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private void loadContent() {
         // TODO: Посмотреть нельзя как нибудь одной функцией грузить! R.drawable.<Загрузка всего>.
         contents_.load(R.drawable.achievement_bg_noactive);
-        contents_.load(R.drawable.achievement_btn);
         contents_.load(R.drawable.achievement_window_bg);
         contents_.load(R.drawable.chasm);
         contents_.load(R.drawable.error);
