@@ -20,8 +20,8 @@ import java.io.IOException;
 public class MainActivity extends Activity implements View.OnTouchListener {
     public static String VERSION;
 
-    // TODO: Надо хранить в res/values/strings.
-    public final static String ACHIEVEMENT_DATA = "com.blackteam.dsketches.ACHIEVEMENT_DATA";
+    public static String ACHIEVEMENT_DATA = "achievement_data";
+    public static String SKETCHES_DATA = "sketches_data";
 
     private static final int MAIN_MENU_ACTIVITY_ = 0;
 
@@ -42,7 +42,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         VERSION = getApplicationContext().getResources().getString(R.string.version_str);
 
         this.contents_ = new ContentManager(getApplicationContext());
-
 
         try {
             player_ = new Player(getApplicationContext());
@@ -75,9 +74,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         Bundle achievementsBundle = new Bundle();
         achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
+        Bundle sketchesBundle = new Bundle();
+        sketchesBundle.putSerializable("objects", sketchesManager_.getSketches());
 
         Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
         menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
+        menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
         startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
     }
 

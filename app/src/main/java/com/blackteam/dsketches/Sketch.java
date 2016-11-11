@@ -1,9 +1,10 @@
 package com.blackteam.dsketches;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Sketch {
-    public static class Element {
+public class Sketch implements Serializable {
+    public static class Element implements Serializable {
         private int rowNo_;
         private int colNo_;
         private GameDot.Types dotType_;

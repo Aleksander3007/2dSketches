@@ -35,6 +35,7 @@
             android:name=".MainMenuActivity"
             android:theme="@style/Theme.Transparent"></activity>
         <activity android:name=".AchievementsActivity"></activity>
+        <activity android:name=".SketchesActivity"/>
     </application>
 
 </manifest>

@@ -35,4 +35,12 @@ public class MainMenuActivity extends Activity {
         );
         startActivity(achievementsIntent);
     }
+
+    public void sketchesBtnOnClick(View view) {
+        Intent sketchesIntent = new Intent(getBaseContext(), SketchesActivity.class);
+        sketchesIntent.putExtra(MainActivity.SKETCHES_DATA,
+                getIntent().getExtras().getBundle(MainActivity.SKETCHES_DATA)
+        );
+        startActivity(sketchesIntent);
+    }
 }
