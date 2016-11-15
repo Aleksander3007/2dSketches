@@ -1,5 +1,10 @@
 package com.blackteam.dsketches;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -37,7 +42,7 @@ public class Sketch implements Serializable {
     }
 
     private String name_;
-    private ArrayList<Element> elements = new ArrayList<>();
+    private ArrayList<Element> elements_ = new ArrayList<>();
     private int cost_;
 
     public Sketch(String name, int cost) {
@@ -54,22 +59,22 @@ public class Sketch implements Serializable {
     }
 
     public void add(int rowNo, int colNo, GameDot.Types dotType) {
-        elements.add(new Element(rowNo, colNo, dotType));
+        elements_.add(new Element(rowNo, colNo, dotType));
     }
 
     public void clear() {
-        elements.clear();
+        elements_.clear();
     }
 
     public boolean isEqual(ArrayList<Sketch.Element> dotElems) {
-        if (dotElems.size() != elements.size())
+        if (dotElems.size() != elements_.size())
             return false;
 
-        // Max кол-во проходов = SUM(orbElems_.size() - i), где (i = [0..elements.size()]).
+        // Max кол-во проходов = SUM(orbElems_.size() - i), где (i = [0..elements_.size()]).
         boolean isElemFound;
         for (Element dotElem : dotElems) {
             isElemFound = false;
-            for (Element sketchElem : elements) {
+            for (Element sketchElem : elements_) {
                 if (dotElem.isEqual(sketchElem)) {
                     isElemFound = true;
                     break;
@@ -83,5 +88,41 @@ public class Sketch implements Serializable {
 
     public static Sketch getNullSketch() {
         return new Sketch("null", 0);
+    }
+
+    public Bitmap getImage(final int bitmapSize) {
+        Paint noActivePaint  = new Paint();
+        noActivePaint.setColor(Color.GRAY);
+        Paint activePaint = new Paint();
+        activePaint.setColor(Color.BLACK);
+
+        Bitmap bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_4444);
+        bitmap.eraseColor(0);
+        Canvas canvas = new Canvas(bitmap);
+
+        final int MAX_ELEM_ = 6;
+        final float radius = (float) bitmapSize / (2f * MAX_ELEM_);
+        for (int iRow = 0; iRow < MAX_ELEM_; iRow++) {
+            for (int iCol = 0; iCol < MAX_ELEM_; iCol++) {
+                if (isSketchDot(iRow, iCol))
+                    canvas.drawCircle(radius + 2 * radius * iCol, radius + 2 * radius * iRow,
+                        radius, activePaint);
+                else
+                    canvas.drawCircle(radius + 2 * radius * iCol, radius + 2 * radius * iRow,
+                            radius, noActivePaint);
+            }
+        }
+        return bitmap;
+    }
+
+    private boolean isSketchDot(final int rowNo, final int colNo) {
+        boolean isSketchDot = false;
+        for (Element dotElem : elements_) {
+            if (dotElem.getRowNo() == rowNo && dotElem.getColNo() == colNo) {
+                isSketchDot = true;
+                break;
+            }
+        }
+        return isSketchDot;
     }
 }
