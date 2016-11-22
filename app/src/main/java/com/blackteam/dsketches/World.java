@@ -154,6 +154,8 @@ public class World extends Observable {
                             (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1);
                     boolean columnNeighbour = (gameDot.getRowNo() == prevGameDot.getRowNo()) &&
                             (Math.abs((gameDot.getColNo() - prevGameDot.getColNo())) == 1);
+                    boolean diagonalNeighbour = (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1) &&
+                            (Math.abs((gameDot.getColNo() - prevGameDot.getColNo())) == 1);
 
                     boolean isIdenticalType = true;
                     GameDot.Types dotType = gameDot.getType();
@@ -164,8 +166,7 @@ public class World extends Observable {
                         }
                     }
 
-                    // Используем XOR, т.к. нам нужны соседи, но не по диагонали.
-                    if (isIdenticalType && (rowNeighbour ^ columnNeighbour)) {
+                    if (isIdenticalType && (rowNeighbour || columnNeighbour || diagonalNeighbour)) {
 
                         gameDot.setSizeCenter(selectedDotSize_);
                         selectedDots_.add(gameDot);
