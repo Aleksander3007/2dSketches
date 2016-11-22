@@ -18,6 +18,24 @@
         <elem row="1" column="1" dotType="UNIVERSAL" />
         <elem row="1" column="0" dotType="UNIVERSAL" />
     </sketch>
+    <sketch name="seven" cost="40">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="stair" cost="40">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="boat" cost="40">
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+    </sketch>
     <sketch name="row_5" cost="70">
         <elem row="0" column="0" dotType="UNIVERSAL" />
         <elem row="0" column="1" dotType="UNIVERSAL" />
@@ -32,11 +50,19 @@
         <elem row="3" column="0" dotType="UNIVERSAL" />
         <elem row="4" column="0" dotType="UNIVERSAL" />
     </sketch>
-    <sketch name="stair" cost="40">
-        <elem row="0" column="0" dotType="UNIVERSAL" />
+    <sketch name="one" cost="70">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
         <elem row="0" column="1" dotType="UNIVERSAL" />
         <elem row="1" column="1" dotType="UNIVERSAL" />
-        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="three" cost="70">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="4" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
     </sketch>
     <sketch name="table" cost="100">
         <elem row="0" column="0" dotType="UNIVERSAL" />
@@ -46,6 +72,22 @@
         <elem row="1" column="3" dotType="UNIVERSAL" />
         <elem row="0" column="3" dotType="UNIVERSAL" />
     </sketch>
+    <sketch name="two" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="five" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
     <sketch name="ursa_minor" cost="100">
         <elem row="0" column="1" dotType="UNIVERSAL" />
         <elem row="0" column="0" dotType="UNIVERSAL" />
@@ -53,6 +95,60 @@
         <elem row="1" column="1" dotType="UNIVERSAL" />
         <elem row="1" column="2" dotType="UNIVERSAL" />
         <elem row="1" column="3" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="chess" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+        <elem row="0" column="4" dotType="UNIVERSAL" />
+        <elem row="1" column="5" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="four" cost="150">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+        <elem row="3" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="six" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="nine" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="flag" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="eight" cost="200">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
     </sketch>
     <sketch name="ursa_major" cost="400">
         <elem row="1" column="2" dotType="UNIVERSAL" />
