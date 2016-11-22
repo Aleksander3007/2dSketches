@@ -1,13 +1,11 @@
 package com.blackteam.dsketches.animation;
 
-import android.util.Log;
-
-import com.blackteam.dsketches.Game;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Vector2;
 
 /**
  * Хранение данных для анимации объекта.
+ * Выбранный тип трансформации меняется от startVal до endVal со скоростью speed.
  */
 public class AnimationSet {
     /** Тип трансформации. */
@@ -28,8 +26,8 @@ public class AnimationSet {
     }
     private PlayMode playMode_ = PlayMode.NORMAL;
 
-    private Vector2 minVal_;
-    private Vector2 maxVal_;
+    private Vector2 startVal_;
+    private Vector2 endVal_;
     private float speed_;
     private float delayedStart_;
 
@@ -43,45 +41,45 @@ public class AnimationSet {
      * Конструктор.
      * @param valType Тип трансформации.
      * @param playMode Режим проигрывания анимации.
-     * @param minVal Минимальная величина.
-     * @param maxVal Максимальная величина.
+     * @param startVal Начальная величина.
+     * @param endVal Конечная величина.
      * @param speed Скорость изменения величины.
      */
     public AnimationSet(final AnimationSet.ValueType valType,
                         final PlayMode playMode,
-                        final float minVal, final float maxVal,
+                        final float startVal, final float endVal,
                         final float speed) {
         this(valType, playMode,
-                new Vector2(minVal, minVal), new Vector2(maxVal, maxVal),
+                new Vector2(startVal, startVal), new Vector2(endVal, endVal),
                 speed, 0f);
     }
     /**
      * Конструктор.
      * @param valType Тип трансформации.
      * @param playMode Режим проигрывания анимации.
-     * @param minVal Минимальная величина.
-     * @param maxVal Максимальная величина.
+     * @param startVal Минимальная величина.
+     * @param endVal Максимальная величина.
      * @param speed Скорость изменения величины.
      */
     public AnimationSet(final AnimationSet.ValueType valType,
                         final PlayMode playMode,
-                        final Vector2 minVal, final Vector2 maxVal,
+                        final Vector2 startVal, final Vector2 endVal,
                         final float speed) {
-        this(valType, playMode, minVal, maxVal, speed, 0f);
+        this(valType, playMode, startVal, endVal, speed, 0f);
     }
 
     public AnimationSet(final AnimationSet.ValueType valType,
                         final PlayMode playMode,
-                        final Vector2 minVal, final Vector2 maxVal,
+                        final Vector2 startVal, final Vector2 endVal,
                         final float speed, final float delayedStart) {
         this.valueType_ = valType;
         this.playMode_ = playMode;
-        this.minVal_ = new Vector2(minVal);
-        this.maxVal_ = new Vector2(maxVal);
+        this.startVal_ = new Vector2(startVal);
+        this.endVal_ = new Vector2(endVal);
         this.speed_ = speed;
         this.delayedStart_ = delayedStart;
 
-        Vector2 distanceVector = GameMath.sub(maxVal_, minVal_);
+        Vector2 distanceVector = GameMath.sub(endVal_, startVal_);
         distance_ = (float) Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
         angle_ = (float) Math.atan2(distanceVector.y, distanceVector.x);
 
@@ -92,7 +90,7 @@ public class AnimationSet {
 
     public AnimationSet(AnimationSet animationSet) {
         this(animationSet.getValueType(), animationSet.getPlayMode(),
-                animationSet.getMinVal(), animationSet.getMaxVal(), animationSet.getSpeed(),
+                animationSet.getStartVal(), animationSet.getEndVal(), animationSet.getSpeed(),
                 animationSet.getDelayedStart());
     }
 
@@ -100,9 +98,9 @@ public class AnimationSet {
         return playMode_;
     }
 
-    public Vector2 getMinVal() { return minVal_; }
+    public Vector2 getStartVal() { return startVal_; }
 
-    public Vector2 getMaxVal() { return maxVal_; }
+    public Vector2 getEndVal() { return endVal_; }
 
     public float getSpeed() {
         return speed_;
@@ -118,7 +116,7 @@ public class AnimationSet {
         Vector2 absDist = new Vector2(lastVal_ * (float)Math.cos(angle_),
                 lastVal_ * (float)Math.sin(angle_)
         );
-        return GameMath.add(minVal_, absDist);
+        return GameMath.add(startVal_, absDist);
     }
 
     public AnimationSet.ValueType getValueType() {

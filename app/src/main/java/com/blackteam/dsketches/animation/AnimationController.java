@@ -1,7 +1,5 @@
 package com.blackteam.dsketches.animation;
 
-import android.util.Log;
-
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.utils.Size2;
 
@@ -55,7 +53,7 @@ public class AnimationController {
                 break;
             case ALPHA:
                 // Берем любое значение, т.к. x и y одинаковые в данном случае.
-                animationObject.setAlpha(animationSet.getMinVal().x + animationSet.getValue());
+                animationObject.setAlpha(animationSet.getStartVal().x + animationSet.getValue());
                 break;
         }
     }
