@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <achievements>
+    <achievement name="Первая тысяча">
+        <conditions>
+            <condition name="score" value="1000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Мешочек с серебром">
+        <conditions>
+            <condition name="score" value="2500"/>
+        </conditions>
+    </achievement>
+    <achievement name="Неплохой старт">
+        <conditions>
+            <condition name="score" value="5000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Мешочек с золотом">
+        <conditions>
+            <condition name="score" value="10000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Слиток серебра">
+        <conditions>
+            <condition name="score" value="25000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Слиток золота">
+        <conditions>
+            <condition name="score" value="99999"/>
+        </conditions>
+    </achievement>
+    <achievement name="Богач">
+        <conditions>
+            <condition name="score" value="500000"/>
+        </conditions>
+    </achievement>
+    <achievement name="Сто за раз">
+        <conditions>
+            <condition name="profit" value="100"/>
+        </conditions>
+    </achievement>
+    <achievement name="Отличное мышление">
+        <conditions>
+            <condition name="profit" value="250"/>
+        </conditions>
+    </achievement>
+    <achievement name="Впечатляет">
+        <conditions>
+            <condition name="profit" value="500"/>
+        </conditions>
+    </achievement>
+    <achievement name="Гений мысли">
+        <conditions>
+            <condition name="profit" value="1000"/>
+        </conditions>
+    </achievement>
     <achievement name="Пять в ряд">
         <conditions>
             <condition name="sketch" value="row_5"/>
@@ -10,21 +65,24 @@
             <condition name="sketch" value="column_5"/>
         </conditions>
     </achievement>
-    <achievement name="Первая тысяча">
+    <achievement name="Астроном">
         <conditions>
-            <condition name="score" value="1000"/>
+            <condition name="sketch" value="ursa_minor"/>
         </conditions>
     </achievement>
-    <achievement name="Сто за раз">
+    <achievement name="Великий Астроном">
         <conditions>
-            <condition name="profit" value="100"/>
+            <condition name="sketch" value="ursa_major"/>
         </conditions>
     </achievement>
-    <!--
-    <achievement name="Бочонок">
+    <achievement name="Сдаёшься?">
         <conditions>
-            <condition name="factor" value="12"/>
+            <condition name="sketch" value="flag"/>
         </conditions>
     </achievement>
-    -->
+    <achievement name="Любишь подумать?">
+        <conditions>
+            <condition name="sketch" value="chess"/>
+        </conditions>
+    </achievement>
 </achievements>
