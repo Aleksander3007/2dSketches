@@ -10,6 +10,11 @@ import com.blackteam.dsketches.utils.Vector2;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NumberLabel {
+    /** Ширина текстуры. */
+    public static final int TEX_WIDTH = 64;
+    /** Высота текстуры. */
+    public static final int TEX_HEIGHT = 128;
+
     protected Texture digitsTexture_;
     protected Vector2 pos_ = new Vector2(0, 0);
     protected float digitHeight_;
@@ -46,7 +51,7 @@ public class NumberLabel {
         if (value_ == 0) {
             DisplayableObject digit = new DisplayableObject(
                     new Vector2(0f, 0f),
-                    digitsTexture_, 0, 0, 32, 32);
+                    digitsTexture_, 0, 0, TEX_WIDTH, TEX_HEIGHT);
             digit.setSize(digitWidth_, digitHeight_);
             digits_.add(digit);
         }
@@ -59,7 +64,7 @@ public class NumberLabel {
 
             DisplayableObject digit = new DisplayableObject(
                     new Vector2(0f, 0f), // Правильная позиция устанавливается не здесь.
-                    digitsTexture_, number * 32, 0, 32, 32);
+                    digitsTexture_, number * TEX_WIDTH, 0, TEX_WIDTH, TEX_HEIGHT);
             digit.setSize(digitWidth_, digitHeight_);
             digits_.add(digit);
         }

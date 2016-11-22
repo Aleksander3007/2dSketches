@@ -31,7 +31,7 @@ public class Game {
         world_ = new World(contents, sketchesManager);
         skillsPanel_ = new SkillsPanel(player, contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
-        profitLabel_ = new ProfitLabel(contents.get(R.drawable.profit_numbers));
+        profitLabel_ = new ProfitLabel(contents.get(R.drawable.numbers));
 
         scoreLabel_.setValue(player_.getScore());
     }
@@ -130,6 +130,6 @@ public class Game {
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(scoreLabelOffset, scoreLabelSize);
         profitLabel_.init(new Vector2(0, 0),
-                new Size2(screenPart_, screenPart_));
+                new Size2(1.5f * screenPart_, 1.5f * screenPart_));
     }
 }
