@@ -38,12 +38,10 @@ public class World extends Observable {
     private GameDot[][] dots_;
 
     private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<TouchLine> touchLines_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
     private float dotSize_ = 1.0f;
     private float selectedDotSize_ = 1.0f * SELECTION_SCALE_;
-    private Size2 touchLineSize_;
 
     private boolean isUpdating_ = false;
 
@@ -83,11 +81,6 @@ public class World extends Observable {
         this.width_ = dotSize_ * nColumns_;
         this.pos_ = new Vector2(pos.x + (rectSize.width / 2) - (this.width_ / 2), pos.y);
 
-        touchLineSize_ = new Size2(
-                selectedDotSize_,
-                selectedDotSize_ / 4.0f
-        );
-
         for (int iRow = 0; iRow < dots_.length; iRow++) {
             for (int iCol = 0; iCol < dots_[iRow].length; iCol++) {
                 Vector2 dotPos = convertToPos(iRow, iCol);
@@ -107,9 +100,6 @@ public class World extends Observable {
             }
             for (GameDot dot : selectedDots_) {
                 dot.draw(graphics);
-            }
-            for (TouchLine touchLine : touchLines_) {
-                touchLine.draw(graphics);
             }
 
             ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
@@ -170,13 +160,6 @@ public class World extends Observable {
 
                         gameDot.setSizeCenter(selectedDotSize_);
                         selectedDots_.add(gameDot);
-
-                        TouchLine touchLine = new TouchLine(
-                                prevGameDot, gameDot,
-                                touchLineSize_,
-                                contents_
-                        );
-                        touchLines_.add(touchLine);
                     }
                 }
                 else {
@@ -325,7 +308,6 @@ public class World extends Observable {
         for (GameDot dot : selectedDots_) {
             dot.setSizeCenter(dotSize_);
         }
-        touchLines_.clear();
         selectedDots_.clear();
         selectedSketch_ = SketchesManager.SKETCH_NULL_;
     }
