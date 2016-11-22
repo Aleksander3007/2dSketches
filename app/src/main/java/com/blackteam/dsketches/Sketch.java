@@ -92,7 +92,7 @@ public class Sketch implements Serializable {
 
     public Bitmap getImage(final int bitmapSize) {
         Paint noActivePaint  = new Paint();
-        noActivePaint.setColor(Color.GRAY);
+        noActivePaint.setColor(0xFFDDDDDD);
         Paint activePaint = new Paint();
         activePaint.setColor(Color.BLACK);
 
@@ -105,10 +105,12 @@ public class Sketch implements Serializable {
         for (int iRow = 0; iRow < MAX_ELEM_; iRow++) {
             for (int iCol = 0; iCol < MAX_ELEM_; iCol++) {
                 if (isSketchDot(iRow, iCol))
-                    canvas.drawCircle(radius + 2 * radius * iCol, radius + 2 * radius * iRow,
+                    canvas.drawCircle(radius + 2 * radius * iCol,
+                            radius + 2 * radius * (MAX_ELEM_ - 1 - iRow),
                         radius, activePaint);
                 else
-                    canvas.drawCircle(radius + 2 * radius * iCol, radius + 2 * radius * iRow,
+                    canvas.drawCircle(radius + 2 * radius * iCol,
+                            radius + 2 * radius * (MAX_ELEM_ - 1 - iRow),
                             radius, noActivePaint);
             }
         }
