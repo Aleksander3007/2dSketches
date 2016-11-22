@@ -1,17 +1,23 @@
 package com.blackteam.dsketches.gui;
 
+import com.blackteam.dsketches.animation.AnimationController;
+import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.utils.Vector2;
 
 /**
  * Количество очков полученное с текущего действия.
  */
 public class ProfitLabel extends NumberLabel {
-    private static final float START_ALPHA_ = 1.0f;
-    private static final float END_ALPHA_ = 0.85f;
-    private static final float ALPHA_SPEED_ = -0.0014f; // units per ms.
     private static final float TRANSLATE_SPEED_ = 0.0006f; // units per ms.
 
-    private float curAlpha_;
+    /** Параметры для эффекта плавного исчезновения цифр. */
+    private static final float START_ALPHA_ = 1.0f;
+    private static final float END_ALPHA_ = 0.9f;
+    private static final float ALPHA_TIME_ = 70.0f; // Время на изменения alpha-канала, ms.
+    private static final float ALPHA_SPEED_ = (END_ALPHA_ - START_ALPHA_) / ALPHA_TIME_; // units per ms.
+    private static final AnimationSet DISAPPEARING_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
+            AnimationSet.PlayMode.NORMAL,
+            START_ALPHA_, END_ALPHA_, ALPHA_SPEED_);
 
     private boolean isVisible_ = true;
 
@@ -20,10 +26,12 @@ public class ProfitLabel extends NumberLabel {
     }
 
     public void setProfit(int val, Vector2 pos) {
-        curAlpha_ = START_ALPHA_;
         setValue(val);
         setPosition(calculatePosition(pos));
         isVisible_ = true;
+        for (DisplayableObject number : digits_) {
+            number.setAnimation(new AnimationController(DISAPPEARING_ANIM_SET_));
+        }
     }
 
     private Vector2 calculatePosition(Vector2 pos) {
@@ -31,18 +39,13 @@ public class ProfitLabel extends NumberLabel {
         return new Vector2(pos.x - numberSize / 2f, pos.y);
     }
 
-    // TODO: Изменение alpha должно быть через анимацию теперь.
     public void render(Graphics graphics) {
         if (isVisible_) {
-            curAlpha_ += ALPHA_SPEED_ * graphics.getElapsedTime();
             for (DisplayableObject number : digits_) {
-                if (Math.abs(curAlpha_ - END_ALPHA_) > 0) {
-                    number.setAlpha(curAlpha_);
+                if (!number.isAnimationFinished()) {
                     number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * graphics.getElapsedTime()));
-                } else {
-                    isVisible_ = false;
+                    number.draw(graphics);
                 }
-                number.draw(graphics);
             }
         }
     }
