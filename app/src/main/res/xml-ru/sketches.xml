@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sketches>
+    <!--
+    nElems -> Cost
+    4  -> 40
+    5  -> 70
+    6  -> 100
+    7  -> 150
+    8  -> 200
+    9  -> 200
+    10 -> 300
+    11 -> 400
+    12 -> 1000
+    -->
+    <sketch name="Камень" cost="40">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Семь" cost="40">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Лестница" cost="40">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Лодка" cost="40">
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Пять по горизонтали" cost="70">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="0" column="3" dotType="UNIVERSAL" />
+        <elem row="0" column="4" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Пять по вертикали" cost="70">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="4" column="0" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Единица" cost="70">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Тройка" cost="70">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="4" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Столик" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+        <elem row="0" column="3" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Двойка" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Пятерка" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Малая медведица" cost="100">
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Шахматы" cost="100">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+        <elem row="0" column="4" dotType="UNIVERSAL" />
+        <elem row="1" column="5" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Четверка" cost="150">
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+        <elem row="3" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Шестерка" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Девятка" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Флаг" cost="150">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Восьмерка" cost="200">
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="3" column="0" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="3" column="1" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Большая медведица" cost="400">
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="0" column="1" dotType="UNIVERSAL" />
+        <elem row="0" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="3" dotType="UNIVERSAL" />
+        <elem row="2" column="4" dotType="UNIVERSAL" />
+    </sketch>
+    <sketch name="Молот" cost="1000">
+        <elem row="1" column="0" dotType="UNIVERSAL" />
+        <elem row="1" column="1" dotType="UNIVERSAL" />
+        <elem row="1" column="2" dotType="UNIVERSAL" />
+        <elem row="0" column="2" dotType="UNIVERSAL" />
+        <elem row="0" column="3" dotType="UNIVERSAL" />
+        <elem row="1" column="3" dotType="UNIVERSAL" />
+        <elem row="2" column="3" dotType="UNIVERSAL" />
+        <elem row="3" column="3" dotType="UNIVERSAL" />
+        <elem row="3" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="2" dotType="UNIVERSAL" />
+        <elem row="2" column="1" dotType="UNIVERSAL" />
+        <elem row="2" column="0" dotType="UNIVERSAL" />
+    </sketch>
+</sketches>

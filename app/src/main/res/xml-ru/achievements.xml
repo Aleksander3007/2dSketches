@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <achievements>
-    <achievement name="First thousand">
+    <achievement name="Первая тысяча">
         <conditions>
             <condition name="score" value="1000"/>
         </conditions>
     </achievement>
-    <achievement name="Bag with silver">
+    <achievement name="Мешочек с серебром">
         <conditions>
             <condition name="score" value="2500"/>
         </conditions>
     </achievement>
-    <achievement name="Good start">
+    <achievement name="Неплохой старт">
         <conditions>
             <condition name="score" value="5000"/>
         </conditions>
     </achievement>
-    <achievement name="Bag with gold">
+    <achievement name="Мешочек с золотом">
         <conditions>
             <condition name="score" value="10000"/>
         </conditions>
     </achievement>
-    <achievement name="Silver bar">
+    <achievement name="Слиток серебра">
         <conditions>
             <condition name="score" value="25000"/>
         </conditions>
     </achievement>
-    <achievement name="Gold bar">
+    <achievement name="Слиток золота">
         <conditions>
             <condition name="score" value="99999"/>
         </conditions>
     </achievement>
-    <achievement name="Richer">
+    <achievement name="Богач">
         <conditions>
             <condition name="score" value="500000"/>
         </conditions>
