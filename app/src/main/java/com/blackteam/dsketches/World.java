@@ -24,9 +24,6 @@ public class World extends Observable {
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
 
-    /** При выделении точки: она увеличивается. */
-    private static final float SELECTION_SCALE_ = 1.3f;
-
     private SketchesManager sketchesManager_;
     private ContentManager contents_;
 
@@ -40,6 +37,8 @@ public class World extends Observable {
     private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
 
+    /** При выделении точки: она увеличивается. */
+    private static final float SELECTION_SCALE_ = 1.3f;
     private float dotSize_ = 1.0f;
     private float selectedDotSize_ = 1.0f * SELECTION_SCALE_;
 
@@ -51,10 +50,11 @@ public class World extends Observable {
 
     public World(ContentManager contents, SketchesManager sketchesManager) {
         this.contents_ = contents;
+        this.sketchesManager_ = sketchesManager;
+
         this.nRows_ = DEFAULT_NUM_ROWS;
         this.nColumns_ = DEFAULT_NUM_COLUMNS;
         this.dots_ = new GameDot[nRows_][nColumns_];
-        this.sketchesManager_ = sketchesManager;
     }
 
     public int getNumRows() {
@@ -405,6 +405,31 @@ public class World extends Observable {
         for (int iRow = 0; iRow < nRows_; iRow++) {
             for (int iCol = 0; iCol < nColumns_; iCol++) {
                 createDot(iRow, iCol);
+            }
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.i("World", "Level is created.");
+        }
+    }
+
+    public void createLevel(GameDot[][] gameDots) {
+        nRows_ = gameDots.length;
+        nColumns_ = gameDots[0].length;
+
+        dots_ = gameDots;
+        for (int iRow = 0; iRow < nRows_; iRow++) {
+            for (int iCol = 0; iCol < nColumns_; iCol++) {
+                if (gameDots[iRow][iCol] != null) {
+                    createDot(gameDots[iRow][iCol].getType(),
+                            gameDots[iRow][iCol].getSpecType(),
+                            iRow, iCol);
+                }
+                // Если у нас по какой-то причине не инилизирована точка,
+                // то создаем случайную.
+                else {
+                    createDot(iRow, iCol);
+                }
             }
         }
 

@@ -88,6 +88,14 @@ public class Game {
         world_.createLevel();
     }
 
+    public void loadLevel() {
+        // Если есть данные о расположении игровых точек.
+        if (player_.getGameDots() != null)
+            world_.createLevel(player_.getGameDots());
+        else
+            createLevel();
+    }
+
     public void reset() {
         scoreLabel_.setValue(0);
     }

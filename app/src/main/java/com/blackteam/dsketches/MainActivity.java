@@ -32,9 +32,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private AchievementsManager achievementsManager_;
     private SketchesManager sketchesManager_;
     private ContentManager contents_;
-    private boolean rendererSet = false;
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.i("Lifecycle", "onCreate()");
         super.onCreate(savedInstanceState);
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
@@ -44,7 +44,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         this.contents_ = new ContentManager(getApplicationContext());
 
         try {
-            player_ = new Player(getApplicationContext());
+            player_ = new Player(contents_);
+            player_.load(getApplicationContext());
             achievementsManager_ = new AchievementsManager(player_, getApplicationContext());
             sketchesManager_ = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
@@ -57,7 +58,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
 
         game_ = new Game(player_, sketchesManager_, contents_);
-        game_.createLevel();
+        game_.loadLevel();
         game_.addObserver(achievementsManager_);
 
         gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
@@ -86,18 +87,28 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     @Override
     protected void onPause() {
         super.onPause();
-        player_.save();
-        if (rendererSet) {
-            gameView_.onPause();
-        }
+        Log.i("Lifecycle", "onPause()");
+        gameView_.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (rendererSet) {
-            gameView_.onResume();
-        }
+        Log.i("Lifecycle", "onResume()");
+        gameView_.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("Lifecycle", "onStart()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        player_.save(getApplicationContext());
+        Log.i("Lifecycle", "onStop()");
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
 
+import com.blackteam.dsketches.utils.Vector2;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -26,21 +28,23 @@ import java.util.Map;
  * его достижения, кол-во очков, skills и их количество, и т.п.
  */
 public class Player {
-    private static Context context_;
     private static final String fileName_ = "userData.xml";
+
+    private ContentManager contents_;
 
     private int score_ = 0;
     /** Список skills с доступным количеством. */
     private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>(SkillType.values().length);
     /** Список полученных достижений. */
     private ArrayList<String> achievements_ = new ArrayList<>();
-    // private Sketch.Types lastSketchType_;
+    /** Массив игровых точек */
+    private GameDot[][] gameDots_ = null;
 
-    public Player(Context context) throws IOException, XmlPullParserException {
+    public Player(ContentManager contents) throws IOException, XmlPullParserException {
+        this.contents_ = contents;
         for (SkillType skillType : SkillType.values()) {
             skills_.put(skillType, 2); // Начальное состояние.
         }
-        load(context);
     }
 
     public void setScore(int newScore) {
@@ -55,6 +59,7 @@ public class Player {
         score_ += addingScore;
     }
 
+    /** Получить имена заработанных достижений. */
     public ArrayList<String> getEarnedAchievementsNames() {
         return achievements_;
     }
@@ -66,8 +71,12 @@ public class Player {
     public void setSkill(SkillType skillType, int skillAmount) {
         skills_.setValueAt(skills_.indexOfKey(skillType), skillAmount);
     }
+
+    public GameDot[][] getGameDots() {
+        return gameDots_;
+    }
+
     public void load(Context context) throws IOException, XmlPullParserException {
-        context_ = context;
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName_);
             readFile(fileInputStream);
@@ -78,8 +87,8 @@ public class Player {
         }
     }
 
-    public void save() {
-        writeFile(context_);
+    public void save(Context context) {
+        writeFile(context);
         Log.i("Player", "save is completed.");
     }
 
@@ -94,11 +103,11 @@ public class Player {
             // Такого быть не может, т.к. если файла не существует, openFileOutput() создаст файл.
             e.printStackTrace();
             Log.i("FileNotFoundException", e.getMessage());
-            Toast.makeText(context_, "FileNotFoundException: error write user data to file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "FileNotFoundException: error write user data to file.", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
             Log.i("IOException", e.getMessage());
-            Toast.makeText(context_, "IOException: error write user data to file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "IOException: error write user data to file.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -114,7 +123,18 @@ public class Player {
         xmlSerializer.endTag(null, "score");
 
         xmlSerializer.startTag(null, "gameDots");
-        // TODO: Сохранять игровое состояние.
+        xmlSerializer.attribute(null, "nRows", String.valueOf(gameDots_.length));
+        xmlSerializer.attribute(null, "nColumns", String.valueOf(String.valueOf(gameDots_[0].length)));
+        for (int iRow = 0; iRow < gameDots_.length; iRow++) {
+            for (int iCol = 0; iCol < gameDots_[iRow].length; iCol++) {
+                xmlSerializer.startTag(null, "gameDot");
+                xmlSerializer.attribute(null, "type", String.valueOf(gameDots_[iRow][iCol].getType()));
+                xmlSerializer.attribute(null, "specType", String.valueOf(gameDots_[iRow][iCol].getSpecType()));
+                xmlSerializer.attribute(null, "row", String.valueOf(iRow));
+                xmlSerializer.attribute(null, "column", String.valueOf(iCol));
+                xmlSerializer.endTag(null, "gameDot");
+            }
+        }
         xmlSerializer.endTag(null, "gameDots");
 
         xmlSerializer.startTag(null, "skills");
@@ -173,6 +193,29 @@ public class Player {
                     SkillType skillType = Skill.convertToType(xmlPullParser.getAttributeValue(null, "type"));
                     int skillCount = Integer.parseInt(xmlPullParser.getAttributeValue(null, "amount"));
                     skills_.setValueAt(skills_.indexOfKey(skillType), skillCount);
+                }
+                else if (xmlPullParser.getName().equals("gameDots")) {
+                    try {
+                        int nRows = Integer.parseInt(xmlPullParser.getAttributeValue(null, "nRows"));
+                        int nColumns = Integer.parseInt(xmlPullParser.getAttributeValue(null, "nColumns"));
+                        gameDots_ = new GameDot[nRows][nColumns];
+                    }
+                    // Если вдруг не указаны размеры, то значит инициализируем default значениями.
+                    catch (NumberFormatException nfEx) {
+                        gameDots_ = new GameDot[World.DEFAULT_NUM_ROWS][World.DEFAULT_NUM_COLUMNS];
+                    }
+
+                }
+                else if (xmlPullParser.getName().equals("gameDot")) {
+                    int iRow = Integer.parseInt(xmlPullParser.getAttributeValue(null, "row"));;
+                    int iCol = Integer.parseInt(xmlPullParser.getAttributeValue(null, "column"));
+                    GameDot.Types gameDotType = GameDot.convertToType(
+                            xmlPullParser.getAttributeValue(null, "type"));
+                    GameDot.SpecTypes gameDotSpecType = GameDot.convertToSpecType(
+                            xmlPullParser.getAttributeValue(null, "specType"));
+
+                    gameDots_[iRow][iCol] = new GameDot(gameDotType, gameDotSpecType,
+                            new Vector2(0, 0), iRow, iCol, contents_);
                 }
             }
 
