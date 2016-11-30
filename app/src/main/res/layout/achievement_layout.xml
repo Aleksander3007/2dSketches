@@ -10,7 +10,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/achievement_border">
+        android:background="@drawable/achievement_border"
+        android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/ach_image"
@@ -19,7 +20,8 @@
             android:maxHeight="100dp"
             android:maxWidth="100dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/error"/>
+            android:src="@drawable/error"
+            android:contentDescription="@string/achievement_image" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
@@ -40,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description"
-                android:textSize="24dp" />
+                android:textSize="18dp" />
 
         </LinearLayout>
     </LinearLayout>
