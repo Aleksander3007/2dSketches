@@ -183,13 +183,6 @@ public class World extends Observable {
 
         if (selectedDots_.size() > 2) {
             selectedSketch_ = sketchesManager_.findSketch(selectedDots_);
-
-            Log.i("World", "sketch's type = " + selectedSketch_.getName().toString());
-            if (selectedSketch_.getName() != null) {
-                setChanged();
-                notifyObservers(selectedSketch_.getName());
-            }
-
             // Ищем спец. Dots.
             searchSpecDots(selectedDots_);
         }
@@ -290,15 +283,27 @@ public class World extends Observable {
             }
         }
 
+        int totalProfit = profit * factor + selectedSketch_.getCost();
         Log.i("World", "(profit, factor, sketch) = " +
                 "(" +
                 String.valueOf(profit) + "," +
                 String.valueOf(factor) + "," +
-                String.valueOf(selectedSketch_.getCost()) +
+                String.valueOf(selectedSketch_.getCost()) + "," +
                 ")"
         );
+        Log.i("World", "sketch's type = " + selectedSketch_.getName().toString());
+        if (selectedSketch_.getName() != null) {
+            ArrayMap<String, Object> info = new ArrayMap<>();
+            info.put("SketchType", selectedSketch_.getName());
+            info.put("Profit", totalProfit);
+            info.put("Factor", factor);
 
-        return (profit * factor + selectedSketch_.getCost());
+            // Оповещаем, что есть изменения.
+            setChanged();
+            notifyObservers(info);
+        }
+
+        return totalProfit;
     }
 
     /**

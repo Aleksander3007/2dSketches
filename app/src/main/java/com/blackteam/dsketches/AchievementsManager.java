@@ -85,12 +85,28 @@ public class AchievementsManager implements Observer {
 
     @Override
     public void update(Observable observable, Object data) {
-        final String sketchType = (String) data;
+        ArrayMap<String, Object> info = (ArrayMap<String, Object>) data;
+        final String sketchType = (String) info.get("SketchType");
+        final int profit = (int)info.get("Profit");
+        final int score = player_.getScore();
+
+        Log.i("Achievement", "(profit, sketch, score) = " +
+                        "(" +
+                        String.valueOf(profit) + "," +
+                        sketchType + "," +
+                        String.valueOf(score) +
+                        ")"
+        );
 
         Log.i("Achievement", "update");
 
         for (Achievement achievement : achievements_) {
-            if (achievement.equals(sketchType, 0, 0)) {
+            boolean isAchievement = achievement.equals(
+                    sketchType, Achievement.ANY_SCORE, Achievement.ANY_PROFIT) ||
+                    achievement.equals(Achievement.ANY_SKETCH, score, Achievement.ANY_PROFIT) ||
+                    achievement.equals(Achievement.ANY_SKETCH, Achievement.ANY_SCORE, profit);
+
+            if (isAchievement) {
                 Log.i("Achievement", achievement.getName());
 
                 if (!achievement.isEarned()) {
