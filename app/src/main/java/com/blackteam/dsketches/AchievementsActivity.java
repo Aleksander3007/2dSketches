@@ -27,11 +27,16 @@ public class AchievementsActivity extends Activity {
             final View achievementView = getLayoutInflater().inflate(R.layout.achievement_layout, null);
             TextView achievementName = (TextView) achievementView.findViewById(R.id.ach_name);
             achievementName.setText(ach.getName());
+
+            TextView achievementDescription = (TextView) achievementView.findViewById(R.id.ach_description);
+            achievementDescription.setText(ach.getDescription());
+
             ImageView achievementImage = (ImageView) achievementView.findViewById(R.id.ach_image);
             if (ach.isEarned())
                 achievementImage.setImageResource(R.drawable.star);
             else
                 achievementImage.setImageResource(R.drawable.star_noactive);
+
             achievementsContainter.addView(achievementView);
         }
     }

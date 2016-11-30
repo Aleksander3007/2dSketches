@@ -47,7 +47,9 @@ public class AchievementsManager implements Observer {
                 if (xmlResParser.getName().equals("achievement")) {
                     achievement = new Achievement();
                     achievement.setName(xmlResParser.getAttributeValue(null, "name"));
-                } else if (xmlResParser.getName().equals("condition")) {
+                    achievement.setDescription(xmlResParser.getAttributeValue(null, "description"));
+                }
+                else if (xmlResParser.getName().equals("condition")) {
                     String conditionName = xmlResParser.getAttributeValue(null, "name");
                     if (TextUtils.equals(conditionName, "sketch")) {
                         String sketchType = xmlResParser.getAttributeValue(null, "value");
@@ -60,7 +62,8 @@ public class AchievementsManager implements Observer {
                         achievement.setProfit(profit);
                     }
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (xmlResParser.getName().equals("achievement")) {
                     achievements_.add(achievement);
                 }
