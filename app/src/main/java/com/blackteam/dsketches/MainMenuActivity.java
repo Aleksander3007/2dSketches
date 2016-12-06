@@ -43,4 +43,8 @@ public class MainMenuActivity extends Activity {
         );
         startActivity(sketchesIntent);
     }
+
+    public void exitBtnOnClick(View view) {
+        this.finishAffinity();
+    }
 }
