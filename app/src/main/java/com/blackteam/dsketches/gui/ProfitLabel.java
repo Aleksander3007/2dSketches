@@ -12,12 +12,11 @@ public class ProfitLabel extends NumberLabel {
 
     /** Параметры для эффекта плавного исчезновения цифр. */
     private static final float START_ALPHA_ = 1.0f;
-    private static final float END_ALPHA_ = 0.9f;
-    private static final float ALPHA_TIME_ = 70.0f; // Время на изменения alpha-канала, ms.
-    private static final float ALPHA_SPEED_ = (END_ALPHA_ - START_ALPHA_) / ALPHA_TIME_; // units per ms.
+    private static final float END_ALPHA_ = 0.5f;
+    private static final float ALPHA_TIME_ = 500.0f; // Время на изменения alpha-канала, ms.
     private static final AnimationSet DISAPPEARING_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
             AnimationSet.PlayMode.NORMAL,
-            START_ALPHA_, END_ALPHA_, ALPHA_SPEED_);
+            START_ALPHA_, END_ALPHA_, ALPHA_TIME_);
 
     private boolean isVisible_ = true;
 

@@ -45,7 +45,7 @@ public class World extends Observable {
     private boolean isUpdating_ = false;
 
     /** Время отображения эффекта, мс. */
-    private static final float EFFECT_TIME_ = 200f;
+    private static final float EFFECT_TIME_ = 300f;
     private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
 
     public World(ContentManager contents, SketchesManager sketchesManager) {
@@ -353,7 +353,6 @@ public class World extends Observable {
      */
     private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 dotPos) {
         Size2 newSize;
-        float speed;
         switch (dotSpecType) {
             case NONE:
                 return;
@@ -363,15 +362,12 @@ public class World extends Observable {
                 return;
             case ROW_EATER:
                 newSize = new Size2(dotSize_ * 2 * nColumns_, dotSize_);
-                speed = (dotSize_ * 2 * nColumns_ - dotSize_) / EFFECT_TIME_;
                 break;
             case COLUMN_EATER:
                 newSize = new Size2(dotSize_, dotSize_ * 2 * nRows_);
-                speed = (dotSize_ * 2 * nRows_ - dotSize_) / EFFECT_TIME_;
                 break;
             case AROUND_EATER:
                 newSize = new Size2(3 * dotSize_, 3 * dotSize_);
-                speed = (2 * dotSize_) / EFFECT_TIME_;
                 break;
             default:
                 return;
@@ -390,7 +386,7 @@ public class World extends Observable {
                 AnimationSet.PlayMode.NORMAL,
                 new Vector2(dotSize_, dotSize_),
                 new Vector2(newSize.width, newSize.height),
-                speed);
+                EFFECT_TIME_);
         effect.setAnimation(new AnimationController(animSet));
 
         effects_.add(effect);

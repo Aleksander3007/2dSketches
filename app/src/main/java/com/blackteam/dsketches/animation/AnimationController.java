@@ -2,6 +2,7 @@ package com.blackteam.dsketches.animation;
 
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.utils.Size2;
+import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
 
@@ -44,16 +45,18 @@ public class AnimationController {
             case ROTATE:
                 break;
             case SCALE:
-                Size2 newSize = new Size2(animationSet.getValue2().x, animationSet.getValue2().y);
+                Vector2 newVal = animationSet.getValues();
+                Size2 newSize = new Size2(newVal.x, newVal.y);
                 animationObject.setSize(newSize);
                 break;
             case SCALE_CENTER:
-                newSize = new Size2(animationSet.getValue2().x, animationSet.getValue2().y);
+                newVal = animationSet.getValues();
+                newSize = new Size2(newVal.x, newVal.y);
                 animationObject.setSizeCenter(newSize);
                 break;
             case ALPHA:
-                // Берем любое значение, т.к. x и y одинаковые в данном случае.
-                animationObject.setAlpha(animationSet.getStartVal().x + animationSet.getValue());
+                // Берем любое значение x, т.к. его и меняли.
+                animationObject.setAlpha(animationSet.getValue());
                 break;
         }
     }

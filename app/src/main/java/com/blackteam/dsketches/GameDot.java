@@ -39,10 +39,17 @@ public class GameDot {
     private static final float MIN_ALPHA_ = 0.0f;
     private static final float MAX_ALPHA_ = 1.0f;
     private static final float ALPHA_TIME_ = 500.0f; // Время на изменения alpha-канала, ms.
-    private static final float ALPHA_SPEED_ = (MAX_ALPHA_ - MIN_ALPHA_) / ALPHA_TIME_; // units per ms.
     private static final AnimationSet FILM_DEVELOPMENT_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
             AnimationSet.PlayMode.NORMAL,
-            MIN_ALPHA_, MAX_ALPHA_, ALPHA_SPEED_);
+            MIN_ALPHA_, MAX_ALPHA_, ALPHA_TIME_);
+
+    /** Параметры для эффекта живой спец. точки. (мигание specObject_) */
+    private static final float SPEC_MIN_ALPHA_ = 0.5f;
+    private static final float SPEC_MAX_ALPHA_ = 1.0f;
+    private static final float SPEC_ALPHA_TIME_ = 2000.0f; // Время на изменения alpha-канала, ms.
+    private static final AnimationSet FLASHING_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
+            AnimationSet.PlayMode.LOOP_PINGPONG,
+            SPEC_MIN_ALPHA_, SPEC_MAX_ALPHA_, SPEC_ALPHA_TIME_);
 
     /** Время на перемещение, мс. */
     public static final float TRANSLATE_TIME_ = 200.0f;
@@ -88,12 +95,8 @@ public class GameDot {
                     new Size2(TEX_WIDTH, TEX_HEIGHT)
             );
             specObject_ = new DisplayableObject(pos, specTextureRegion);
-
-            AnimationSet animationSet = new AnimationSet(AnimationSet.ValueType.ALPHA,
-                    AnimationSet.PlayMode.LOOP_PINGPONG,
-                    0.5f, 1.0f, 0.0003f);
             specObject_.setAnimation(new AnimationController(
-                    FILM_DEVELOPMENT_ANIM_SET_, animationSet
+                    FILM_DEVELOPMENT_ANIM_SET_, FLASHING_ANIM_SET_
             ));
         }
     }
