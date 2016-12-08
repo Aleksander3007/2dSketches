@@ -2,6 +2,8 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
+import com.blackteam.dsketches.gui.DisplayableObject;
+import com.blackteam.dsketches.gui.GameImage;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.gui.StaticText;
@@ -15,7 +17,7 @@ public class Game {
     private World world_;
     private Player player_;
 
-    // TODO: Необходимо все кнопки и индикаторы перенести в MainActivity.
+    private DisplayableObject background_;
     private NumberLabel scoreLabel_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
@@ -32,6 +34,7 @@ public class Game {
         skillsPanel_ = new SkillsPanel(player, contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.numbers));
+        background_ = new DisplayableObject(contents.get(R.drawable.main_window_background));
 
         scoreLabel_.setValue(player_.getScore());
     }
@@ -39,14 +42,14 @@ public class Game {
     public void resize(final float screenWidth, final float screenHeight) {
         this.width_ = screenWidth;
         this.height_ = screenHeight;
-
-        setSize(screenWidth, screenHeight);
+        setSize();
     }
 
     public void render(Graphics graphics) {
         if (scoreLabel_ == null)
             Log.i("Game", "render scoreLabel_ == null");
 
+        background_.draw(graphics);
         scoreLabel_.render(graphics);
         world_.draw(graphics);
         skillsPanel_.draw(graphics);
@@ -104,7 +107,11 @@ public class Game {
         world_.addObserver(observer);
     }
 
-    private void setSize(final float screenWidth, final float screenHeight) {
+    private void setSize() {
+
+        background_.setPosition(new Vector2(0f,0f));
+        background_.setSize(width_, height_);
+
         screenPart_ = this.height_ / (3 + 15 + 3);
 
         Vector2 skillsPanelOffset = new Vector2(0, screenPart_);
