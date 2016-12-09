@@ -2,6 +2,7 @@ package com.blackteam.dsketches;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.MotionEventCompat;
@@ -67,12 +68,17 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         gameView_ = (GLSurfaceView) findViewById(R.id.gameview);
         gameView_.setOnTouchListener(this);
         gameView_.setEGLContextClientVersion(2);
+
+        // Делает возможным отрисовки элементов, находящихся позади(глубже) gameView_:
+        gameView_.setZOrderOnTop(true);
+        gameView_.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        gameView_.getHolder().setFormat(PixelFormat.RGBA_8888);
+        //
+
         gameView_.setRenderer(gameRenderer_);
     }
 
     public void menuOpenOnClick(View view) {
-        Log.i("MainActivity", "menuOpenOnClick");
-
         Bundle achievementsBundle = new Bundle();
         achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
         Bundle sketchesBundle = new Bundle();
@@ -87,28 +93,24 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("Lifecycle", "onPause()");
         gameView_.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("Lifecycle", "onResume()");
         gameView_.onResume();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("Lifecycle", "onStart()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         player_.save(getApplicationContext());
-        Log.i("Lifecycle", "onStop()");
     }
 
     @Override

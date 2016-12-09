@@ -17,7 +17,6 @@ public class Game {
     private World world_;
     private Player player_;
 
-    private DisplayableObject background_;
     private NumberLabel scoreLabel_;
     private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
@@ -34,7 +33,6 @@ public class Game {
         skillsPanel_ = new SkillsPanel(player, contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.numbers));
-        background_ = new DisplayableObject(contents.get(R.drawable.main_window_background));
 
         scoreLabel_.setValue(player_.getScore());
     }
@@ -49,7 +47,7 @@ public class Game {
         if (scoreLabel_ == null)
             Log.i("Game", "render scoreLabel_ == null");
 
-        background_.draw(graphics);
+        //background_.draw(graphics);
         scoreLabel_.render(graphics);
         world_.draw(graphics);
         skillsPanel_.draw(graphics);
@@ -108,9 +106,6 @@ public class Game {
     }
 
     private void setSize() {
-
-        background_.setPosition(new Vector2(0f,0f));
-        background_.setSize(width_, height_);
 
         screenPart_ = this.height_ / (3 + 15 + 3);
 

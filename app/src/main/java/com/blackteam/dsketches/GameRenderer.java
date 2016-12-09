@@ -64,7 +64,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         initCamera();
         createShader();
 
-        GLES20.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         lastTime_ = GameMath.getCurrentTime();
 
