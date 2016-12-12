@@ -87,6 +87,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         gameView_.setRenderer(gameRenderer_);
 
         mrHeadlinesFont_ = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME_);
+        ((TextView)findViewById(R.id.tv_score)).setTypeface(mrHeadlinesFont_);
         ((TextView)findViewById(R.id.tv_skill_shuffle)).setTypeface(mrHeadlinesFont_);
         ((TextView)findViewById(R.id.tv_skill_friends)).setTypeface(mrHeadlinesFont_);
         ((TextView)findViewById(R.id.tv_skill_chasm)).setTypeface(mrHeadlinesFont_);
