@@ -1,14 +1,21 @@
 package com.blackteam.dsketches;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.MotionEventCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blackteam.dsketches.utils.ExceptionHandler;
 import com.blackteam.dsketches.utils.UserData;
@@ -25,6 +32,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public static String SKETCHES_DATA = "sketches_data";
 
     private static final int MAIN_MENU_ACTIVITY_ = 0;
+
+    private static final String MR_HEADLINES_FONT_NAME_ = "fonts/mr_headlines.ttf";
+    private static Typeface mrHeadlinesFont_;
 
     private GLSurfaceView gameView_;
     private GameRenderer gameRenderer_;
@@ -57,14 +67,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             Log.e("Exception", e.getMessage());
         }
 
-
         game_ = new Game(player_, sketchesManager_, contents_);
         game_.loadLevel();
         game_.addObserver(achievementsManager_);
 
-        gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
-
         setContentView(R.layout.main);
+
         gameView_ = (GLSurfaceView) findViewById(R.id.gameview);
         gameView_.setOnTouchListener(this);
         gameView_.setEGLContextClientVersion(2);
@@ -75,7 +83,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         gameView_.getHolder().setFormat(PixelFormat.RGBA_8888);
         //
 
+        gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
         gameView_.setRenderer(gameRenderer_);
+
+        mrHeadlinesFont_ = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME_);
+        ((TextView)findViewById(R.id.tv_skill_shuffle)).setTypeface(mrHeadlinesFont_);
+        ((TextView)findViewById(R.id.tv_skill_friends)).setTypeface(mrHeadlinesFont_);
+        ((TextView)findViewById(R.id.tv_skill_chasm)).setTypeface(mrHeadlinesFont_);
     }
 
     public void menuOpenOnClick(View view) {

@@ -18,7 +18,6 @@ public class Game {
     private Player player_;
 
     private NumberLabel scoreLabel_;
-    private SkillsPanel skillsPanel_;
     private ProfitLabel profitLabel_;
     private StaticText versionLabel_;
 
@@ -30,7 +29,6 @@ public class Game {
     public Game(final Player player, SketchesManager sketchesManager, final ContentManager contents) {
         this.player_ = player;
         world_ = new World(contents, sketchesManager);
-        skillsPanel_ = new SkillsPanel(player, contents);
         scoreLabel_ = new NumberLabel(contents.get(R.drawable.numbers));
         profitLabel_ = new ProfitLabel(contents.get(R.drawable.numbers));
 
@@ -50,7 +48,6 @@ public class Game {
         //background_.draw(graphics);
         scoreLabel_.render(graphics);
         world_.draw(graphics);
-        skillsPanel_.draw(graphics);
         profitLabel_.render(graphics);
         versionLabel_.draw(graphics);
     }
@@ -61,22 +58,17 @@ public class Game {
 
     public void touchUp(Vector2 worldCoords) {
         Log.i("Game", "touchUpHandle begin");
-        if (skillsPanel_.hit(worldCoords)) {
-            skillsPanel_.applySelectedSkill(world_);
+        world_.update();
+        int profit = world_.getProfitByDots();
+        if (profit > 0) {
+            profitLabel_.setProfit(profit, new Vector2(worldCoords));
+            player_.addScore(profit);
+            scoreLabel_.setValue(player_.getScore());
+            world_.deleteSelectedDots();
+            world_.removeSelection();
         }
         else {
-            world_.update();
-            int profit = world_.getProfitByDots();
-            if (profit > 0) {
-                profitLabel_.setProfit(profit, new Vector2(worldCoords));
-                player_.addScore(profit);
-                scoreLabel_.setValue(player_.getScore());
-                world_.deleteSelectedDots();
-                world_.removeSelection();
-            }
-            else {
-                world_.removeSelection();
-            }
+            world_.removeSelection();
         }
     }
 
@@ -107,17 +99,9 @@ public class Game {
 
     private void setSize() {
 
-        screenPart_ = this.height_ / (3 + 15 + 3);
+        screenPart_ = this.height_ / (3 + 15 + 1);
 
-        Vector2 skillsPanelOffset = new Vector2(0, screenPart_);
-        Size2 skillsPanelSize = new Size2(
-                width_ - skillsPanelOffset.x,
-                screenPart_
-        );
-
-        Vector2 worldOffset = new Vector2(0,
-                skillsPanelOffset.y + skillsPanelSize.height + screenPart_
-        );
+        Vector2 worldOffset = new Vector2(0, screenPart_);
 
         Size2 worldSize = new Size2(
                 width_ - worldOffset.x,
@@ -136,7 +120,6 @@ public class Game {
                 new Size2(width_ / 4, screenPart_)
         );
 
-        skillsPanel_.init(skillsPanelOffset, skillsPanelSize);
         world_.init(worldOffset, worldSize);
         scoreLabel_.init(scoreLabelOffset, scoreLabelSize);
         profitLabel_.init(new Vector2(0, 0),

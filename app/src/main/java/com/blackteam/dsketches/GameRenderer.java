@@ -95,7 +95,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             uppX = aspectRatio / width;
             uppY = 1.0f / height;
 
-            throw new Error("Landscape is not available.");
+            game_.resize(aspectRatio, 1f);
         }
         // Portrait or square.
         else {
@@ -113,6 +113,8 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
             game_.resize(1f, aspectRatio);
         }
+
+
 
         // Calculate the projection and view transformation.
         Matrix.multiplyMM(mvpMatrix_, 0, projectionMatrix_, 0, viewMatrix_, 0);
