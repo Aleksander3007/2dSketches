@@ -44,8 +44,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private SketchesManager sketchesManager_;
     private ContentManager contents_;
 
+    private TextView scoreTextView_;
+
     public void onCreate(Bundle savedInstanceState) {
-        Log.i("Lifecycle", "onCreate()");
         super.onCreate(savedInstanceState);
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
@@ -61,10 +62,10 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             sketchesManager_ = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
-            Log.e("Exception", e.getMessage());
+            Log.e("XmlPullParserException", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Exception", e.getMessage());
+            Log.e("IOException", e.getMessage());
         }
 
         game_ = new Game(player_, sketchesManager_, contents_);
@@ -85,6 +86,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
         gameView_.setRenderer(gameRenderer_);
+
+        scoreTextView_ =  (TextView)findViewById(R.id.tv_score);
+        scoreTextView_.setText(String.valueOf(player_.getScore()));
 
         mrHeadlinesFont_ = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME_);
         ((TextView)findViewById(R.id.tv_score)).setTypeface(mrHeadlinesFont_);
@@ -140,6 +144,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 if (restart) {
                     Log.i("MainActivity", "restart");
                     game_.restartLevel();
+                    player_.setScore(0);
+                    scoreTextView_.setText(String.valueOf(player_.getScore()));
                 }
                 else {
                     Log.i("MainActivity", "false");
@@ -168,6 +174,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
                     game_.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    scoreTextView_.setText(String.valueOf(player_.getScore()));
                     return true;
                 case (MotionEvent.ACTION_MOVE):
                     game_.hit(getWorldCoords(event.getX(), event.getY()));
