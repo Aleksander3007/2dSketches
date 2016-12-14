@@ -2,26 +2,22 @@ package com.blackteam.dsketches;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.MotionEventCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.blackteam.dsketches.utils.ExceptionHandler;
-import com.blackteam.dsketches.utils.UserData;
 import com.blackteam.dsketches.utils.Vector2;
 
+import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -95,8 +91,19 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         scoreTextView_.setText(String.valueOf(player_.getScore()));
 
         skillShuffleTextView_ = ((TextView)findViewById(R.id.tv_skill_shuffle));
+        skillShuffleTextView_.setText(String.valueOf(
+                player_.getSkill(Skill.Type.RESHUFFLE).getAmount())
+        );
+
         skillFriendsTextView_ = ((TextView)findViewById(R.id.tv_skill_friends));
+        skillFriendsTextView_.setText(String.valueOf(
+                player_.getSkill(Skill.Type.FRIENDS).getAmount())
+        );
+
         skillChasmTextView_ = ((TextView)findViewById(R.id.tv_skill_chasm));
+        skillChasmTextView_.setText(String.valueOf(
+                player_.getSkill(Skill.Type.CHASM).getAmount())
+        );
 
         setCustomFonts();
     }
@@ -107,55 +114,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         skillShuffleTextView_.setTypeface(mrHeadlinesFont_);
         skillFriendsTextView_.setTypeface(mrHeadlinesFont_);
         skillChasmTextView_.setTypeface(mrHeadlinesFont_);
-    }
-
-    public void menuOpenOnClick(View view) {
-        Bundle achievementsBundle = new Bundle();
-        achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
-        Bundle sketchesBundle = new Bundle();
-        sketchesBundle.putSerializable("objects", sketchesManager_.getSketches());
-
-        Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
-        menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
-        menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
-        startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
-    }
-
-    public void skillShuffleOnClick(View view) {
-
-        FragmentManager fragmentManager = getFragmentManager();
-        PaymentDialogFragment paymentDialogFragment = new PaymentDialogFragment(player_);
-        paymentDialogFragment.show(fragmentManager, "paymentDialog");
-    }
-
-    public void buySkill(Skill.Type skillType, PaymentType paymentType) {
-        Log.i("MainActivity", String.format("buySkill (%s, %s)",
-                skillType.toString(), paymentType.toString()));
-
-        // Производим оплату.
-        switch (paymentType) {
-            case POINTS:
-                    player_.removeScore(Skill.COST_POINTS);
-                    scoreTextView_.setText(String.valueOf(player_.getScore()));
-                break;
-            case REAL_MONEY:
-                break;
-        }
-
-        // Окно покупки открывается только когда закончится skill,
-        // поэтому после покупки оно станет 1.
-        player_.setSkill(skillType, 1);
-        switch (skillType) {
-            case RESHUFFLE:
-                skillShuffleTextView_.setText("1");
-                break;
-            case FRIENDS:
-                skillFriendsTextView_.setText("1");
-                break;
-            case CHASM:
-                skillChasmTextView_.setText("1");
-                break;
-        }
     }
 
     @Override
@@ -243,5 +201,91 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 screenX * GameRenderer.uppX,
                 (GameRenderer.height - screenY) * GameRenderer.uppY
         );
+    }
+
+    public void menuOpenOnClick(View view) {
+        Bundle achievementsBundle = new Bundle();
+        achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
+        Bundle sketchesBundle = new Bundle();
+        sketchesBundle.putSerializable("objects", sketchesManager_.getSketches());
+
+        Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
+        menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
+        menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
+        startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
+    }
+
+    /**
+     * Обработчик нажатия на одну из skill.
+     */
+    public void skillOnClick(View view) {
+        Skill.Type skillType = null;
+        TextView clickedSkillTextView = null;
+        switch (view.getId()) {
+            case R.id.ll_skill_shuffle:
+                skillType = Skill.Type.RESHUFFLE;
+                clickedSkillTextView = (TextView) findViewById(R.id.tv_skill_shuffle);
+                break;
+            case R.id.ll_skill_friends:
+                skillType = Skill.Type.FRIENDS;
+                clickedSkillTextView = (TextView) findViewById(R.id.tv_skill_friends);
+                break;
+            case R.id.ll_skill_chasm:
+                skillType = Skill.Type.CHASM;
+                clickedSkillTextView = (TextView) findViewById(R.id.tv_skill_chasm);
+                break;
+            default:
+                return;
+        }
+
+        if (player_.getSkill(skillType).canUse()) {
+            game_.applySkill(skillType);
+            clickedSkillTextView.setText(
+                    String.valueOf(player_.getSkill(skillType).getAmount())
+            );
+        }
+        // В противном случае открываем окно покупки.
+        else {
+            FragmentManager fragmentManager = getFragmentManager();
+            PaymentSkillDialogFragment paymentDialogFragment = new PaymentSkillDialogFragment(skillType, player_);
+            paymentDialogFragment.show(fragmentManager, "paymentDialog");
+        }
+    }
+
+    /**
+     * Покупка skill.
+     * @param skillType Тип skill.
+     * @param paymentType Тип оплаты.
+     */
+    public void buySkill(Skill.Type skillType, PaymentType paymentType) {
+        Log.i("MainActivity", String.format("buySkill (%s, %s)",
+                skillType.toString(), paymentType.toString()));
+
+        // Производим оплату.
+        switch (paymentType) {
+            case POINTS:
+                player_.removeScore(Skill.COST_POINTS);
+                scoreTextView_.setText(String.valueOf(player_.getScore()));
+                break;
+            case REAL_MONEY:
+                // TODO: Сделать оплату по реальным деньгам.
+                break;
+        }
+
+        // Окно покупки открывается только когда закончится skill,
+        // поэтому после покупки оно станет 1.
+        Skill boughtSkill = player_.getSkill(skillType);
+        boughtSkill.add();
+        switch (skillType) {
+            case RESHUFFLE:
+                skillShuffleTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                break;
+            case FRIENDS:
+                skillFriendsTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                break;
+            case CHASM:
+                skillChasmTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                break;
+        }
     }
 }

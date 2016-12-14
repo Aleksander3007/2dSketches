@@ -69,10 +69,6 @@ public class Player {
         return achievements_;
     }
 
-    public void setSkill(final Skill.Type skillType, final int skillAmount) {
-        skills_.get(skillType).setAmount(skillAmount);
-    }
-
     public Skill getSkill(final Skill.Type skillType) {
         return skills_.get(skillType);
     }

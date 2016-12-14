@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @RunWith(AndroidJUnit4.class)
 public class WorldTest {
@@ -20,15 +21,15 @@ public class WorldTest {
     private class WorldTestClass extends World {
 
         public WorldTestClass() {
-            super(fakeContents_);
+            super(fakeContents_, null);
         }
 
-        public void addSelectedOrbs(ArrayList<GameDot> selectedGameDot) {
+        public void addSelectedOrbs(CopyOnWriteArrayList<GameDot> selectedGameDot) {
             setSelectedDots(selectedGameDot);
         }
     }
 
-    public int getProfit(WorldTestClass worldTestClass, ArrayList<GameDot> selectedGameDot) {
+    public int getProfit(WorldTestClass worldTestClass, CopyOnWriteArrayList<GameDot> selectedGameDot) {
         worldTestClass.addSelectedOrbs(selectedGameDot);
         worldTestClass.update();
         int profit = worldTestClass.getProfitByDots();
@@ -39,7 +40,7 @@ public class WorldTest {
     @Test
     public void testGetProfitByOrbs() {
         WorldTestClass worldTestClass = new WorldTestClass();
-        ArrayList<GameDot> selectedGameDot = new ArrayList<GameDot>();
+        CopyOnWriteArrayList<GameDot> selectedGameDot = new CopyOnWriteArrayList<>();
         int profit = -1;
 
         Vector2 fakePos = new Vector2(0, 0);

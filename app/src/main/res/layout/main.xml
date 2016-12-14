@@ -56,6 +56,7 @@
         android:gravity="center">
 
         <LinearLayout
+            android:id="@+id/ll_skill_shuffle"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +64,7 @@
             android:layout_marginRight="20dp"
             android:layout_weight="0.2"
             android:clickable="true"
-            android:onClick="skillShuffleOnClick">
+            android:onClick="skillOnClick">
 
             <ImageButton
                 android:id="@+id/btn_skill_shuffle"
@@ -86,13 +87,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_skill_friends"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_weight="0.2"
-            android:clickable="true">
+            android:clickable="true"
+            android:onClick="skillOnClick">
 
             <ImageButton
                 android:id="@+id/btn_skill_friends"
@@ -115,13 +118,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_skill_chasm"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="35dp"
             android:layout_weight="0.2"
-            android:clickable="true">
+            android:clickable="true"
+            android:onClick="skillOnClick">
 
             <ImageButton
                 android:id="@+id/btn_skill_chasm"

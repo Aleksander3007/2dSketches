@@ -13,16 +13,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * Диалоговое окно покупки.
+ * Диалоговое окно покупки skill.
  */
-public class PaymentDialogFragment extends DialogFragment {
+public class PaymentSkillDialogFragment extends DialogFragment {
 
     private View paymentDialogView_;
     private Player player_;
+    private Skill.Type skillType_;
 
     @SuppressLint("ValidFragment")
-    public PaymentDialogFragment(Player player) {
+    public PaymentSkillDialogFragment(Skill.Type skillType, Player player) {
         super();
+        this.skillType_ = skillType;
         this.player_ = player;
     }
 
@@ -40,10 +42,11 @@ public class PaymentDialogFragment extends DialogFragment {
                 // Проверяем достаточно ли средств.
                 if (player_.getScore() >= Skill.COST_POINTS) {
                     // TODO: Заглушка Skill.Type.RESHUFFLE.
-                    ((MainActivity)getActivity()).buySkill(Skill.Type.RESHUFFLE, PaymentType.POINTS);
+                    ((MainActivity)getActivity()).buySkill(skillType_, PaymentType.POINTS);
                     dismiss();
                 }
                 else {
+                    // TODO: Не достаточно средств в strings.xml - локализация.
                     ((TextView)getView().findViewById(R.id.tv_payment_message))
                             .setText("Не достаточно средств.");
                 }

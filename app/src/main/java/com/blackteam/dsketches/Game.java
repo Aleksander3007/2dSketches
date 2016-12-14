@@ -11,7 +11,9 @@ import com.blackteam.dsketches.gui.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
+import java.util.ArrayList;
 import java.util.Observer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
     private World world_;
@@ -62,6 +64,9 @@ public class Game {
         createLevel();
     }
 
+    /**
+     * Создание нового уровня.
+     */
     public void createLevel() {
         world_.createLevel();
     }
@@ -76,6 +81,99 @@ public class Game {
 
     public void addObserver(Observer observer) {
         world_.addObserver(observer);
+    }
+
+    /**
+     * Использовать skill.
+     * @param skillType Тип skill.
+     */
+    public void applySkill(Skill.Type skillType) {
+        switch (skillType) {
+            case RESHUFFLE:
+                applySkillReshuffle();
+                break;
+            case FRIENDS:
+                applySkillFriends();
+                break;
+            case CHASM:
+                applySkillChasm();
+                break;
+        }
+        player_.getSkill(skillType).use();
+    }
+
+    /**
+     * Использовать Skill.Type.CHASM.
+     */
+    private void applySkillChasm() {
+        CopyOnWriteArrayList<GameDot> dots = new CopyOnWriteArrayList<>();
+        // Уничтожаем последние два ряда.
+        for (int iRow = 0; iRow < 2; iRow++) {
+            for (int iCol = 0; iCol < world_.getNumCols(); iCol++) {
+                dots.add(world_.getDot(iRow, iCol));
+            }
+        }
+        world_.deleteDots(dots);
+    }
+
+    /**
+     * Использовать Skill.Type.FRIENDS.
+     */
+    private void applySkillFriends() {
+        Log.i("World", "FRIENDS skill.");
+        ArrayList<Integer> randomDotNumbers = new ArrayList<>();
+        // У трёх разные случайных dots.
+        int iFriend = 0;
+        while (iFriend < 3) {
+            int randomDotNo = (int) (Math.random() * (world_.getNumRows() * world_.getNumCols() - 1));
+            boolean isFriend = false;
+            // Должны быть три разных.
+            for (int existRandomDotNo : randomDotNumbers) {
+                if (existRandomDotNo == randomDotNo) {
+                    isFriend = true;
+                    break;
+                }
+            }
+
+            if (!isFriend) {
+                int randomRow = randomDotNo / world_.getNumCols();
+                int randomCol = randomDotNo % world_.getNumCols();
+                // Должны быть не универсальными.
+                if (world_.getDot(randomRow, randomCol).getType() != GameDot.Types.UNIVERSAL) {
+                    world_.createDot(GameDot.Types.UNIVERSAL,
+                            world_.getDot(randomRow, randomCol).getSpecType(),
+                            randomRow, randomCol
+                    );
+                    iFriend++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Использовать Skill.Type.RESHUFFLE.
+     */
+    private void applySkillReshuffle() {
+        Log.i("World", "RESHUFFLE skill.");
+        for (int iRow = 0; iRow < world_.getNumRows(); iRow++) {
+            for (int iCol = 0; iCol < world_.getNumCols(); iCol++) {
+                int randomRow = (int) (Math.random() * world_.getNumRows());
+                int randomCol = (int) (Math.random() * world_.getNumCols());
+
+                GameDot.Types tempOrbType = world_.getDot(iRow, iCol).getType();
+                GameDot.SpecTypes tempOrbSpecType = world_.getDot(iRow, iCol).getSpecType();
+
+                world_.createDot(world_.getDot(randomRow, randomCol).getType(),
+                        world_.getDot(randomRow, randomCol).getSpecType(),
+                        iRow, iCol
+                );
+
+                world_.createDot(tempOrbType,
+                        tempOrbSpecType,
+                        randomRow, randomCol
+                );
+            }
+        }
     }
 
     private void setSize() {
