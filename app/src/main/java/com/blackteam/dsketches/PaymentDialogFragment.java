@@ -39,8 +39,8 @@ public class PaymentDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 // Проверяем достаточно ли средств.
                 if (player_.getScore() >= Skill.COST_POINTS) {
-                    // TODO: Заглушка SkillType.RESHUFFLE.
-                    ((MainActivity)getActivity()).buySkill(SkillType.RESHUFFLE, PaymentType.POINTS);
+                    // TODO: Заглушка Skill.Type.RESHUFFLE.
+                    ((MainActivity)getActivity()).buySkill(Skill.Type.RESHUFFLE, PaymentType.POINTS);
                     dismiss();
                 }
                 else {

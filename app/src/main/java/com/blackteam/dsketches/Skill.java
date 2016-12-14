@@ -4,12 +4,19 @@ package com.blackteam.dsketches;
  * Спец. возможность.
  */
 public class Skill {
+
+    public enum Type {
+        RESHUFFLE, // "Перемешать" ("Перетасовка").
+        FRIENDS, // "Обратить три случайных в спец. orb" ("Друзья").
+        CHASM // "Убрать два нижних ряда" ("Пропасть").
+    }
+
     /** Стоимость skill в игровых очках. */
     public static final int COST_POINTS = 150;
     /** Стоимость skill в реальных долларах США. */
     public static final float COST_REAL_MONEY = 1;
 
-    private SkillType type_;
+    private Skill.Type type_;
     /** Количество доступных ипользований. */
     private int amount_;
 
@@ -18,13 +25,13 @@ public class Skill {
      * @param type Тип skill.
      * @param amount Кол-во доступных ипользований.
      */
-    public Skill(final SkillType type, final int amount) {
+    public Skill(final Skill.Type type, final int amount) {
         super();
         this.type_ = type;
         this.amount_ = amount;
     }
 
-    public SkillType getType() {
+    public Skill.Type getType() {
         return type_;
     }
 
@@ -50,7 +57,7 @@ public class Skill {
         return (amount_ > 0);
     }
 
-    public static SkillType convertToType(String skillTypeStr) {
-        return Enum.valueOf(SkillType.class, skillTypeStr);
+    public static Skill.Type convertToType(String skillTypeStr) {
+        return Enum.valueOf(Skill.Type.class, skillTypeStr);
     }
 }

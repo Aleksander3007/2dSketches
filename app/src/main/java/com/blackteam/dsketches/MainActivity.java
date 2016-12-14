@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         paymentDialogFragment.show(fragmentManager, "paymentDialog");
     }
 
-    public void buySkill(SkillType skillType, PaymentType paymentType) {
+    public void buySkill(Skill.Type skillType, PaymentType paymentType) {
         Log.i("MainActivity", String.format("buySkill (%s, %s)",
                 skillType.toString(), paymentType.toString()));
 

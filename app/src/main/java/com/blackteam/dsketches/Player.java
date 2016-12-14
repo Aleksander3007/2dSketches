@@ -35,7 +35,7 @@ public class Player {
     private ContentManager contents_;
 
     private int score_ = 0;
-    private ArrayMap<SkillType, Skill> skills_ = new ArrayMap<>(SkillType.values().length);
+    private ArrayMap<Skill.Type, Skill> skills_ = new ArrayMap<>(Skill.Type.values().length);
     /** Список полученных достижений. */
     private ArrayList<String> achievements_ = new ArrayList<>();
     /** Массив игровых точек */
@@ -43,7 +43,7 @@ public class Player {
 
     public Player(ContentManager contents) throws IOException, XmlPullParserException {
         this.contents_ = contents;
-        for (SkillType skillType : SkillType.values()) {
+        for (Skill.Type skillType : Skill.Type.values()) {
             skills_.put(skillType, new Skill(skillType, DEFAULT_SKILL_AMOUNT_));
         }
     }
@@ -69,8 +69,12 @@ public class Player {
         return achievements_;
     }
 
-    public void setSkill(final SkillType skillType, final int skillAmount) {
+    public void setSkill(final Skill.Type skillType, final int skillAmount) {
         skills_.get(skillType).setAmount(skillAmount);
+    }
+
+    public Skill getSkill(final Skill.Type skillType) {
+        return skills_.get(skillType);
     }
 
     public GameDot[][] getGameDots() {
@@ -191,7 +195,7 @@ public class Player {
                         achievements_.add(achievementName);
                 }
                 else if (xmlPullParser.getName().equals("skill")) {
-                    SkillType skillType = Skill.convertToType(xmlPullParser.getAttributeValue(null, "type"));
+                    Skill.Type skillType = Skill.convertToType(xmlPullParser.getAttributeValue(null, "type"));
                     int skillAmount = Integer.parseInt(xmlPullParser.getAttributeValue(null, "amount"));
 
                     if (skills_.containsKey(skillType))
