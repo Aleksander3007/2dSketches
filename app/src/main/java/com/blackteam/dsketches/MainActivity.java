@@ -1,6 +1,7 @@
 package com.blackteam.dsketches;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -45,6 +46,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private ContentManager contents_;
 
     private TextView scoreTextView_;
+    private TextView skillShuffleTextView_;
+    private TextView skillFriendsTextView_;
+    private TextView skillChasmTextView_;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,14 +91,22 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
         gameView_.setRenderer(gameRenderer_);
 
-        scoreTextView_ =  (TextView)findViewById(R.id.tv_score);
+        scoreTextView_ = (TextView)findViewById(R.id.tv_score);
         scoreTextView_.setText(String.valueOf(player_.getScore()));
 
+        skillShuffleTextView_ = ((TextView)findViewById(R.id.tv_skill_shuffle));
+        skillFriendsTextView_ = ((TextView)findViewById(R.id.tv_skill_friends));
+        skillChasmTextView_ = ((TextView)findViewById(R.id.tv_skill_chasm));
+
+        setCustomFonts();
+    }
+
+    private void setCustomFonts() {
         mrHeadlinesFont_ = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME_);
-        ((TextView)findViewById(R.id.tv_score)).setTypeface(mrHeadlinesFont_);
-        ((TextView)findViewById(R.id.tv_skill_shuffle)).setTypeface(mrHeadlinesFont_);
-        ((TextView)findViewById(R.id.tv_skill_friends)).setTypeface(mrHeadlinesFont_);
-        ((TextView)findViewById(R.id.tv_skill_chasm)).setTypeface(mrHeadlinesFont_);
+        scoreTextView_.setTypeface(mrHeadlinesFont_);
+        skillShuffleTextView_.setTypeface(mrHeadlinesFont_);
+        skillFriendsTextView_.setTypeface(mrHeadlinesFont_);
+        skillChasmTextView_.setTypeface(mrHeadlinesFont_);
     }
 
     public void menuOpenOnClick(View view) {
@@ -107,6 +119,43 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
         menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
         startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
+    }
+
+    public void skillShuffleOnClick(View view) {
+
+        FragmentManager fragmentManager = getFragmentManager();
+        PaymentDialogFragment paymentDialogFragment = new PaymentDialogFragment(player_);
+        paymentDialogFragment.show(fragmentManager, "paymentDialog");
+    }
+
+    public void buySkill(SkillType skillType, PaymentType paymentType) {
+        Log.i("MainActivity", String.format("buySkill (%s, %s)",
+                skillType.toString(), paymentType.toString()));
+
+        // Производим оплату.
+        switch (paymentType) {
+            case POINTS:
+                    player_.removeScore(Skill.COST_POINTS);
+                    scoreTextView_.setText(String.valueOf(player_.getScore()));
+                break;
+            case REAL_MONEY:
+                break;
+        }
+
+        // Окно покупки открывается только когда закончится skill,
+        // поэтому после покупки оно станет 1.
+        player_.setSkill(skillType, 1);
+        switch (skillType) {
+            case RESHUFFLE:
+                skillShuffleTextView_.setText("1");
+                break;
+            case FRIENDS:
+                skillFriendsTextView_.setText("1");
+                break;
+            case CHASM:
+                skillChasmTextView_.setText("1");
+                break;
+        }
     }
 
     @Override

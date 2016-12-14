@@ -61,7 +61,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="35dp"
             android:layout_marginRight="20dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2"
+            android:clickable="true"
+            android:onClick="skillShuffleOnClick">
 
             <ImageButton
                 android:id="@+id/btn_skill_shuffle"
@@ -89,7 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2"
+            android:clickable="true">
 
             <ImageButton
                 android:id="@+id/btn_skill_friends"
@@ -117,7 +120,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="35dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2"
+            android:clickable="true">
 
             <ImageButton
                 android:id="@+id/btn_skill_chasm"

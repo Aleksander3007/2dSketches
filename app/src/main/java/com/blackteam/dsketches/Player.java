@@ -29,12 +29,13 @@ import java.util.Map;
  */
 public class Player {
     private static final String fileName_ = "userData.xml";
+    /** Количество skill по умолчанию. */
+    private static final int DEFAULT_SKILL_AMOUNT_ = 2;
 
     private ContentManager contents_;
 
     private int score_ = 0;
-    /** Список skills с доступным количеством. */
-    private ArrayMap<SkillType, Integer> skills_ = new ArrayMap<>(SkillType.values().length);
+    private ArrayMap<SkillType, Skill> skills_ = new ArrayMap<>(SkillType.values().length);
     /** Список полученных достижений. */
     private ArrayList<String> achievements_ = new ArrayList<>();
     /** Массив игровых точек */
@@ -43,7 +44,7 @@ public class Player {
     public Player(ContentManager contents) throws IOException, XmlPullParserException {
         this.contents_ = contents;
         for (SkillType skillType : SkillType.values()) {
-            skills_.put(skillType, 2); // Начальное состояние.
+            skills_.put(skillType, new Skill(skillType, DEFAULT_SKILL_AMOUNT_));
         }
     }
 
@@ -55,8 +56,12 @@ public class Player {
         return score_;
     }
 
-    public void addScore(int addingScore) {
+    public void addScore(final int addingScore) {
         score_ += addingScore;
+    }
+
+    public void removeScore(final int removingScore) {
+        score_ -= removingScore;
     }
 
     /** Получить имена заработанных достижений. */
@@ -64,12 +69,8 @@ public class Player {
         return achievements_;
     }
 
-    public ArrayMap<SkillType, Integer> getSkills() {
-        return skills_;
-    }
-
-    public void setSkill(SkillType skillType, int skillAmount) {
-        skills_.setValueAt(skills_.indexOfKey(skillType), skillAmount);
+    public void setSkill(final SkillType skillType, final int skillAmount) {
+        skills_.get(skillType).setAmount(skillAmount);
     }
 
     public GameDot[][] getGameDots() {
@@ -138,10 +139,10 @@ public class Player {
         xmlSerializer.endTag(null, "gameDots");
 
         xmlSerializer.startTag(null, "skills");
-        for (Map.Entry<SkillType, Integer> skillEntry : skills_.entrySet()) {
+        for (Skill skill : skills_.values()) {
             xmlSerializer.startTag(null, "skill");
-            xmlSerializer.attribute(null, "type", String.valueOf(skillEntry.getKey()));
-            xmlSerializer.attribute(null, "amount", String.valueOf(skillEntry.getValue()));
+            xmlSerializer.attribute(null, "type", String.valueOf(skill.getType()));
+            xmlSerializer.attribute(null, "amount", String.valueOf(skill.getAmount()));
             xmlSerializer.endTag(null, "skill");
         }
         xmlSerializer.endTag(null, "skills");
@@ -191,8 +192,12 @@ public class Player {
                 }
                 else if (xmlPullParser.getName().equals("skill")) {
                     SkillType skillType = Skill.convertToType(xmlPullParser.getAttributeValue(null, "type"));
-                    int skillCount = Integer.parseInt(xmlPullParser.getAttributeValue(null, "amount"));
-                    skills_.setValueAt(skills_.indexOfKey(skillType), skillCount);
+                    int skillAmount = Integer.parseInt(xmlPullParser.getAttributeValue(null, "amount"));
+
+                    if (skills_.containsKey(skillType))
+                        skills_.get(skillType).setAmount(skillAmount);
+                    else
+                        skills_.put(skillType, new Skill(skillType, skillAmount));
                 }
                 else if (xmlPullParser.getName().equals("gameDots")) {
                     try {
