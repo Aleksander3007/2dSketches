@@ -32,7 +32,7 @@ public class ShaderProgram {
                     " gl_FragColor.a *= v_alphaFactor;" +
                     "}";
 
-    private int program_;
+    private int mProgram;
 
     /**
      * Загрузка и сборка шейдеров, создание новой программы и привязка к шейдерам.
@@ -46,21 +46,21 @@ public class ShaderProgram {
             return false;
         }
 
-        program_ = GLES20.glCreateProgram();
-        if (program_ == -1) {
+        mProgram = GLES20.glCreateProgram();
+        if (mProgram == -1) {
             return false;
         }
 
-        GLES20.glAttachShader(program_, vertexShader);
-        GLES20.glAttachShader(program_, fragmentShader);
-        GLES20.glLinkProgram(program_);
+        GLES20.glAttachShader(mProgram, vertexShader);
+        GLES20.glAttachShader(mProgram, fragmentShader);
+        GLES20.glLinkProgram(mProgram);
 
         return true;
     }
 
     public void begin() {
         // Add program to OpenGL ES environment.
-        GLES20.glUseProgram(program_);
+        GLES20.glUseProgram(mProgram);
 
         // Enable a handle to the texture vertices.
         GLES20.glEnableVertexAttribArray(getAttribLocation(POSITION_ATTR));
@@ -69,11 +69,11 @@ public class ShaderProgram {
     }
 
     public int getAttribLocation(String name) {
-        return GLES20.glGetAttribLocation(program_, name);
+        return GLES20.glGetAttribLocation(mProgram, name);
     }
 
     public int getUniformLocation(String name) {
-        return GLES20.glGetUniformLocation(program_, name);
+        return GLES20.glGetUniformLocation(mProgram, name);
     }
 
     /**

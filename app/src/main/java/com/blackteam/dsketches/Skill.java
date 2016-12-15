@@ -16,9 +16,9 @@ public class Skill {
     /** Стоимость skill в реальных долларах США. */
     public static final float COST_REAL_MONEY = 1;
 
-    private Skill.Type type_;
+    private Skill.Type mType;
     /** Количество доступных ипользований. */
-    private int amount_;
+    private int mAmount;
 
     /**
      * Конструктор.
@@ -27,34 +27,34 @@ public class Skill {
      */
     public Skill(final Skill.Type type, final int amount) {
         super();
-        this.type_ = type;
-        this.amount_ = amount;
+        this.mType = type;
+        this.mAmount = amount;
     }
 
     public Skill.Type getType() {
-        return type_;
+        return mType;
     }
 
     public int getAmount() {
-        return amount_;
+        return mAmount;
     }
 
     public void setAmount(final int amount) {
-        this.amount_ = amount;
+        this.mAmount = amount;
     }
 
     public void add() {
-        amount_++;
+        mAmount++;
     }
 
     public void use() {
-        if (amount_ > 0) {
-            amount_--;
+        if (mAmount > 0) {
+            mAmount--;
         }
     }
 
     public boolean canUse() {
-        return (amount_ > 0);
+        return (mAmount > 0);
     }
 
     public static Skill.Type convertToType(String skillTypeStr) {

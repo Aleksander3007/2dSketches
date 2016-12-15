@@ -10,26 +10,21 @@ import com.blackteam.dsketches.gui.AchievementToast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 public class AchievementsManager implements Observer {
 
-    public ArrayList<Achievement> achievements_ = new ArrayList<>();
-    public Context context_;
-    private Player player_;
+    private ArrayList<Achievement> mAchievements = new ArrayList<>();
+    private Context mContext;
+    private Player mPlayer;
 
     public AchievementsManager(Player player, Context context) throws XmlPullParserException, IOException {
-        this.player_ = player;
-        this.context_ = context;
+        this.mPlayer = player;
+        this.mContext = context;
         loadContent(context);
     }
 
@@ -65,7 +60,7 @@ public class AchievementsManager implements Observer {
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (xmlResParser.getName().equals("achievement")) {
-                    achievements_.add(achievement);
+                    mAchievements.add(achievement);
                 }
             }
 
@@ -76,8 +71,8 @@ public class AchievementsManager implements Observer {
     }
 
     private void findEarnedAchievements() {
-        for (String achievementName : player_.getEarnedAchievementsNames()) {
-            for (Achievement achievement : achievements_) {
+        for (String achievementName : mPlayer.getEarnedAchievementsNames()) {
+            for (Achievement achievement : mAchievements) {
                 if (achievementName.equals(achievement.getName())) {
                     achievement.earn();
                     break;
@@ -91,7 +86,7 @@ public class AchievementsManager implements Observer {
         ArrayMap<String, Object> info = (ArrayMap<String, Object>) data;
         final String sketchType = (String) info.get("SketchType");
         final int profit = (int)info.get("Profit");
-        final int score = player_.getScore();
+        final int score = mPlayer.getScore();
 
         Log.i("Achievement", "(profit, sketch, score) = " +
                         "(" +
@@ -103,7 +98,7 @@ public class AchievementsManager implements Observer {
 
         Log.i("Achievement", "update");
 
-        for (Achievement achievement : achievements_) {
+        for (Achievement achievement : mAchievements) {
             boolean isAchievement = achievement.equals(
                     sketchType, Achievement.ANY_SCORE, Achievement.ANY_PROFIT) ||
                     achievement.equals(Achievement.ANY_SKETCH, score, Achievement.ANY_PROFIT) ||
@@ -114,14 +109,14 @@ public class AchievementsManager implements Observer {
 
                 if (!achievement.isEarned()) {
                     achievement.earn();
-                    player_.earnAchievement(achievement.getName());
-                    AchievementToast.makeText(context_, achievement.getName()).show();
+                    mPlayer.earnAchievement(achievement.getName());
+                    AchievementToast.makeText(mContext, achievement.getName()).show();
                 }
             }
         }
     }
 
     public ArrayList<Achievement> getAchiviements() {
-        return achievements_;
+        return mAchievements;
     }
 }

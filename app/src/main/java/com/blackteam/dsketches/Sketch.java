@@ -10,26 +10,26 @@ import java.util.ArrayList;
 
 public class Sketch implements Serializable {
     public static class Element implements Serializable {
-        private int rowNo_;
-        private int colNo_;
-        private GameDot.Types dotType_;
+        private int mRowNo;
+        private int mColNo;
+        private GameDot.Types mDotType;
 
         public Element(int rowNo, int colNo, GameDot.Types dotType) {
-            this.rowNo_ = rowNo;
-            this.colNo_ = colNo;
-            this.dotType_ = dotType;
+            this.mRowNo = rowNo;
+            this.mColNo = colNo;
+            this.mDotType = dotType;
         }
 
-        public int getRowNo() { return rowNo_; }
-        public int getColNo() { return colNo_; }
-        public GameDot.Types getDotType() { return dotType_; }
+        public int getRowNo() { return mRowNo; }
+        public int getColNo() { return mColNo; }
+        public GameDot.Types getDotType() { return mDotType; }
 
         public boolean isEqual(Sketch.Element elem) {
-            boolean isRowEqual = (rowNo_ == elem.getRowNo());
-            boolean isColEqual = (colNo_ == elem.getColNo());
+            boolean isRowEqual = (mRowNo == elem.getRowNo());
+            boolean isColEqual = (mColNo == elem.getColNo());
             boolean isDotTypeEqual = (
-                    (dotType_ == elem.getDotType()) ||
-                    (dotType_ == GameDot.Types.UNIVERSAL) ||
+                    (mDotType == elem.getDotType()) ||
+                    (mDotType == GameDot.Types.UNIVERSAL) ||
                     (elem.getDotType() == GameDot.Types.UNIVERSAL)
             );
 
@@ -41,40 +41,40 @@ public class Sketch implements Serializable {
         }
     }
 
-    private String name_;
-    private ArrayList<Element> elements_ = new ArrayList<>();
-    private int cost_;
+    private String mName;
+    private ArrayList<Element> mElements = new ArrayList<>();
+    private int mCost;
 
     public Sketch(String name, int cost) {
-        this.name_ = name;
-        this.cost_ = cost;
+        this.mName = name;
+        this.mCost = cost;
     }
 
     public String getName() {
-        return name_;
+        return mName;
     }
 
     public int getCost() {
-        return cost_;
+        return mCost;
     }
 
     public void add(int rowNo, int colNo, GameDot.Types dotType) {
-        elements_.add(new Element(rowNo, colNo, dotType));
+        mElements.add(new Element(rowNo, colNo, dotType));
     }
 
     public void clear() {
-        elements_.clear();
+        mElements.clear();
     }
 
     public boolean isEqual(ArrayList<Sketch.Element> dotElems) {
-        if (dotElems.size() != elements_.size())
+        if (dotElems.size() != mElements.size())
             return false;
 
-        // Max кол-во проходов = SUM(orbElems_.size() - i), где (i = [0..elements_.size()]).
+        // Max кол-во проходов = SUM(orbElems_.size() - i), где (i = [0..mElements.size()]).
         boolean isElemFound;
         for (Element dotElem : dotElems) {
             isElemFound = false;
-            for (Element sketchElem : elements_) {
+            for (Element sketchElem : mElements) {
                 if (dotElem.isEqual(sketchElem)) {
                     isElemFound = true;
                     break;
@@ -119,7 +119,7 @@ public class Sketch implements Serializable {
 
     private boolean isSketchDot(final int rowNo, final int colNo) {
         boolean isSketchDot = false;
-        for (Element dotElem : elements_) {
+        for (Element dotElem : mElements) {
             if (dotElem.getRowNo() == rowNo && dotElem.getColNo() == colNo) {
                 isSketchDot = true;
                 break;

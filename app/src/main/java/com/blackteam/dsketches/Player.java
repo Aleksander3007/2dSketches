@@ -21,18 +21,17 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Класс содержит информацию игроке,
  * его достижения, кол-во очков, skills и их количество, и т.п.
  */
 public class Player {
-    private static final String fileName_ = "userData.xml";
+    private static final String FILE_NAME = "userData.xml";
     /** Количество skill по умолчанию. */
-    private static final int DEFAULT_SKILL_AMOUNT_ = 2;
+    private static final int DEFAULT_SKILL_AMOUNT = 2;
 
-    private ContentManager contents_;
+    private ContentManager mContents;
 
     private int score_ = 0;
     private ArrayMap<Skill.Type, Skill> skills_ = new ArrayMap<>(Skill.Type.values().length);
@@ -42,9 +41,9 @@ public class Player {
     private GameDot[][] gameDots_ = null;
 
     public Player(ContentManager contents) throws IOException, XmlPullParserException {
-        this.contents_ = contents;
+        this.mContents = contents;
         for (Skill.Type skillType : Skill.Type.values()) {
-            skills_.put(skillType, new Skill(skillType, DEFAULT_SKILL_AMOUNT_));
+            skills_.put(skillType, new Skill(skillType, DEFAULT_SKILL_AMOUNT));
         }
     }
 
@@ -79,7 +78,7 @@ public class Player {
 
     public void load(Context context) throws IOException, XmlPullParserException {
         try {
-            FileInputStream fileInputStream = context.openFileInput(fileName_);
+            FileInputStream fileInputStream = context.openFileInput(FILE_NAME);
             readFile(fileInputStream);
         }
         // Если файл не создан необходимо его создать.
@@ -96,7 +95,7 @@ public class Player {
     private void writeFile(Context context) {
         try {
             String dataWrite = createXmlData();
-            FileOutputStream fileOutputStream = context.openFileOutput(fileName_, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
             fileOutputStream.write(dataWrite.getBytes());
             fileOutputStream.close();
 
@@ -220,7 +219,7 @@ public class Player {
                             xmlPullParser.getAttributeValue(null, "specType"));
 
                     gameDots_[iRow][iCol] = new GameDot(gameDotType, gameDotSpecType,
-                            new Vector2(0, 0), iRow, iCol, contents_);
+                            new Vector2(0, 0), iRow, iCol, mContents);
                 }
             }
 

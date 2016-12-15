@@ -24,18 +24,18 @@ public class World extends Observable {
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
 
-    private SketchesManager sketchesManager_;
-    private ContentManager contents_;
+    private SketchesManager mSketchesManager;
+    private ContentManager mContents;
 
-    private Vector2 pos_ = new Vector2(0, 0);
-    private float width_;
-    private float height_;
-    private int nRows_;
-    private int nColumns_;
-    private GameDot[][] dots_;
+    private Vector2 mPos = new Vector2(0, 0);
+    private float mWidth;
+    private float mHeight;
+    private int mNumRows;
+    private int mNumColumns;
+    private GameDot[][] mDots;
 
     private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
-    private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL_;
+    private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL;
 
     /** При выделении точки: она увеличивается. */
     private static final float SELECTION_SCALE_ = 1.3f;
@@ -49,53 +49,53 @@ public class World extends Observable {
     private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
 
     public World(ContentManager contents, SketchesManager sketchesManager) {
-        this.contents_ = contents;
-        this.sketchesManager_ = sketchesManager;
+        this.mContents = contents;
+        this.mSketchesManager = sketchesManager;
 
-        this.nRows_ = DEFAULT_NUM_ROWS;
-        this.nColumns_ = DEFAULT_NUM_COLUMNS;
-        this.dots_ = new GameDot[nRows_][nColumns_];
+        this.mNumRows = DEFAULT_NUM_ROWS;
+        this.mNumColumns = DEFAULT_NUM_COLUMNS;
+        this.mDots = new GameDot[mNumRows][mNumColumns];
     }
 
     public int getNumRows() {
-        return nRows_;
+        return mNumRows;
     }
 
     public int getNumCols() {
-        return nColumns_;
+        return mNumColumns;
     }
 
     public synchronized GameDot getDot(int rowNo, int colNo) {
-        return dots_[rowNo][colNo];
+        return mDots[rowNo][colNo];
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
-        float dotHeight = rectSize.height / nRows_;
-        float dotWidth = rectSize.width / nColumns_;
+        float dotHeight = rectSize.height / mNumRows;
+        float dotWidth = rectSize.width / mNumColumns;
 
         dotSize_ = (dotWidth < dotHeight) ? dotWidth : dotHeight;
         selectedDotSize_ = dotSize_ * SELECTION_SCALE_; // При выделении точки: она увеличивается.
         GameDot.setAbsTranslateSpeed(dotSize_ / GameDot.TRANSLATE_TIME_);
 
-        this.height_ = dotSize_ * nRows_;
-        this.width_ = dotSize_ * nColumns_;
-        this.pos_ = new Vector2(pos.x + (rectSize.width / 2) - (this.width_ / 2), pos.y);
+        this.mHeight = dotSize_ * mNumRows;
+        this.mWidth = dotSize_ * mNumColumns;
+        this.mPos = new Vector2(pos.x + (rectSize.width / 2) - (this.mWidth / 2), pos.y);
 
-        for (int iRow = 0; iRow < dots_.length; iRow++) {
-            for (int iCol = 0; iCol < dots_[iRow].length; iCol++) {
+        for (int iRow = 0; iRow < mDots.length; iRow++) {
+            for (int iCol = 0; iCol < mDots[iRow].length; iCol++) {
                 Vector2 dotPos = convertToPos(iRow, iCol);
-                dots_[iRow][iCol].setPosition(dotPos);
-                dots_[iRow][iCol].setSize(dotSize_);
+                mDots[iRow][iCol].setPosition(dotPos);
+                mDots[iRow][iCol].setSize(dotSize_);
             }
         }
     }
 
     public void draw(Graphics graphics) {
         if (!isUpdating_) {
-            for (int iRow = 0; iRow < nRows_; iRow++) {
-                for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    if (!selectedDots_.contains(dots_[iRow][iCol]))
-                        dots_[iRow][iCol].draw(graphics);
+            for (int iRow = 0; iRow < mNumRows; iRow++) {
+                for (int iCol = 0; iCol < mNumColumns; iCol++) {
+                    if (!selectedDots_.contains(mDots[iRow][iCol]))
+                        mDots[iRow][iCol].draw(graphics);
                 }
             }
             for (GameDot dot : selectedDots_) {
@@ -116,14 +116,14 @@ public class World extends Observable {
     }
 
     public boolean hit(Vector2 coords) {
-        boolean hitX = (coords.x >= pos_.x) && (coords.x <= pos_.x + width_);
-        boolean hitY = (coords.y >= pos_.y) && (coords.y <= pos_.y + height_);
+        boolean hitX = (coords.x >= mPos.x) && (coords.x <= mPos.x + mWidth);
+        boolean hitY = (coords.y >= mPos.y) && (coords.y <= mPos.y + mHeight);
 
         if (hitX && hitY) {
             // Определяем был ли нажат на элемент.
-            for (int iRow = 0; iRow < nRows_; iRow++) {
-                for (int iCol = 0; iCol < nColumns_; iCol++) {
-                    if (hitDot(dots_[iRow][iCol], coords))
+            for (int iRow = 0; iRow < mNumRows; iRow++) {
+                for (int iCol = 0; iCol < mNumColumns; iCol++) {
+                    if (hitDot(mDots[iRow][iCol], coords))
                         return true;
                 }
             }
@@ -182,7 +182,7 @@ public class World extends Observable {
         isUpdating_ = true;
 
         if (selectedDots_.size() > 2) {
-            selectedSketch_ = sketchesManager_.findSketch(selectedDots_);
+            selectedSketch_ = mSketchesManager.findSketch(selectedDots_);
             // Ищем спец. Dots.
             searchSpecDots(selectedDots_);
         }
@@ -196,12 +196,12 @@ public class World extends Observable {
             switch (gameDot.getSpecType()) {
                 case ROW_EATER: {
                     // Добавляем все элементы строки как выделенные.
-                    for (int iCol = 0; iCol < nColumns_; iCol++) {
+                    for (int iCol = 0; iCol < mNumColumns; iCol++) {
                         // ... без повтора в массиве.
-                        if (!selectedDots_.contains(dots_[gameDot.getRowNo()][iCol])) {
+                        if (!selectedDots_.contains(mDots[gameDot.getRowNo()][iCol])) {
                             // ... и делаем их уникальным, чтобы считался Profit и для них.
-                            dots_[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
-                            addSpecDots_.add(dots_[gameDot.getRowNo()][iCol]);
+                            mDots[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
+                            addSpecDots_.add(mDots[gameDot.getRowNo()][iCol]);
                         }
                     }
                     selectedDots_.addAll(addSpecDots_);
@@ -211,10 +211,10 @@ public class World extends Observable {
                 }
                 case COLUMN_EATER: {
                     // Тоже самое, что ROW_EATER, только столбец (см. выше).
-                    for (int iRow = 0; iRow < nRows_; iRow++) {
-                        if (!selectedDots_.contains(dots_[iRow][gameDot.getColNo()])) {
-                            dots_[iRow][gameDot.getColNo()].setType(GameDot.Types.UNIVERSAL);
-                            addSpecDots_.add(dots_[iRow][gameDot.getColNo()]);
+                    for (int iRow = 0; iRow < mNumRows; iRow++) {
+                        if (!selectedDots_.contains(mDots[iRow][gameDot.getColNo()])) {
+                            mDots[iRow][gameDot.getColNo()].setType(GameDot.Types.UNIVERSAL);
+                            addSpecDots_.add(mDots[iRow][gameDot.getColNo()]);
                         }
                     }
                     selectedDots_.addAll(addSpecDots_);
@@ -228,9 +228,9 @@ public class World extends Observable {
                             int rowNo = gameDot.getRowNo() + iRow;
                             int colNo = gameDot.getColNo() + iCol;
                             if (!isOutOfBounds(rowNo, colNo)) {
-                                if (!selectedDots_.contains(dots_[rowNo][colNo])) {
-                                    dots_[rowNo][colNo].setType(GameDot.Types.UNIVERSAL);
-                                    addSpecDots_.add(dots_[rowNo][colNo]);
+                                if (!selectedDots_.contains(mDots[rowNo][colNo])) {
+                                    mDots[rowNo][colNo].setType(GameDot.Types.UNIVERSAL);
+                                    addSpecDots_.add(mDots[rowNo][colNo]);
                                 }
                             }
                         }
@@ -255,8 +255,8 @@ public class World extends Observable {
      * @return true - если за пределами.
      */
     public boolean isOutOfBounds(final int rowNo, final int colNo) {
-        return ((rowNo < 0) || (rowNo >= nRows_) ||
-                (colNo < 0) || (colNo >= nColumns_));
+        return ((rowNo < 0) || (rowNo >= mNumRows) ||
+                (colNo < 0) || (colNo >= mNumColumns));
     }
 
     public int getProfitByDots() {
@@ -314,7 +314,7 @@ public class World extends Observable {
             dot.setSizeCenter(dotSize_);
         }
         selectedDots_.clear();
-        selectedSketch_ = SketchesManager.SKETCH_NULL_;
+        selectedSketch_ = SketchesManager.SKETCH_NULL;
     }
 
     /**
@@ -336,12 +336,12 @@ public class World extends Observable {
             addEffect(gameDot.getSpecType(), gameDot.getPosition());
 
             int translateCol = gameDot.getColNo();
-            for (int iRow = gameDot.getRowNo() + 1; iRow < nRows_; iRow++) {
-                dots_[iRow][translateCol].moveTo(convertToPos(iRow - 1, translateCol));
-                dots_[iRow][translateCol].setRowNo(iRow - 1); // TODO: Row хранится в двух местах - ОЧЕНЬ ПЛОХО!
-                dots_[iRow - 1][translateCol] = dots_[iRow][translateCol];
+            for (int iRow = gameDot.getRowNo() + 1; iRow < mNumRows; iRow++) {
+                mDots[iRow][translateCol].moveTo(convertToPos(iRow - 1, translateCol));
+                mDots[iRow][translateCol].setRowNo(iRow - 1); // TODO: Row хранится в двух местах - ОЧЕНЬ ПЛОХО!
+                mDots[iRow - 1][translateCol] = mDots[iRow][translateCol];
             }
-            createDot(nRows_ - 1, translateCol);
+            createDot(mNumRows - 1, translateCol);
         }
 
         isUpdating_ = false;
@@ -361,10 +361,10 @@ public class World extends Observable {
             case TRIPLE:
                 return;
             case ROW_EATER:
-                newSize = new Size2(dotSize_ * 2 * nColumns_, dotSize_);
+                newSize = new Size2(dotSize_ * 2 * mNumColumns, dotSize_);
                 break;
             case COLUMN_EATER:
-                newSize = new Size2(dotSize_, dotSize_ * 2 * nRows_);
+                newSize = new Size2(dotSize_, dotSize_ * 2 * mNumRows);
                 break;
             case AROUND_EATER:
                 newSize = new Size2(3 * dotSize_, 3 * dotSize_);
@@ -374,7 +374,7 @@ public class World extends Observable {
         }
 
         TextureRegion textureRegion = new TextureRegion(
-                contents_.get(R.drawable.dots_theme1),
+                mContents.get(R.drawable.dots_theme1),
                 GameDot.getSpecTexturePosition(dotSpecType),
                 new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
         );
@@ -400,11 +400,11 @@ public class World extends Observable {
     }
 
     public void createLevel(final int nRow, final int nColumn) {
-        this.nRows_ = nRow;
-        this.nColumns_ = nColumn;
+        this.mNumRows = nRow;
+        this.mNumColumns = nColumn;
 
-        for (int iRow = 0; iRow < nRows_; iRow++) {
-            for (int iCol = 0; iCol < nColumns_; iCol++) {
+        for (int iRow = 0; iRow < mNumRows; iRow++) {
+            for (int iCol = 0; iCol < mNumColumns; iCol++) {
                 createDot(iRow, iCol);
             }
         }
@@ -415,12 +415,12 @@ public class World extends Observable {
     }
 
     public void createLevel(GameDot[][] gameDots) {
-        nRows_ = gameDots.length;
-        nColumns_ = gameDots[0].length;
+        mNumRows = gameDots.length;
+        mNumColumns = gameDots[0].length;
 
-        dots_ = gameDots;
-        for (int iRow = 0; iRow < nRows_; iRow++) {
-            for (int iCol = 0; iCol < nColumns_; iCol++) {
+        mDots = gameDots;
+        for (int iRow = 0; iRow < mNumRows; iRow++) {
+            for (int iCol = 0; iCol < mNumColumns; iCol++) {
                 if (gameDots[iRow][iCol] != null) {
                     createDot(gameDots[iRow][iCol].getType(),
                             gameDots[iRow][iCol].getSpecType(),
@@ -495,15 +495,15 @@ public class World extends Observable {
                           final int rowNo, final int colNo
     ) {
         Vector2 dotPos = new Vector2(
-                this.pos_.x + colNo * dotSize_,
-                this.pos_.y + rowNo * dotSize_);
-        dots_[rowNo][colNo] = new GameDot(dotType, dotSpecType,
+                this.mPos.x + colNo * dotSize_,
+                this.mPos.y + rowNo * dotSize_);
+        mDots[rowNo][colNo] = new GameDot(dotType, dotSpecType,
                 dotPos,
                 rowNo, colNo,
-                contents_
+                mContents
         );
 
-        dots_[rowNo][colNo].setSize(dotSize_);
+        mDots[rowNo][colNo].setSize(dotSize_);
     }
 
     /**
@@ -516,7 +516,7 @@ public class World extends Observable {
 
     private Vector2 convertToPos(final int rowNo, final int colNo) {
         return new Vector2(
-                this.pos_.x + colNo * dotSize_,
-                this.pos_.y + rowNo * dotSize_);
+                this.mPos.x + colNo * dotSize_,
+                this.mPos.y + rowNo * dotSize_);
     }
 }

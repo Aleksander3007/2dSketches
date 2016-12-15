@@ -11,13 +11,11 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.blackteam.dsketches.utils.ExceptionHandler;
 import com.blackteam.dsketches.utils.Vector2;
 
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -28,23 +26,23 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public static String ACHIEVEMENT_DATA = "achievement_data";
     public static String SKETCHES_DATA = "sketches_data";
 
-    private static final int MAIN_MENU_ACTIVITY_ = 0;
+    private static final int MAIN_MENU_ACTIVITY = 0;
 
-    private static final String MR_HEADLINES_FONT_NAME_ = "fonts/mr_headlines.ttf";
-    private static Typeface mrHeadlinesFont_;
+    private static final String MR_HEADLINES_FONT_NAME = "fonts/mr_headlines.ttf";
+    private static Typeface sMrHeadlinesFont;
 
-    private GLSurfaceView gameView_;
-    private GameRenderer gameRenderer_;
-    private Player player_;
-    private Game game_;
-    private AchievementsManager achievementsManager_;
-    private SketchesManager sketchesManager_;
-    private ContentManager contents_;
+    private GLSurfaceView mGameView;
+    private GameRenderer mGameRenderer;
+    private Player mPlayer;
+    private Game mGame;
+    private AchievementsManager mAchievementsManager;
+    private SketchesManager mSketchesManager;
+    private ContentManager mContents;
 
-    private TextView scoreTextView_;
-    private TextView skillShuffleTextView_;
-    private TextView skillFriendsTextView_;
-    private TextView skillChasmTextView_;
+    private TextView mScoreTextView;
+    private TextView mSkillShuffleTextView;
+    private TextView mSkillFriendsTextView;
+    private TextView mSkillChasmTextView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +51,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         VERSION = getApplicationContext().getResources().getString(R.string.version_str);
 
-        this.contents_ = new ContentManager(getApplicationContext());
+        this.mContents = new ContentManager(getApplicationContext());
 
         try {
-            player_ = new Player(contents_);
-            player_.load(getApplicationContext());
-            achievementsManager_ = new AchievementsManager(player_, getApplicationContext());
-            sketchesManager_ = new SketchesManager(getApplicationContext());
+            mPlayer = new Player(mContents);
+            mPlayer.load(getApplicationContext());
+            mAchievementsManager = new AchievementsManager(mPlayer, getApplicationContext());
+            mSketchesManager = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
             Log.e("XmlPullParserException", e.getMessage());
@@ -68,64 +66,64 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             Log.e("IOException", e.getMessage());
         }
 
-        game_ = new Game(player_, sketchesManager_, contents_);
-        game_.loadLevel();
-        game_.addObserver(achievementsManager_);
+        mGame = new Game(mPlayer, mSketchesManager, mContents);
+        mGame.loadLevel();
+        mGame.addObserver(mAchievementsManager);
 
         setContentView(R.layout.main);
 
-        gameView_ = (GLSurfaceView) findViewById(R.id.gameview);
-        gameView_.setOnTouchListener(this);
-        gameView_.setEGLContextClientVersion(2);
+        mGameView = (GLSurfaceView) findViewById(R.id.gameview);
+        mGameView.setOnTouchListener(this);
+        mGameView.setEGLContextClientVersion(2);
 
-        // Делает возможным отрисовки элементов, находящихся позади(глубже) gameView_:
-        gameView_.setZOrderOnTop(true);
-        gameView_.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        gameView_.getHolder().setFormat(PixelFormat.RGBA_8888);
+        // Делает возможным отрисовки элементов, находящихся позади(глубже) mGameView:
+        mGameView.setZOrderOnTop(true);
+        mGameView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        mGameView.getHolder().setFormat(PixelFormat.RGBA_8888);
         //
 
-        gameRenderer_ = new GameRenderer(getApplicationContext(), game_, contents_);
-        gameView_.setRenderer(gameRenderer_);
+        mGameRenderer = new GameRenderer(getApplicationContext(), mGame, mContents);
+        mGameView.setRenderer(mGameRenderer);
 
-        scoreTextView_ = (TextView)findViewById(R.id.tv_score);
-        scoreTextView_.setText(String.valueOf(player_.getScore()));
+        mScoreTextView = (TextView)findViewById(R.id.tv_score);
+        mScoreTextView.setText(String.valueOf(mPlayer.getScore()));
 
-        skillShuffleTextView_ = ((TextView)findViewById(R.id.tv_skill_shuffle));
-        skillShuffleTextView_.setText(String.valueOf(
-                player_.getSkill(Skill.Type.RESHUFFLE).getAmount())
+        mSkillShuffleTextView = ((TextView)findViewById(R.id.tv_skill_shuffle));
+        mSkillShuffleTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.RESHUFFLE).getAmount())
         );
 
-        skillFriendsTextView_ = ((TextView)findViewById(R.id.tv_skill_friends));
-        skillFriendsTextView_.setText(String.valueOf(
-                player_.getSkill(Skill.Type.FRIENDS).getAmount())
+        mSkillFriendsTextView = ((TextView)findViewById(R.id.tv_skill_friends));
+        mSkillFriendsTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.FRIENDS).getAmount())
         );
 
-        skillChasmTextView_ = ((TextView)findViewById(R.id.tv_skill_chasm));
-        skillChasmTextView_.setText(String.valueOf(
-                player_.getSkill(Skill.Type.CHASM).getAmount())
+        mSkillChasmTextView = ((TextView)findViewById(R.id.tv_skill_chasm));
+        mSkillChasmTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.CHASM).getAmount())
         );
 
         setCustomFonts();
     }
 
     private void setCustomFonts() {
-        mrHeadlinesFont_ = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME_);
-        scoreTextView_.setTypeface(mrHeadlinesFont_);
-        skillShuffleTextView_.setTypeface(mrHeadlinesFont_);
-        skillFriendsTextView_.setTypeface(mrHeadlinesFont_);
-        skillChasmTextView_.setTypeface(mrHeadlinesFont_);
+        sMrHeadlinesFont = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME);
+        mScoreTextView.setTypeface(sMrHeadlinesFont);
+        mSkillShuffleTextView.setTypeface(sMrHeadlinesFont);
+        mSkillFriendsTextView.setTypeface(sMrHeadlinesFont);
+        mSkillChasmTextView.setTypeface(sMrHeadlinesFont);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        gameView_.onPause();
+        mGameView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        gameView_.onResume();
+        mGameView.onResume();
     }
 
     @Override
@@ -136,7 +134,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     @Override
     protected void onStop() {
         super.onStop();
-        player_.save(getApplicationContext());
+        mPlayer.save(getApplicationContext());
     }
 
     @Override
@@ -145,14 +143,14 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         Log.i("MainActivity", "onActivityResult start");
 
-        if (requestCode == MAIN_MENU_ACTIVITY_) {
+        if (requestCode == MAIN_MENU_ACTIVITY) {
             if (resultCode == RESULT_OK) {
                 boolean restart = data.getBooleanExtra(MainMenuActivity.CMD_RESTART_LVL, false);
                 if (restart) {
                     Log.i("MainActivity", "restart");
-                    game_.restartLevel();
-                    player_.setScore(0);
-                    scoreTextView_.setText(String.valueOf(player_.getScore()));
+                    mGame.restartLevel();
+                    mPlayer.setScore(0);
+                    mScoreTextView.setText(String.valueOf(mPlayer.getScore()));
                 }
                 else {
                     Log.i("MainActivity", "false");
@@ -180,11 +178,11 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                         Log.i("MainActivity", "Action was UP");
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
-                    game_.touchUp(getWorldCoords(event.getX(),event.getY()));
-                    scoreTextView_.setText(String.valueOf(player_.getScore()));
+                    mGame.touchUp(getWorldCoords(event.getX(),event.getY()));
+                    mScoreTextView.setText(String.valueOf(mPlayer.getScore()));
                     return true;
                 case (MotionEvent.ACTION_MOVE):
-                    game_.hit(getWorldCoords(event.getX(), event.getY()));
+                    mGame.hit(getWorldCoords(event.getX(), event.getY()));
                     return true;
                 default:
                     return true;
@@ -198,21 +196,21 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private Vector2 getWorldCoords(float screenX, float screenY) {
         return new Vector2(
-                screenX * GameRenderer.uppX,
-                (GameRenderer.height - screenY) * GameRenderer.uppY
+                screenX * GameRenderer.sUppX,
+                (GameRenderer.sHeight - screenY) * GameRenderer.sUppY
         );
     }
 
     public void menuOpenOnClick(View view) {
         Bundle achievementsBundle = new Bundle();
-        achievementsBundle.putSerializable("objects", achievementsManager_.getAchiviements());
+        achievementsBundle.putSerializable("objects", mAchievementsManager.getAchiviements());
         Bundle sketchesBundle = new Bundle();
-        sketchesBundle.putSerializable("objects", sketchesManager_.getSketches());
+        sketchesBundle.putSerializable("objects", mSketchesManager.getSketches());
 
         Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
         menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
         menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
-        startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY_);
+        startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY);
     }
 
     /**
@@ -238,16 +236,16 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 return;
         }
 
-        if (player_.getSkill(skillType).canUse()) {
-            game_.applySkill(skillType);
+        if (mPlayer.getSkill(skillType).canUse()) {
+            mGame.applySkill(skillType);
             clickedSkillTextView.setText(
-                    String.valueOf(player_.getSkill(skillType).getAmount())
+                    String.valueOf(mPlayer.getSkill(skillType).getAmount())
             );
         }
         // В противном случае открываем окно покупки.
         else {
             FragmentManager fragmentManager = getFragmentManager();
-            PaymentSkillDialogFragment paymentDialogFragment = new PaymentSkillDialogFragment(skillType, player_);
+            PaymentSkillDialogFragment paymentDialogFragment = new PaymentSkillDialogFragment(skillType, mPlayer);
             paymentDialogFragment.show(fragmentManager, "paymentDialog");
         }
     }
@@ -264,8 +262,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // Производим оплату.
         switch (paymentType) {
             case POINTS:
-                player_.removeScore(Skill.COST_POINTS);
-                scoreTextView_.setText(String.valueOf(player_.getScore()));
+                mPlayer.removeScore(Skill.COST_POINTS);
+                mScoreTextView.setText(String.valueOf(mPlayer.getScore()));
                 break;
             case REAL_MONEY:
                 // TODO: Сделать оплату по реальным деньгам.
@@ -274,17 +272,17 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         // Окно покупки открывается только когда закончится skill,
         // поэтому после покупки оно станет 1.
-        Skill boughtSkill = player_.getSkill(skillType);
+        Skill boughtSkill = mPlayer.getSkill(skillType);
         boughtSkill.add();
         switch (skillType) {
             case RESHUFFLE:
-                skillShuffleTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                mSkillShuffleTextView.setText(String.valueOf(boughtSkill.getAmount()));
                 break;
             case FRIENDS:
-                skillFriendsTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                mSkillFriendsTextView.setText(String.valueOf(boughtSkill.getAmount()));
                 break;
             case CHASM:
-                skillChasmTextView_.setText(String.valueOf(boughtSkill.getAmount()));
+                mSkillChasmTextView.setText(String.valueOf(boughtSkill.getAmount()));
                 break;
         }
     }

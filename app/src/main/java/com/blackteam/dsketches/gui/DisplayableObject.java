@@ -7,16 +7,16 @@ import com.blackteam.dsketches.utils.Vector2;
 // TODO: Может extends Sprite.
 // TODO: Вместо Texture использовать TextureRegion.
 public class DisplayableObject {
-    protected Sprite sprite_;
+    protected Sprite mSprite;
     /** Координаты левого нижнего угла. */
-    protected Vector2 pos_ = new Vector2(0, 0);
+    protected Vector2 mPos = new Vector2(0, 0);
     /** По умолчанию - без масштабирования. */
-    protected Vector2 scale_ = new Vector2(1, 1);
+    protected Vector2 mScale = new Vector2(1, 1);
     /** Вращение вокруг центра объекта. По умолчанию - без вращения. */
-    protected float rotationDeg_ = 0;
-    protected float width_ = 1.0f;
-    protected float height_ = 1.0f;
-    protected AnimationController animationController_;
+    protected float mRotationDeg = 0;
+    protected float mWidth = 1.0f;
+    protected float mHeight = 1.0f;
+    protected AnimationController mAnimationController;
 
     /**
      * Конструктор.
@@ -98,69 +98,69 @@ public class DisplayableObject {
         if (texture == null) {
             throw new IllegalArgumentException("Texture is not loaded.");
         }
-        this.pos_ = new Vector2(pos.x, pos.y);
-        this.sprite_ = new Sprite(texture, texX, texY, texWidth, texHeight);
-        this.rotationDeg_ = rotationDeg;
+        this.mPos = new Vector2(pos.x, pos.y);
+        this.mSprite = new Sprite(texture, texX, texY, texWidth, texHeight);
+        this.mRotationDeg = rotationDeg;
 
-        sprite_.setPosition(pos);
-        sprite_.setRotate(rotationDeg);
+        mSprite.setPosition(pos);
+        mSprite.setRotate(rotationDeg);
     }
 
     public boolean hit(Vector2 coords) {
-        return ((coords.x >= pos_.x) && (coords.x <= (pos_.x + width_))) &&
-                ((coords.y >= pos_.y) && (coords.y <= (pos_.y + height_)));
+        return ((coords.x >= mPos.x) && (coords.x <= (mPos.x + mWidth))) &&
+                ((coords.y >= mPos.y) && (coords.y <= (mPos.y + mHeight)));
     }
 
     public void draw(Graphics graphics) {
-        if (animationController_ != null)
-            animationController_.update(this, graphics.getElapsedTime());
+        if (mAnimationController != null)
+            mAnimationController.update(this, graphics.getElapsedTime());
 
-        sprite_.draw(graphics.getMVPMatrix(), graphics.getShader());
+        mSprite.draw(graphics.getMVPMatrix(), graphics.getShader());
     }
 
     public void setTexture(Texture texture) {
-        if (sprite_ == null)
-            sprite_ = new Sprite(texture);
+        if (mSprite == null)
+            mSprite = new Sprite(texture);
         else
-            sprite_.setTexture(texture);
+            mSprite.setTexture(texture);
     }
 
     public void setTexture(TextureRegion textureRegion) {
-        if (sprite_ == null)
-            sprite_ = new Sprite(textureRegion.getTexture(),
+        if (mSprite == null)
+            mSprite = new Sprite(textureRegion.getTexture(),
                     textureRegion.getPos().x, textureRegion.getPos().y,
                     textureRegion.getSize().width, textureRegion.getSize().height);
         else
-            sprite_.setTexture(textureRegion.getTexture(),
+            mSprite.setTexture(textureRegion.getTexture(),
                     textureRegion.getPos().x, textureRegion.getPos().y,
                     textureRegion.getSize().width, textureRegion.getSize().height);
     }
 
     public void setAnimation(AnimationController animationController) {
-        this.animationController_ = animationController;
+        this.mAnimationController = animationController;
     }
 
     public boolean isAnimationFinished() {
-        if (animationController_ != null)
-            return animationController_.isFinished();
+        if (mAnimationController != null)
+            return mAnimationController.isFinished();
         else
             return true;
     }
 
-    public float getX() { return pos_.x; }
-    public float getY() { return pos_.y; }
+    public float getX() { return mPos.x; }
+    public float getY() { return mPos.y; }
 
-    public float getWidth() { return width_; }
-    public float getHeight() { return height_; }
+    public float getWidth() { return mWidth; }
+    public float getHeight() { return mHeight; }
 
     public void setSize(final Size2 size) {
         setSize(size.width, size.height);
     }
 
     public void setSize(final float width, final float height) {
-        width_ = width;
-        height_ = height;
-        sprite_.setScale(width, height);
+        mWidth = width;
+        mHeight = height;
+        mSprite.setScale(width, height);
     }
 
     public void setSizeCenter(final Size2 size) {
@@ -169,8 +169,8 @@ public class DisplayableObject {
 
     public void setSizeCenter(float newWidth, float newHeight) {
         Vector2 newPos = new Vector2(
-                pos_.x - (newWidth - width_) / 2,
-                pos_.y - (newHeight - height_) / 2
+                mPos.x - (newWidth - mWidth) / 2,
+                mPos.y - (newHeight - mHeight) / 2
         );
         setSize(newWidth, newHeight);
         setPosition(newPos);
@@ -181,25 +181,25 @@ public class DisplayableObject {
     }
 
     public void setPosition(final Vector2 pos) {
-        pos_ = new Vector2(pos);
-        sprite_.setPosition(pos);
+        mPos = new Vector2(pos);
+        mSprite.setPosition(pos);
     }
 
     public void addPosition(final Vector2 amount) {
-        pos_.add(amount);
-        sprite_.addPosition(amount);
+        mPos.add(amount);
+        mSprite.addPosition(amount);
     }
 
     public Vector2 getPosition() {
-        return  pos_;
+        return mPos;
     }
 
     public void setAlpha(float alphaFactor) {
-        sprite_.setAlpha(alphaFactor);
+        mSprite.setAlpha(alphaFactor);
     }
 
     public void setRotationDeg(final float angleDeg) {
-        rotationDeg_ = angleDeg;
-        sprite_.setRotate(angleDeg);
+        mRotationDeg = angleDeg;
+        mSprite.setRotate(angleDeg);
     }
 }

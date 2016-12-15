@@ -8,9 +8,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,9 +22,9 @@ public class SketchesManager {
     // Вариант 3. Порядок должен быть учитан в xml-файле.
 
     // Нулевой скетч.
-    public static final Sketch SKETCH_NULL_ = Sketch.getNullSketch();
+    public static final Sketch SKETCH_NULL = Sketch.getNullSketch();
 
-    private ArrayList<Sketch> sketches_ = new ArrayList<>();
+    private ArrayList<Sketch> mSketches = new ArrayList<>();
 
     public SketchesManager(Context context) throws XmlPullParserException, IOException {
         loadContent(context);
@@ -52,7 +50,7 @@ public class SketchesManager {
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (xpp.getName().equals("sketch")) {
-                    sketches_.add(sketch);
+                    mSketches.add(sketch);
                 }
             }
             eventType = xpp.next();
@@ -64,17 +62,17 @@ public class SketchesManager {
 
     public Sketch findSketch(List<GameDot> gameDots) {
         if (gameDots == null)
-            return SKETCH_NULL_;
+            return SKETCH_NULL;
 
         // Ищём подходящий sketch.
         ArrayList<Sketch.Element> normalDots  = normalize(gameDots);
-        for (Sketch sketch : sketches_) {
+        for (Sketch sketch : mSketches) {
             if (sketch.isEqual(normalDots)) {
                 return sketch;
             }
         }
 
-        return SKETCH_NULL_;
+        return SKETCH_NULL;
     }
 
     private ArrayList<Sketch.Element> normalize(List<GameDot> gameDots) {
@@ -103,6 +101,6 @@ public class SketchesManager {
     }
 
     public ArrayList<Sketch> getSketches() {
-        return sketches_;
+        return mSketches;
     }
 }

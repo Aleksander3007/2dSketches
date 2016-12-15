@@ -18,42 +18,43 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
-    public static float width = 0;
-    public static float height = 0;
+    public static float sWidth = 0;
+    public static float sHeight = 0;
 
     // Units per pixels.
-    public static float uppX = 1.0f;
-    public static float uppY = 1.0f;
+    public static float sUppX = 1.0f;
+    public static float sUppY = 1.0f;
 
-    private Context context_;
+    // TODO: Delete unused fields.
+    private Context mContext;
 
     /** Model View Projection Matrix. */
-    private final float[] mvpMatrix_ = new float[16];
-    private final float[] projectionMatrix_ = new float[16];
-    private final float[] viewMatrix_ = new float[16];
+    private final float[] mMvpMatrix = new float[16];
+    private final float[] mProjectionMatrix = new float[16];
+    private final float[] mViewMatrix = new float[16];
 
-    private ShaderProgram shader_;
+    private ShaderProgram mShader;
 
     /**
      * Ограничение по FPS.
      * Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
      */
-    private long MS_PER_FRAME_ = 33; //ms; ~ 30.3 FPS.
+    private static final long MS_PER_FRAME = 33; //ms; ~ 30.3 FPS.
     /** мс. */
-    private long currentTime_;
+    private long mCurrentTime;
     /** Время последенго обновления, мс. */
-    private long lastTime_;
+    private long mLastTime;
     /** Сколько времени прошло с последнего обновления, мс.. */
-    private long elapsedTime_;
+    private long mElapsedTime;
 
-    private Graphics graphics_;
-    private Game game_;
-    private ContentManager contents_;
+    private Graphics mGraphics;
+    private Game mGame;
+    private ContentManager mContents;
 
     public GameRenderer(Context context, Game game, ContentManager contents) {
-        this.context_ = context;
-        this.game_ = game;
-        this.contents_ = contents;
+        this.mContext = context;
+        this.mGame = game;
+        this.mContents = contents;
     }
 
     @Override
@@ -66,16 +67,16 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        lastTime_ = GameMath.getCurrentTime();
+        mLastTime = GameMath.getCurrentTime();
 
-        graphics_ = new Graphics(mvpMatrix_, shader_);
+        mGraphics = new Graphics(mMvpMatrix, mShader);
     }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.i("GameRender", "onSurfaceChanged begin");
         GLES20.glViewport(0, 0, width, height);
-        GameRenderer.width = width;
-        GameRenderer.height = height;
+        GameRenderer.sWidth = width;
+        GameRenderer.sHeight = height;
 
         float aspectRatio = width > height ?
                 (float) width / height :
@@ -85,60 +86,60 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         if (width > height) {
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.orthoM(projectionMatrix_, 0,
+            Matrix.orthoM(mProjectionMatrix, 0,
                     0, aspectRatio,
                     0, 1,
                     0.3f, // near.
                     3f // far.
             );
 
-            uppX = aspectRatio / width;
-            uppY = 1.0f / height;
+            sUppX = aspectRatio / width;
+            sUppY = 1.0f / height;
 
-            game_.resize(aspectRatio, 1f);
+            mGame.resize(aspectRatio, 1f);
         }
         // Portrait or square.
         else {
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.orthoM(projectionMatrix_, 0,
+            Matrix.orthoM(mProjectionMatrix, 0,
                     0, 1, // left-right;
                     0, aspectRatio, // top-bottom;
                     0.3f, // near.
                     3f // far.
             );
 
-            uppX = 1.0f / width;
-            uppY = aspectRatio / height;
+            sUppX = 1.0f / width;
+            sUppY = aspectRatio / height;
 
-            game_.resize(1f, aspectRatio);
+            mGame.resize(1f, aspectRatio);
         }
 
 
 
         // Calculate the projection and view transformation.
-        Matrix.multiplyMM(mvpMatrix_, 0, projectionMatrix_, 0, viewMatrix_, 0);
+        Matrix.multiplyMM(mMvpMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         Log.i("GameRender", "onSurfaceChanged end");
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        currentTime_ = GameMath.getCurrentTime();
-        elapsedTime_ = currentTime_ - lastTime_;
-        lastTime_ = currentTime_;
+        mCurrentTime = GameMath.getCurrentTime();
+        mElapsedTime = mCurrentTime - mLastTime;
+        mLastTime = mCurrentTime;
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        graphics_.setElapsedTime(elapsedTime_);
-        game_.render(graphics_);
+        mGraphics.setElapsedTime(mElapsedTime);
+        mGame.render(mGraphics);
 
-        elapsedTime_ = GameMath.getCurrentTime() - lastTime_;
+        mElapsedTime = GameMath.getCurrentTime() - mLastTime;
         // Игра работает с (1/MS_PER_FRAME) FPS, для сохранности батареи, для меньшей нагрузки проца.
         // Это позволительно, потому что для игры не критично значение FPS (как, например, для шутера).
-        if (elapsedTime_ < MS_PER_FRAME_) {
+        if (mElapsedTime < MS_PER_FRAME) {
             try {
-                Thread.sleep(MS_PER_FRAME_ - elapsedTime_);
+                Thread.sleep(MS_PER_FRAME - mElapsedTime);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -166,7 +167,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
     private void initCamera() {
         // Set the camera position.
-        Matrix.setLookAtM(viewMatrix_, 0,
+        Matrix.setLookAtM(mViewMatrix, 0,
                 0f, 0f, 1f, // eye. Положение точки наблюдения в пространстве.
                 0f, 0f, 0f,  // look. Координаты куда смотреть.
                 0f, 1f, 0f   // up-vector смотрит вверх, вдоль оси Y.
@@ -174,29 +175,29 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     }
 
     private void createShader() {
-        shader_ = new ShaderProgram();
-        boolean isShaderCompiled = shader_.compile();
+        mShader = new ShaderProgram();
+        boolean isShaderCompiled = mShader.compile();
         if (!isShaderCompiled) throw new IllegalArgumentException("Error compiling shader.");
-        shader_.begin();
+        mShader.begin();
     }
 
     private void loadContent() {
         // TODO: Посмотреть нельзя как нибудь одной функцией грузить! R.drawable.<Загрузка всего>.
-        contents_.load(R.drawable.achievement_bg_noactive);
-        contents_.load(R.drawable.achievement_window_bg);
-        contents_.load(R.drawable.chasm);
-        contents_.load(R.drawable.error);
-        contents_.load(R.drawable.exit_btn);
-        contents_.load(R.drawable.menu_window);
-        contents_.load(R.drawable.numbers);
-        contents_.load(R.drawable.profit_numbers);
-        contents_.load(R.drawable.reshuffle);
-        contents_.load(R.drawable.restart_btn);
-        contents_.load(R.drawable.x_close);
-        contents_.load(R.drawable.dots_theme1);
-        contents_.load(R.drawable.anim_spec_roweater);
-        contents_.load(R.drawable.effect_roweater);
-        contents_.load(R.drawable.skills);
-        contents_.load(R.drawable.main_window_background);
+        mContents.load(R.drawable.achievement_bg_noactive);
+        mContents.load(R.drawable.achievement_window_bg);
+        mContents.load(R.drawable.chasm);
+        mContents.load(R.drawable.error);
+        mContents.load(R.drawable.exit_btn);
+        mContents.load(R.drawable.menu_window);
+        mContents.load(R.drawable.numbers);
+        mContents.load(R.drawable.profit_numbers);
+        mContents.load(R.drawable.reshuffle);
+        mContents.load(R.drawable.restart_btn);
+        mContents.load(R.drawable.x_close);
+        mContents.load(R.drawable.dots_theme1);
+        mContents.load(R.drawable.anim_spec_roweater);
+        mContents.load(R.drawable.effect_roweater);
+        mContents.load(R.drawable.skills);
+        mContents.load(R.drawable.main_window_background);
     }
 }

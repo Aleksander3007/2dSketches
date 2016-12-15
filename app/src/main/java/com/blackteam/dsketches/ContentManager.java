@@ -10,27 +10,27 @@ import com.blackteam.dsketches.gui.Texture;
  * Управление загрузкой контента (например, текстурами).
  */
 public class ContentManager {
-    private Context context_;
-    private ArrayMap<Integer, Texture> assets_ = new ArrayMap<>();
+    private Context mContext;
+    private ArrayMap<Integer, Texture> mAssets = new ArrayMap<>();
 
     public ContentManager(Context context) {
-        this.context_ = context;
+        this.mContext = context;
     }
 
     public void load(int contentName) {
         Texture texture = get(contentName);
-        texture.create(context_, contentName);
+        texture.create(mContext, contentName);
 
-        if (assets_.values().size() > 20) {
-            Log.i("ContentManager", "assets_.values().size() = " + String.valueOf(assets_.values().size()));
+        if (mAssets.values().size() > 20) {
+            Log.i("ContentManager", "mAssets.values().size() = " + String.valueOf(mAssets.values().size()));
         }
     }
 
     public synchronized Texture get(int contentName) {
-        Texture texture = assets_.get(contentName);
+        Texture texture = mAssets.get(contentName);
         if (texture == null) {
             texture = new Texture();
-            assets_.put(contentName, texture);
+            mAssets.put(contentName, texture);
             Log.i("ContentManager", "texture == null");
         }
 

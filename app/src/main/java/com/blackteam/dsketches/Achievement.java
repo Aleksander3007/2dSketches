@@ -7,52 +7,52 @@ public class Achievement implements Serializable {
     public static final int ANY_SCORE = 0;
     public static final int ANY_PROFIT = 0;
 
-    private String name_;
-    private String description_;
-    private String sketchName_ = ANY_SKETCH;
-    private int score_ = ANY_SCORE;
-    private int profit_ = ANY_PROFIT;
-    private boolean isEarned_ = false;
+    private String mName;
+    private String mDescription;
+    private String mSketchName = ANY_SKETCH;
+    private int mScore = ANY_SCORE;
+    private int mProfit = ANY_PROFIT;
+    private boolean mIsEarned = false;
 
     public void setName(String name) {
         if (name == null)
             throw new IllegalArgumentException("achievement's name is null.");
-        this.name_ = name;
+        this.mName = name;
     }
 
     public String getName() {
-        return name_;
+        return mName;
     }
 
     public void setDescription(String description) {
-        description_ = description;
+        mDescription = description;
     }
 
     public String getDescription() {
-        return description_;
+        return mDescription;
     }
 
     public void setSketchType(String sketchName) {
-        this.sketchName_ = sketchName;
+        this.mSketchName = sketchName;
     }
 
     public void setScore(int score) {
-        this.score_ = score;
+        this.mScore = score;
     }
 
     public void setProfit(int profit) {
-        this.profit_ = profit;
+        this.mProfit = profit;
     }
 
-    public void earn() { isEarned_ = true; }
+    public void earn() { mIsEarned = true; }
 
-    public boolean isEarned() { return isEarned_; }
+    public boolean isEarned() { return mIsEarned; }
 
     public boolean equals(String sketchName, int score, int profit) {
         assert sketchName != null;
-        boolean sketchIdentity = (sketchName_ == ANY_SKETCH) || (sketchName.equals(sketchName_));
-        boolean scoreIdentity = (score_ == ANY_SCORE) || (score >= this.score_);
-        boolean profitIdentity = (profit_ == ANY_PROFIT) || (profit >= this.profit_);
+        boolean sketchIdentity = (mSketchName == ANY_SKETCH) || (sketchName.equals(mSketchName));
+        boolean scoreIdentity = (mScore == ANY_SCORE) || (score >= this.mScore);
+        boolean profitIdentity = (mProfit == ANY_PROFIT) || (profit >= this.mProfit);
 
         return (sketchIdentity && scoreIdentity && profitIdentity);
     }

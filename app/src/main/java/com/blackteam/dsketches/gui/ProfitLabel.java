@@ -28,19 +28,19 @@ public class ProfitLabel extends NumberLabel {
         setValue(val);
         setPosition(calculatePosition(pos));
         isVisible_ = true;
-        for (DisplayableObject number : digits_) {
+        for (DisplayableObject number : mDigits) {
             number.setAnimation(new AnimationController(DISAPPEARING_ANIM_SET_));
         }
     }
 
     private Vector2 calculatePosition(Vector2 pos) {
-        float numberSize = digits_.size() * digitWidth_;
+        float numberSize = mDigits.size() * mDigitWidth;
         return new Vector2(pos.x - numberSize / 2f, pos.y);
     }
 
     public void render(Graphics graphics) {
         if (isVisible_) {
-            for (DisplayableObject number : digits_) {
+            for (DisplayableObject number : mDigits) {
                 if (!number.isAnimationFinished()) {
                     number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * graphics.getElapsedTime()));
                     number.draw(graphics);

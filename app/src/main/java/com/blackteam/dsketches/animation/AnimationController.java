@@ -11,28 +11,28 @@ import java.util.ArrayList;
  * alpha-каналов, текстур и т.п.
  */
 public class AnimationController {
-    private Animation animation_;
-    private ArrayList<AnimationSet> animationSets_ = new ArrayList<>();
+    private Animation mAnimation;
+    private ArrayList<AnimationSet> mAnimationSets = new ArrayList<>();
 
     public AnimationController(AnimationSet... animationSets) {
-        this.animation_ = null;
+        this.mAnimation = null;
         for (AnimationSet animationSet : animationSets) {
-            this.animationSets_.add(new AnimationSet(animationSet));
+            this.mAnimationSets.add(new AnimationSet(animationSet));
         }
     }
 
     public AnimationController(Animation animation) {
-        this.animation_ = animation;
-        this.animationSets_ = null;
+        this.mAnimation = animation;
+        this.mAnimationSets = null;
     }
 
     public void update(DisplayableObject animationObject, final float elapsedTime) {
-        for (AnimationSet animationSet : animationSets_)
+        for (AnimationSet animationSet : mAnimationSets)
             updateAnimationSet(animationObject, animationSet, elapsedTime);
 
-        if (animation_ != null) {
-            animation_.update(elapsedTime);
-            animationObject.setTexture(animation_.getKeyFrame());
+        if (mAnimation != null) {
+            mAnimation.update(elapsedTime);
+            animationObject.setTexture(mAnimation.getKeyFrame());
         }
     }
 
@@ -62,7 +62,7 @@ public class AnimationController {
     }
 
     public boolean isFinished() {
-        for (AnimationSet animationSet : animationSets_) {
+        for (AnimationSet animationSet : mAnimationSets) {
             if (!animationSet.isFinished())
                 return false;
         }

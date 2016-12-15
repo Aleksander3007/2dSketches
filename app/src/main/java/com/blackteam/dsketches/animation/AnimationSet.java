@@ -1,11 +1,7 @@
 package com.blackteam.dsketches.animation;
 
-import android.util.Log;
-
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Vector2;
-
-import java.util.Vector;
 
 /**
  * Хранение данных для анимации объекта.
@@ -20,7 +16,7 @@ public class AnimationSet {
         SCALE_CENTER,
         ALPHA
     }
-    private ValueType valueType_;
+    private ValueType mValueType;
 
     /** Режим проигрывания анимации. */
     public enum PlayMode {
@@ -28,21 +24,22 @@ public class AnimationSet {
         LOOP,
         LOOP_PINGPONG
     }
-    private PlayMode playMode_ = PlayMode.NORMAL;
+    private PlayMode mPlayMode = PlayMode.NORMAL;
 
-    private Vector2 startVal_;
-    private Vector2 endVal_;
-    private float speed_;
-    private byte speedDirectionX_;
-    private byte speedDirectionY_;
-    private float duration_;
-    private float delayedStart_;
+    private Vector2 mStartVal;
+    private Vector2 mEndVal;
+    private float mSpeed;
+    private byte mSpeedDirectionX;
+    private byte mSpeedDirectionY;
+    private float mDuration;
+    private float mDelayedStart;
 
-    private float lastVal_;
-    private float distance_;
-    private float angle_; // угол движения.
-    private boolean isForward_;
-    private boolean isFinished_;
+    private float mLastVal;
+    private float mDistance;
+    /** Угол движения. */
+    private float mAngle;
+    private boolean mIsForward;
+    private boolean mIsFinished;
 
     /**
      * Конструктор.
@@ -80,24 +77,24 @@ public class AnimationSet {
                         final PlayMode playMode,
                         final Vector2 startVal, final Vector2 endVal,
                         final float duration, final float delayedStart) {
-        this.valueType_ = valType;
-        this.playMode_ = playMode;
-        this.startVal_ = new Vector2(startVal);
-        this.endVal_ = new Vector2(endVal);
-        this.duration_ = duration;
-        this.delayedStart_ = delayedStart;
+        this.mValueType = valType;
+        this.mPlayMode = playMode;
+        this.mStartVal = new Vector2(startVal);
+        this.mEndVal = new Vector2(endVal);
+        this.mDuration = duration;
+        this.mDelayedStart = delayedStart;
 
-        Vector2 distanceVector = GameMath.sub(endVal_, startVal_);
-        distance_ = (float) Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
-        angle_ = (float) Math.atan2(distanceVector.y, distanceVector.x);
+        Vector2 distanceVector = GameMath.sub(mEndVal, mStartVal);
+        mDistance = (float) Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
+        mAngle = (float) Math.atan2(distanceVector.y, distanceVector.x);
 
-        this.speed_ = distance_ / duration;
-        speedDirectionX_ = calculateSpeedDirection(startVal_.x, endVal_.x);
-        speedDirectionY_ = calculateSpeedDirection(startVal_.y, endVal_.y);
+        this.mSpeed = mDistance / duration;
+        mSpeedDirectionX = calculateSpeedDirection(mStartVal.x, mEndVal.x);
+        mSpeedDirectionY = calculateSpeedDirection(mStartVal.y, mEndVal.y);
 
-        this.isForward_ = true;
-        this.lastVal_ = 0.0f;
-        isFinished_ = false;
+        this.mIsForward = true;
+        this.mLastVal = 0.0f;
+        mIsFinished = false;
     }
 
     public AnimationSet(AnimationSet animationSet) {
@@ -107,65 +104,65 @@ public class AnimationSet {
     }
 
     public PlayMode getPlayMode() {
-        return playMode_;
+        return mPlayMode;
     }
 
-    public Vector2 getStartVal() { return startVal_; }
+    public Vector2 getStartVal() { return mStartVal; }
 
-    public Vector2 getEndVal() { return endVal_; }
+    public Vector2 getEndVal() { return mEndVal; }
 
     public float getDuration() {
-        return duration_;
+        return mDuration;
     }
 
     public float getDelayedStart() {
-        return delayedStart_;
+        return mDelayedStart;
     }
 
     public float getValue() {
         // Если задавалась одна величина (не вектор), то она записалась в x.
-        return (startVal_.x + speedDirectionX_ * lastVal_);
+        return (mStartVal.x + mSpeedDirectionX * mLastVal);
     }
 
     public Vector2 getValues() {
-        Vector2 absDist = new Vector2(speedDirectionX_ * lastVal_ * (float)Math.cos(angle_),
-                speedDirectionY_ * lastVal_ * (float)Math.sin(angle_)
+        Vector2 absDist = new Vector2(mSpeedDirectionX * mLastVal * (float)Math.cos(mAngle),
+                mSpeedDirectionY * mLastVal * (float)Math.sin(mAngle)
         );
 
-        return GameMath.add(startVal_, absDist);
+        return GameMath.add(mStartVal, absDist);
     }
 
     public AnimationSet.ValueType getValueType() {
-        return valueType_;
+        return mValueType;
     }
 
     public void update(final float elapsedTime) {
-        float value = lastVal_ + speed_ * elapsedTime;
+        float value = mLastVal + mSpeed * elapsedTime;
 
-        boolean overflow = (isForward_ && (value >= distance_)) ||
-                (!isForward_ && (value <= 0.0f));
+        boolean overflow = (mIsForward && (value >= mDistance)) ||
+                (!mIsForward && (value <= 0.0f));
 
         if (overflow) {
             switch (getPlayMode()) {
                 case NORMAL:
-                    value = distance_;
-                    isFinished_ = true;
+                    value = mDistance;
+                    mIsFinished = true;
                     break;
                 case LOOP:
                     value = 0.0f;
                     break;
                 case LOOP_PINGPONG:
-                    speed_ = -speed_;
-                    isForward_ = !isForward_;
+                    mSpeed = -mSpeed;
+                    mIsForward = !mIsForward;
                     break;
             }
         }
 
-        lastVal_ = value;
+        mLastVal = value;
     }
 
     public boolean isFinished() {
-        return isFinished_;
+        return mIsFinished;
     }
 
     private byte calculateSpeedDirection(final float startVal, final float endVal) {

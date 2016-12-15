@@ -7,25 +7,25 @@ import com.blackteam.dsketches.utils.Vector2;
  * Регион на текстуре.
  */
 public class TextureRegion {
-    private Texture texture_;
-    private Vector2 pos_;
-    private Size2 size_;
+    private Texture mTexture;
+    private Vector2 mPos;
+    private Size2 mSize;
 
     public TextureRegion(Texture texture, Vector2 pos, Size2 size) {
-        this.texture_ = texture;
-        this.pos_ = pos;
-        this.size_ = size;
+        this.mTexture = texture;
+        this.mPos = pos;
+        this.mSize = size;
     }
 
     public Texture getTexture() {
-        return texture_;
+        return mTexture;
     }
 
     public Vector2 getPos() {
-        return pos_;
+        return mPos;
     }
 
     public Size2 getSize() {
-        return size_;
+        return mSize;
     }
 }

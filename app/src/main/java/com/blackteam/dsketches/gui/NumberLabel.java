@@ -9,22 +9,26 @@ import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Класс для отображения чисел средствами OpenGL.
+ */
 public class NumberLabel {
     /** Ширина текстуры. */
     public static final int TEX_WIDTH = 64;
     /** Высота текстуры. */
     public static final int TEX_HEIGHT = 128;
 
-    protected Texture digitsTexture_;
-    protected Vector2 pos_ = new Vector2(0, 0);
-    protected float digitHeight_;
-    protected float digitWidth_;
+    protected Texture mDigitsTexture;
+    protected Vector2 mPos = new Vector2(0, 0);
+    protected float mDigitHeight;
+    protected float mDigitWidth;
 
-    protected int value_;
-    protected CopyOnWriteArrayList<DisplayableObject> digits_ = new CopyOnWriteArrayList<>();
+    /** Величина которая отображается. */
+    protected int mValue;
+    protected CopyOnWriteArrayList<DisplayableObject> mDigits = new CopyOnWriteArrayList<>();
 
     public NumberLabel(final Texture texture) {
-        digitsTexture_ = texture;
+        mDigitsTexture = texture;
     }
 
     public NumberLabel(final Context context) {
@@ -32,64 +36,64 @@ public class NumberLabel {
     }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
-        digitWidth_ = rectSize.height;
-        digitHeight_ = rectSize.height;
-        pos_ = new Vector2(0f, 0f);
+        mDigitWidth = rectSize.height;
+        mDigitHeight = rectSize.height;
+        mPos = new Vector2(0f, 0f);
 
-        for (DisplayableObject digit : digits_) {
-            digit.setSize(digitWidth_, digitHeight_);
+        for (DisplayableObject digit : mDigits) {
+            digit.setSize(mDigitWidth, mDigitHeight);
         }
 
         setPosition(pos);
     }
 
     public void setValue(int val) {
-        value_ = val;
+        mValue = val;
 
-        digits_.clear();
+        mDigits.clear();
 
-        if (value_ == 0) {
+        if (mValue == 0) {
             DisplayableObject digit = new DisplayableObject(
                     new Vector2(0f, 0f),
-                    digitsTexture_, 0, 0, TEX_WIDTH, TEX_HEIGHT);
-            digit.setSize(digitWidth_, digitHeight_);
-            digits_.add(digit);
+                    mDigitsTexture, 0, 0, TEX_WIDTH, TEX_HEIGHT);
+            digit.setSize(mDigitWidth, mDigitHeight);
+            mDigits.add(digit);
         }
 
         // Выделяем цифры из числа (и записываем в массив).
-        int rest = value_;
+        int rest = mValue;
         while (rest >= 1) {
             int number = rest % 10;
             rest = rest / 10;
 
             DisplayableObject digit = new DisplayableObject(
                     new Vector2(0f, 0f), // Правильная позиция устанавливается не здесь.
-                    digitsTexture_, number * TEX_WIDTH, 0, TEX_WIDTH, TEX_HEIGHT);
-            digit.setSize(digitWidth_, digitHeight_);
-            digits_.add(digit);
+                    mDigitsTexture, number * TEX_WIDTH, 0, TEX_WIDTH, TEX_HEIGHT);
+            digit.setSize(mDigitWidth, mDigitHeight);
+            mDigits.add(digit);
         }
 
-        setPosition(pos_);
+        setPosition(mPos);
     }
 
     public void setPosition(final Vector2 pos) {
-        pos_ = pos;
+        mPos = pos;
 
         // Устанавливаем позицию.
-        for (int iDigit = 0; iDigit < digits_.size(); iDigit++) {
-            digits_.get(digits_.size() - iDigit - 1).setPosition(
-                    pos_.x + iDigit * digitWidth_,
-                    pos_.y
+        for (int iDigit = 0; iDigit < mDigits.size(); iDigit++) {
+            mDigits.get(mDigits.size() - iDigit - 1).setPosition(
+                    mPos.x + iDigit * mDigitWidth,
+                    mPos.y
             );
         }
     }
 
     public void loadContent(Context context) {
-        digitsTexture_ = new Texture(context, R.drawable.profit_numbers);
+        mDigitsTexture = new Texture(context, R.drawable.profit_numbers);
     }
 
     public void render(Graphics graphics) {
-        for (DisplayableObject number : digits_) {
+        for (DisplayableObject number : mDigits) {
             number.draw(graphics);
         }
     }

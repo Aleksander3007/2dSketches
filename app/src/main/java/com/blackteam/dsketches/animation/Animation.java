@@ -15,13 +15,13 @@ public class Animation {
         NORMAL,
         LOOP
     }
-    private PlayMode playMode = PlayMode.NORMAL;
+    private PlayMode mPlayMode = PlayMode.NORMAL;
 
-    private ArrayList<TextureRegion> keyFrames_;
-    private float frameDuration_;
+    private ArrayList<TextureRegion> mKeyFrames;
+    private float mFrameDuration;
     /** Текущее время анимации. */
-    public float time_;
-    private int lastFrameNo_;
+    private float mTime;
+    private int mLastFrameNo;
 
     /**
      * Создание анимации.
@@ -31,28 +31,28 @@ public class Animation {
      */
     public Animation(final float frameDuration, List<TextureRegion> keyFrames, final PlayMode playMode) {
         assert (keyFrames != null);
-        this.frameDuration_ = frameDuration;
-        keyFrames_ = new ArrayList<>(keyFrames);
-        this.playMode = playMode;
-        lastFrameNo_ = 0;
+        this.mFrameDuration = frameDuration;
+        this.mKeyFrames = new ArrayList<>(keyFrames);
+        this.mPlayMode = playMode;
+        this.mLastFrameNo = 0;
     }
 
     public void update(final float elapsedTime) {
-        time_ += elapsedTime;
-        int frameNo = (int)(time_ / frameDuration_);
-        switch (playMode) {
+        mTime += elapsedTime;
+        int frameNo = (int)(mTime / mFrameDuration);
+        switch (mPlayMode) {
             case NORMAL:
-                frameNo = Math.min(keyFrames_.size() - 1, frameNo);
+                frameNo = Math.min(mKeyFrames.size() - 1, frameNo);
                 break;
             case LOOP:
-                frameNo = frameNo % keyFrames_.size();
+                frameNo = frameNo % mKeyFrames.size();
                 break;
         }
 
-        lastFrameNo_ = frameNo;
+        mLastFrameNo = frameNo;
     }
 
     public TextureRegion getKeyFrame() {
-        return keyFrames_.get(lastFrameNo_);
+        return mKeyFrames.get(mLastFrameNo);
     }
 }

@@ -17,7 +17,7 @@ import com.blackteam.dsketches.R;
  */
 public class AchievementToast extends Toast {
 
-    private static String achivementName_ = "";
+    private static String sAchivementName = "";
 
     /**
      * Construct an empty Toast object.  You must call {@link #setView} before you
@@ -34,7 +34,7 @@ public class AchievementToast extends Toast {
 
         View achievementView = layoutInflater.inflate(R.layout.ach_unlocked, null);
         TextView achievementName = (TextView) achievementView.findViewById(R.id.ach_name);
-        achievementName.setText(achivementName_);
+        achievementName.setText(sAchivementName);
         ImageView achievementImage = (ImageView) achievementView.findViewById(R.id.ach_image);
         achievementImage.setImageResource(R.drawable.star);
         setView(achievementView);
@@ -46,7 +46,7 @@ public class AchievementToast extends Toast {
     * текстовых символов или строки.
     */
     public static AchievementToast makeText(Context context, String achievementName) {
-        achivementName_ = achievementName;
+        sAchivementName = achievementName;
         AchievementToast result = new AchievementToast(context);
         result.setDuration(LENGTH_SHORT);
         result.setGravity(Gravity.TOP, 0, 0);

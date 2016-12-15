@@ -10,7 +10,7 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 public class StaticText extends DisplayableObject {
-    private static final int TEXT_COLOR_ = Color.BLACK;
+    private static final int TEXT_COLOR = Color.BLACK;
 
     public StaticText(String text, Vector2 pos, Size2 size) {
         if (text == null) {
@@ -21,7 +21,7 @@ public class StaticText extends DisplayableObject {
         Paint textPaint = new Paint();
         textPaint.setTextSize(textSize);
         textPaint.setAntiAlias(true);
-        textPaint.setColor(TEXT_COLOR_);
+        textPaint.setColor(TEXT_COLOR);
         Rect bounds = new Rect();
         textPaint.getTextBounds(text, 0, text.length(), bounds);
         int width = bounds.width() + 26;
@@ -34,8 +34,8 @@ public class StaticText extends DisplayableObject {
         canvas.drawText(text, 0, bitmap.getHeight(), textPaint);
 
         Texture texture = new Texture(bitmap);
-        sprite_ = new Sprite(texture);
-        sprite_.setPosition(pos);
-        sprite_.setScale(size.width, size.height);
+        mSprite = new Sprite(texture);
+        mSprite.setPosition(pos);
+        mSprite.setScale(size.width, size.height);
     }
 }

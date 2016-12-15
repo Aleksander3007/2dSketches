@@ -4,7 +4,6 @@ import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
-import com.blackteam.dsketches.gui.ShaderProgram;
 import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
@@ -17,7 +16,7 @@ public class GameDot {
         TYPE4,
         UNIVERSAL
     }
-    private Types type_;
+    private Types mType;
 
     public enum SpecTypes {
         NONE, // Без эффекта.
@@ -27,10 +26,10 @@ public class GameDot {
         COLUMN_EATER, // Разрушаются соседи по столбцу.
         AROUND_EATER // Разрушаются вокруг все соседи.
     }
-    private SpecTypes specType_;
+    private SpecTypes mSpecType;
 
-    private boolean isMoving = false;
-    private Vector2 finishPos_;
+    private boolean mIsMoving = false;
+    private Vector2 mFinishPos;
 
     /** Количество очков, которое приносит игровая точка. */
     public static final int COST = 10;
@@ -74,8 +73,8 @@ public class GameDot {
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
 
-        this.type_ = dotType;
-        this.specType_ = dotSpecType;
+        this.mType = dotType;
+        this.mSpecType = dotSpecType;
         this.rowNo_ = rowNo;
         this.colNo_ = colNo;
 
@@ -88,7 +87,7 @@ public class GameDot {
 
         mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
 
-        if (specType_ != SpecTypes.NONE) {
+        if (mSpecType != SpecTypes.NONE) {
             TextureRegion specTextureRegion = new TextureRegion(
                     contents.get(R.drawable.dots_theme1),
                     getSpecTexturePosition(dotSpecType),
@@ -132,15 +131,15 @@ public class GameDot {
     }
 
     public GameDot.Types getType() {
-        return this.type_;
+        return this.mType;
     }
 
     public void setType(GameDot.Types dotType) {
-        this.type_ = dotType;
+        this.mType = dotType;
     }
 
     public GameDot.SpecTypes getSpecType() {
-        return this.specType_;
+        return this.mSpecType;
     }
 
     public static Vector2 getTexturePosition(GameDot.Types type) {
@@ -200,26 +199,26 @@ public class GameDot {
 
     public void setSize(float size) {
         mainObject_.setSize(size, size);
-        if (specType_ != SpecTypes.NONE)
+        if (mSpecType != SpecTypes.NONE)
             specObject_.setSize(size, size);
     }
 
     public void setSizeCenter(float size) {
         mainObject_.setSizeCenter(size, size);
-        if (specType_ != SpecTypes.NONE) {
+        if (mSpecType != SpecTypes.NONE) {
             specObject_.setSizeCenter(size, size);
         }
     }
 
     public void setPosition(Vector2 dotPos) {
         mainObject_.setPosition(dotPos);
-        if (specType_ != SpecTypes.NONE)
+        if (mSpecType != SpecTypes.NONE)
             specObject_.setPosition(dotPos);
     }
 
     public void setAlpha(float alphaFactor) {
         mainObject_.setAlpha(alphaFactor);
-        if (specType_ != SpecTypes.NONE)
+        if (mSpecType != SpecTypes.NONE)
             specObject_.setAlpha(alphaFactor);
     }
 
@@ -232,11 +231,11 @@ public class GameDot {
     }
 
     public void draw(Graphics graphics) {
-        if (isMoving)
+        if (mIsMoving)
             moving(graphics.getElapsedTime());
 
         mainObject_.draw(graphics);
-        if (specType_ != SpecTypes.NONE) {
+        if (mSpecType != SpecTypes.NONE) {
             specObject_.draw(graphics);
         }
     }
@@ -246,8 +245,8 @@ public class GameDot {
     }
 
     public boolean isIdenticalType(GameDot.Types dotType) {
-        if ((type_ == dotType) ||
-                (type_ == GameDot.Types.UNIVERSAL) || (dotType == GameDot.Types.UNIVERSAL)) {
+        if ((mType == dotType) ||
+                (mType == GameDot.Types.UNIVERSAL) || (dotType == GameDot.Types.UNIVERSAL)) {
             return true;
         }
         else {
@@ -256,60 +255,60 @@ public class GameDot {
     }
 
     public void moveTo(Vector2 finishPos) {
-        finishPos_ = finishPos;
+        mFinishPos = finishPos;
 
         // Определяем скорость направленную.
-        if (finishPos_.x - getPosition().x > 0)
+        if (mFinishPos.x - getPosition().x > 0)
             translateSpeed_.x = ABS_TRANSLATE_SPEED_;
-        else if (finishPos_.x - getPosition().x < 0)
+        else if (mFinishPos.x - getPosition().x < 0)
             translateSpeed_.x = -ABS_TRANSLATE_SPEED_;
         else
             translateSpeed_.x = 0.0f;
 
-        if (finishPos_.y - getPosition().y > 0)
+        if (mFinishPos.y - getPosition().y > 0)
             translateSpeed_.y = ABS_TRANSLATE_SPEED_;
-        else if (finishPos_.y - getPosition().y < 0)
+        else if (mFinishPos.y - getPosition().y < 0)
             translateSpeed_.y = -ABS_TRANSLATE_SPEED_;
         else
             translateSpeed_.y = 0.0f;
 
         //if (BuildConfig.DEBUG) {
         //    Log.i("GameDot", String.format("(%d, %d): pos = {%f, %f}; finish = {%f, %f}; speed = {%f, %f}.",
-        //            rowNo_, colNo_, getPosition().x, getPosition().y, finishPos_.x, finishPos_.y, translateSpeed_.x, translateSpeed_.y));
+        //            rowNo_, colNo_, getPosition().x, getPosition().y, mFinishPos.x, mFinishPos.y, translateSpeed_.x, translateSpeed_.y));
         //}
 
-        isMoving = true;
+        mIsMoving = true;
     }
 
     private void moving(final float elapsedTime) {
         Vector2 distance = new Vector2(0, 0);
-        boolean isMovedX = ((translateSpeed_.x > 0) && (getPosition().x < finishPos_.x)) ||
-                ((translateSpeed_.x < 0) && (getPosition().x > finishPos_.x));
+        boolean isMovedX = ((translateSpeed_.x > 0) && (getPosition().x < mFinishPos.x)) ||
+                ((translateSpeed_.x < 0) && (getPosition().x > mFinishPos.x));
         if (isMovedX) {
             distance.x = translateSpeed_.x * elapsedTime;
         }
         else {
-            distance.x = finishPos_.x - getPosition().x;
+            distance.x = mFinishPos.x - getPosition().x;
         }
 
-        boolean isMovedY = ((translateSpeed_.y > 0) && (getPosition().y < finishPos_.y)) ||
-                ((translateSpeed_.y < 0) && (getPosition().y > finishPos_.y));
+        boolean isMovedY = ((translateSpeed_.y > 0) && (getPosition().y < mFinishPos.y)) ||
+                ((translateSpeed_.y < 0) && (getPosition().y > mFinishPos.y));
         if (isMovedY) {
             distance.y = translateSpeed_.y * elapsedTime;
         }
         else {
-            distance.y = finishPos_.y - getPosition().y;
+            distance.y = mFinishPos.y - getPosition().y;
         }
 
         //if (BuildConfig.DEBUG) {
         //    Log.i("GameDot", String.format("(%d, %d): pos = {%f, %f} translates to (%f, %f); distance = (%f, %f); translateSpeed = (%f, %f); elapsedTime = %f",
-        //            rowNo_, colNo_, getPosition().x, getPosition().y, finishPos_.x, finishPos_.y, distance.x, distance.y, translateSpeed_.x, translateSpeed_.y, elapsedTime));
+        //            rowNo_, colNo_, getPosition().x, getPosition().y, mFinishPos.x, mFinishPos.y, distance.x, distance.y, translateSpeed_.x, translateSpeed_.y, elapsedTime));
         //}
 
         mainObject_.addPosition(distance);
-        if (specType_ != SpecTypes.NONE)
+        if (mSpecType != SpecTypes.NONE)
             specObject_.addPosition(distance);
 
-        isMoving = isMovedX || isMovedY;
+        mIsMoving = isMovedX || isMovedY;
     }
 }

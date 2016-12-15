@@ -2,12 +2,8 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
-import com.blackteam.dsketches.gui.DisplayableObject;
-import com.blackteam.dsketches.gui.GameImage;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
-import com.blackteam.dsketches.gui.StaticText;
-import com.blackteam.dsketches.gui.NumberLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -16,47 +12,47 @@ import java.util.Observer;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
-    private World world_;
-    private Player player_;
+    private World mWorld;
+    private Player mPlayer;
 
-    private ProfitLabel profitLabel_;
+    private ProfitLabel mProfitLabel;
 
-    private float width_;
-    private float height_;
+    private float mWidth;
+    private float mHeight;
 
     public Game(final Player player, SketchesManager sketchesManager, final ContentManager contents) {
-        this.player_ = player;
-        world_ = new World(contents, sketchesManager);
-        profitLabel_ = new ProfitLabel(contents.get(R.drawable.numbers));
+        this.mPlayer = player;
+        mWorld = new World(contents, sketchesManager);
+        mProfitLabel = new ProfitLabel(contents.get(R.drawable.numbers));
     }
 
     public void resize(final float screenWidth, final float screenHeight) {
-        this.width_ = screenWidth;
-        this.height_ = screenHeight;
+        this.mWidth = screenWidth;
+        this.mHeight = screenHeight;
         setSize();
     }
 
     public void render(Graphics graphics) {
-        world_.draw(graphics);
-        profitLabel_.render(graphics);
+        mWorld.draw(graphics);
+        mProfitLabel.render(graphics);
     }
 
     public boolean hit(Vector2 worldCoords) {
-        return world_.hit(worldCoords);
+        return mWorld.hit(worldCoords);
     }
 
     public void touchUp(Vector2 worldCoords) {
         Log.i("Game", "touchUpHandle begin");
-        world_.update();
-        int profit = world_.getProfitByDots();
+        mWorld.update();
+        int profit = mWorld.getProfitByDots();
         if (profit > 0) {
-            profitLabel_.setProfit(profit, new Vector2(worldCoords));
-            player_.addScore(profit);
-            world_.deleteSelectedDots();
-            world_.removeSelection();
+            mProfitLabel.setProfit(profit, new Vector2(worldCoords));
+            mPlayer.addScore(profit);
+            mWorld.deleteSelectedDots();
+            mWorld.removeSelection();
         }
         else {
-            world_.removeSelection();
+            mWorld.removeSelection();
         }
     }
 
@@ -68,19 +64,19 @@ public class Game {
      * Создание нового уровня.
      */
     public void createLevel() {
-        world_.createLevel();
+        mWorld.createLevel();
     }
 
     public void loadLevel() {
         // Если есть данные о расположении игровых точек.
-        if (player_.getGameDots() != null)
-            world_.createLevel(player_.getGameDots());
+        if (mPlayer.getGameDots() != null)
+            mWorld.createLevel(mPlayer.getGameDots());
         else
             createLevel();
     }
 
     public void addObserver(Observer observer) {
-        world_.addObserver(observer);
+        mWorld.addObserver(observer);
     }
 
     /**
@@ -99,7 +95,7 @@ public class Game {
                 applySkillChasm();
                 break;
         }
-        player_.getSkill(skillType).use();
+        mPlayer.getSkill(skillType).use();
     }
 
     /**
@@ -109,11 +105,11 @@ public class Game {
         CopyOnWriteArrayList<GameDot> dots = new CopyOnWriteArrayList<>();
         // Уничтожаем последние два ряда.
         for (int iRow = 0; iRow < 2; iRow++) {
-            for (int iCol = 0; iCol < world_.getNumCols(); iCol++) {
-                dots.add(world_.getDot(iRow, iCol));
+            for (int iCol = 0; iCol < mWorld.getNumCols(); iCol++) {
+                dots.add(mWorld.getDot(iRow, iCol));
             }
         }
-        world_.deleteDots(dots);
+        mWorld.deleteDots(dots);
     }
 
     /**
@@ -125,7 +121,7 @@ public class Game {
         // У трёх разные случайных dots.
         int iFriend = 0;
         while (iFriend < 3) {
-            int randomDotNo = (int) (Math.random() * (world_.getNumRows() * world_.getNumCols() - 1));
+            int randomDotNo = (int) (Math.random() * (mWorld.getNumRows() * mWorld.getNumCols() - 1));
             boolean isFriend = false;
             // Должны быть три разных.
             for (int existRandomDotNo : randomDotNumbers) {
@@ -136,12 +132,12 @@ public class Game {
             }
 
             if (!isFriend) {
-                int randomRow = randomDotNo / world_.getNumCols();
-                int randomCol = randomDotNo % world_.getNumCols();
+                int randomRow = randomDotNo / mWorld.getNumCols();
+                int randomCol = randomDotNo % mWorld.getNumCols();
                 // Должны быть не универсальными.
-                if (world_.getDot(randomRow, randomCol).getType() != GameDot.Types.UNIVERSAL) {
-                    world_.createDot(GameDot.Types.UNIVERSAL,
-                            world_.getDot(randomRow, randomCol).getSpecType(),
+                if (mWorld.getDot(randomRow, randomCol).getType() != GameDot.Types.UNIVERSAL) {
+                    mWorld.createDot(GameDot.Types.UNIVERSAL,
+                            mWorld.getDot(randomRow, randomCol).getSpecType(),
                             randomRow, randomCol
                     );
                     iFriend++;
@@ -155,20 +151,20 @@ public class Game {
      */
     private void applySkillReshuffle() {
         Log.i("World", "RESHUFFLE skill.");
-        for (int iRow = 0; iRow < world_.getNumRows(); iRow++) {
-            for (int iCol = 0; iCol < world_.getNumCols(); iCol++) {
-                int randomRow = (int) (Math.random() * world_.getNumRows());
-                int randomCol = (int) (Math.random() * world_.getNumCols());
+        for (int iRow = 0; iRow < mWorld.getNumRows(); iRow++) {
+            for (int iCol = 0; iCol < mWorld.getNumCols(); iCol++) {
+                int randomRow = (int) (Math.random() * mWorld.getNumRows());
+                int randomCol = (int) (Math.random() * mWorld.getNumCols());
 
-                GameDot.Types tempOrbType = world_.getDot(iRow, iCol).getType();
-                GameDot.SpecTypes tempOrbSpecType = world_.getDot(iRow, iCol).getSpecType();
+                GameDot.Types tempOrbType = mWorld.getDot(iRow, iCol).getType();
+                GameDot.SpecTypes tempOrbSpecType = mWorld.getDot(iRow, iCol).getSpecType();
 
-                world_.createDot(world_.getDot(randomRow, randomCol).getType(),
-                        world_.getDot(randomRow, randomCol).getSpecType(),
+                mWorld.createDot(mWorld.getDot(randomRow, randomCol).getType(),
+                        mWorld.getDot(randomRow, randomCol).getSpecType(),
                         iRow, iCol
                 );
 
-                world_.createDot(tempOrbType,
+                mWorld.createDot(tempOrbType,
                         tempOrbSpecType,
                         randomRow, randomCol
                 );
@@ -177,14 +173,14 @@ public class Game {
     }
 
     private void setSize() {
-        Vector2 worldOffset = new Vector2(0f, this.height_ / 25f);
+        Vector2 worldOffset = new Vector2(0f, this.mHeight / 25f);
         Size2 worldSize = new Size2(
-                width_ - worldOffset.x,
-                height_ - 2 * worldOffset.y
+                mWidth - worldOffset.x,
+                mHeight - 2 * worldOffset.y
         );
-        world_.init(worldOffset, worldSize);
+        mWorld.init(worldOffset, worldSize);
 
-        profitLabel_.init(new Vector2(0, 0),
-                new Size2(this.height_ / 10f, this.height_ / 10f));
+        mProfitLabel.init(new Vector2(0, 0),
+                new Size2(this.mHeight / 10f, this.mHeight / 10f));
     }
 }

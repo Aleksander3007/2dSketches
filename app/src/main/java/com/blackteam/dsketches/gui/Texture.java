@@ -12,10 +12,10 @@ import android.util.Log;
  */
 public class Texture {
 
-    private int textureId_;
+    private int mTextureId;
 
-    private int width_;
-    private int height_;
+    private int mWidth;
+    private int mHeight;
 
     public Texture() {
         // Пустая текстура.
@@ -36,12 +36,12 @@ public class Texture {
     }
 
     public int getId() {
-        return textureId_;
+        return mTextureId;
     }
 
-    public int getWidth() { return width_; }
+    public int getWidth() { return mWidth; }
 
-    public int getHeight() { return height_; }
+    public int getHeight() { return mHeight; }
 
     /**
      * Загрузка текстуры.
@@ -68,8 +68,8 @@ public class Texture {
             return false;
         }
 
-        width_ = bitmap.getWidth();
-        height_ = bitmap.getHeight();
+        mWidth = bitmap.getWidth();
+        mHeight = bitmap.getHeight();
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         // Привязка текстуры.
@@ -81,9 +81,9 @@ public class Texture {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         bitmap.recycle();
 
-        textureId_ = textureIds[0];
+        mTextureId = textureIds[0];
 
-        Log.i("Texture", "textureId = " + String.valueOf(textureId_));
+        Log.i("Texture", "textureId = " + String.valueOf(mTextureId));
 
         return true;
     }
