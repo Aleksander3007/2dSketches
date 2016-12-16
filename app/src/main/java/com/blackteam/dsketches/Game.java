@@ -8,7 +8,9 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Observer;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Game {
@@ -116,22 +118,24 @@ public class Game {
      * Использовать Skill.Type.FRIENDS.
      */
     private void applySkillFriends() {
-        Log.i("World", "FRIENDS skill.");
-        ArrayList<Integer> randomDotNumbers = new ArrayList<>();
-        // У трёх разные случайных dots.
+        Log.i("Game", "FRIENDS skill.");
+
+        // У 3-x разные случайных dots.
+        Set<Integer> randomDotNumbers = new HashSet<>();
         int iFriend = 0;
         while (iFriend < 3) {
             int randomDotNo = (int) (Math.random() * (mWorld.getNumRows() * mWorld.getNumCols() - 1));
-            boolean isFriend = false;
-            // Должны быть три разных.
-            for (int existRandomDotNo : randomDotNumbers) {
-                if (existRandomDotNo == randomDotNo) {
-                    isFriend = true;
-                    break;
-                }
-            }
 
-            if (!isFriend) {
+            // Кандидатом на друга становится только тот кто удовлетврояет след. условиям:
+            // - еще не был выбран (в рамках текущего использования skill).
+            // - не был исключен далее по алгоритму (в рамках текущего использования skill).
+            boolean isCandidate;
+            if (randomDotNumbers.add(randomDotNo))
+                isCandidate = true;
+            else
+                isCandidate = false;
+
+            if (!isCandidate) {
                 int randomRow = randomDotNo / mWorld.getNumCols();
                 int randomCol = randomDotNo % mWorld.getNumCols();
                 // Должны быть не универсальными.
@@ -144,6 +148,8 @@ public class Game {
                 }
             }
         }
+
+        Log.i("Game", String.format("Friends: {%s}", randomDotNumbers.toString()));
     }
 
     /**
