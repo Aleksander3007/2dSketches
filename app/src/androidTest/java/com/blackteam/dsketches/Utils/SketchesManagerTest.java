@@ -57,7 +57,7 @@ public class SketchesManagerTest {
         // Проверка, что sketch НЕ найден.
         gameDots.add(new GameDot(orbType, orbSpecType, orbPos, 3, 0, fakeContents_));
         sketch = sketchesManager_.findSketch(gameDots);
-        org.junit.Assert.assertEquals(SketchesManager.SKETCH_NULL_.getName(), sketch.getName());
+        org.junit.Assert.assertEquals(SketchesManager.SKETCH_NULL.getName(), sketch.getName());
 
         gameDots.clear();
     }
