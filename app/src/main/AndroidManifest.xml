@@ -36,6 +36,7 @@
             android:theme="@style/Theme.Transparent"></activity>
         <activity android:name=".AchievementsActivity"></activity>
         <activity android:name=".SketchesActivity"/>
+        <activity android:name=".ErrorActivity"/>
     </application>
 
 </manifest>

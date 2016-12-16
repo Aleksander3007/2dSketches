@@ -1,27 +1,40 @@
 package com.blackteam.dsketches.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.util.Log;
+
+import com.blackteam.dsketches.ErrorActivity;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+    private static final String LINE_SEPARATOR = "\n";
+
+    private final Context mContext;
+    private Thread.UncaughtExceptionHandler mOldHandler;
+
+    public ExceptionHandler(Context context) {
+        mContext = context;
+        // сохраним ранее установленный обработчик
+        mOldHandler = Thread.getDefaultUncaughtExceptionHandler();
+    }
+
     @Override
-    public void uncaughtException(Thread thread, Throwable ex) {
-        ex.printStackTrace();
-    }
-
-    /*
-    private final Activity myContext;
-    private final String LINE_SEPARATOR = "\n";
-
-    public ExceptionHandler(Activity context) {
-        myContext = context;
-    }
-
     public void uncaughtException(Thread thread, Throwable exception) {
+
         StringWriter stackTrace = new StringWriter();
         exception.printStackTrace(new PrintWriter(stackTrace));
         StringBuilder errorReport = new StringBuilder();
-        errorReport.append("************ CAUSE OF ERROR ************\n\n");
+
+        errorReport.append("CAUSE OF ERROR:\n\n");
         errorReport.append(stackTrace.toString());
 
-        errorReport.append("\n************ DEVICE INFORMATION ***********\n");
+        errorReport.append("\nDEVICE INFORMATION:\n");
         errorReport.append("Brand: ");
         errorReport.append(Build.BRAND);
         errorReport.append(LINE_SEPARATOR);
@@ -37,9 +50,10 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         errorReport.append("Product: ");
         errorReport.append(Build.PRODUCT);
         errorReport.append(LINE_SEPARATOR);
-        errorReport.append("\n************ FIRMWARE ************\n");
+
+        errorReport.append("\nFIRMWARE:\n");
         errorReport.append("SDK: ");
-        errorReport.append(Build.VERSION.SDK);
+        errorReport.append(Build.VERSION.SDK_INT);
         errorReport.append(LINE_SEPARATOR);
         errorReport.append("Release: ");
         errorReport.append(Build.VERSION.RELEASE);
@@ -48,12 +62,14 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         errorReport.append(Build.VERSION.INCREMENTAL);
         errorReport.append(LINE_SEPARATOR);
 
-        Intent intent = new Intent(myContext, AnotherActivity.class);
-        intent.putExtra("error", errorReport.toString());
-        myContext.startActivity(intent);
+        Intent intent = new Intent(mContext, ErrorActivity.class);
+        intent.putExtra(ErrorActivity.ERROR_DATA, errorReport.toString());
+        mContext.startActivity(intent);
 
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(10);
+        Log.e("ExceptionHandler", errorReport.toString());
+
+        if(mOldHandler != null) // если есть ранее установленный...
+            mOldHandler.uncaughtException(thread, exception); // ...вызовем его
     }
-    */
+
 }

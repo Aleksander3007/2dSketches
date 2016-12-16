@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         VERSION = getApplicationContext().getResources().getString(R.string.version_str);
 
@@ -59,11 +59,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             mAchievementsManager = new AchievementsManager(mPlayer, getApplicationContext());
             mSketchesManager = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            Log.e("XmlPullParserException", e.getMessage());
+            printException(e);
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("IOException", e.getMessage());
+            printException(e);
         }
 
         mGame = new Game(mPlayer, mSketchesManager, mContents);
@@ -104,6 +102,14 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         );
 
         setCustomFonts();
+    }
+
+    private void printException(Exception e) {
+        e.printStackTrace();
+        Log.e("XmlPullParserException", e.getMessage());
+        Intent intent = new Intent(getBaseContext(), ErrorActivity.class);
+        intent.putExtra(ErrorActivity.ERROR_DATA, e.getMessage());
+        startActivity(intent);
     }
 
     private void setCustomFonts() {
