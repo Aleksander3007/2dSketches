@@ -49,8 +49,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
-        VERSION = getApplicationContext().getResources().getString(R.string.version_str);
-
         this.mContents = new ContentManager(getApplicationContext());
 
         try {
