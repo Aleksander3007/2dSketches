@@ -123,17 +123,23 @@ public class Player {
         xmlSerializer.endTag(null, "score");
 
         xmlSerializer.startTag(null, "gameDots");
-        xmlSerializer.attribute(null, "nRows", String.valueOf(gameDots_.length));
-        xmlSerializer.attribute(null, "nColumns", String.valueOf(String.valueOf(gameDots_[0].length)));
-        for (int iRow = 0; iRow < gameDots_.length; iRow++) {
-            for (int iCol = 0; iCol < gameDots_[iRow].length; iCol++) {
-                xmlSerializer.startTag(null, "gameDot");
-                xmlSerializer.attribute(null, "type", String.valueOf(gameDots_[iRow][iCol].getType()));
-                xmlSerializer.attribute(null, "specType", String.valueOf(gameDots_[iRow][iCol].getSpecType()));
-                xmlSerializer.attribute(null, "row", String.valueOf(iRow));
-                xmlSerializer.attribute(null, "column", String.valueOf(iCol));
-                xmlSerializer.endTag(null, "gameDot");
+        if (gameDots_ != null) {
+            xmlSerializer.attribute(null, "nRows", String.valueOf(gameDots_.length));
+            xmlSerializer.attribute(null, "nColumns", String.valueOf(String.valueOf(gameDots_[0].length)));
+            for (int iRow = 0; iRow < gameDots_.length; iRow++) {
+                for (int iCol = 0; iCol < gameDots_[iRow].length; iCol++) {
+                    xmlSerializer.startTag(null, "gameDot");
+                    xmlSerializer.attribute(null, "type", String.valueOf(gameDots_[iRow][iCol].getType()));
+                    xmlSerializer.attribute(null, "specType", String.valueOf(gameDots_[iRow][iCol].getSpecType()));
+                    xmlSerializer.attribute(null, "row", String.valueOf(iRow));
+                    xmlSerializer.attribute(null, "column", String.valueOf(iCol));
+                    xmlSerializer.endTag(null, "gameDot");
+                }
             }
+        }
+        else {
+            xmlSerializer.attribute(null, "nRows", String.valueOf(World.DEFAULT_NUM_ROWS));
+            xmlSerializer.attribute(null, "nColumns", String.valueOf(String.valueOf(World.DEFAULT_NUM_COLUMNS)));
         }
         xmlSerializer.endTag(null, "gameDots");
 
