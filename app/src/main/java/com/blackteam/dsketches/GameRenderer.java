@@ -191,7 +191,6 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         mContents.load(R.drawable.menu_window);
         mContents.load(R.drawable.numbers);
         mContents.load(R.drawable.profit_numbers);
-        mContents.load(R.drawable.reshuffle);
         mContents.load(R.drawable.restart_btn);
         mContents.load(R.drawable.x_close);
         mContents.load(R.drawable.dots_theme1);
