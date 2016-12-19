@@ -28,8 +28,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private static final int MAIN_MENU_ACTIVITY = 0;
 
-    private static final String MR_HEADLINES_FONT_NAME = "fonts/mr_headlines.ttf";
-    private static Typeface sMrHeadlinesFont;
+    private static final String MAIN_FONT_NAME = "fonts/aquatico_regular.otf";
+    private static Typeface sMainFont;
 
     private GLSurfaceView mGameView;
     private GameRenderer mGameRenderer;
@@ -109,11 +109,11 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     private void setCustomFonts() {
-        sMrHeadlinesFont = Typeface.createFromAsset(getAssets(), MR_HEADLINES_FONT_NAME);
-        mScoreTextView.setTypeface(sMrHeadlinesFont);
-        mSkillShuffleTextView.setTypeface(sMrHeadlinesFont);
-        mSkillFriendsTextView.setTypeface(sMrHeadlinesFont);
-        mSkillChasmTextView.setTypeface(sMrHeadlinesFont);
+        sMainFont = Typeface.createFromAsset(getAssets(), MAIN_FONT_NAME);
+        mScoreTextView.setTypeface(sMainFont);
+        mSkillShuffleTextView.setTypeface(sMainFont);
+        mSkillFriendsTextView.setTypeface(sMainFont);
+        mSkillChasmTextView.setTypeface(sMainFont);
     }
 
     @Override
