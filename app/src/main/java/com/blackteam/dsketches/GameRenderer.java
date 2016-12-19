@@ -182,21 +182,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadContent() {
-        // TODO: Посмотреть нельзя как нибудь одной функцией грузить! R.drawable.<Загрузка всего>.
-        mContents.load(R.drawable.achievement_bg_noactive);
-        mContents.load(R.drawable.achievement_window_bg);
-        mContents.load(R.drawable.chasm);
-        mContents.load(R.drawable.error);
-        mContents.load(R.drawable.exit_btn);
-        mContents.load(R.drawable.menu_window);
         mContents.load(R.drawable.numbers);
-        mContents.load(R.drawable.profit_numbers);
-        mContents.load(R.drawable.restart_btn);
-        mContents.load(R.drawable.x_close);
         mContents.load(R.drawable.dots_theme1);
-        mContents.load(R.drawable.anim_spec_roweater);
-        mContents.load(R.drawable.effect_roweater);
-        mContents.load(R.drawable.skills);
-        mContents.load(R.drawable.main_window_background);
     }
 }

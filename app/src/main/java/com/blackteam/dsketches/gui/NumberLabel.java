@@ -89,7 +89,7 @@ public class NumberLabel {
     }
 
     public void loadContent(Context context) {
-        mDigitsTexture = new Texture(context, R.drawable.profit_numbers);
+        mDigitsTexture = new Texture(context, R.drawable.numbers);
     }
 
     public void render(Graphics graphics) {
