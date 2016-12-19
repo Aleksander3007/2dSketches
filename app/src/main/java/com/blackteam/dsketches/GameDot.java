@@ -230,13 +230,13 @@ public class GameDot {
         return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
     }
 
-    public void draw(Graphics graphics) {
+    public void render(Graphics graphics) {
         if (mIsMoving)
             moving(graphics.getElapsedTime());
 
-        mainObject_.draw(graphics);
+        mainObject_.render(graphics);
         if (mSpecType != SpecTypes.NONE) {
-            specObject_.draw(graphics);
+            specObject_.render(graphics);
         }
     }
 

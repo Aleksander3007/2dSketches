@@ -94,7 +94,7 @@ public class NumberLabel {
 
     public void render(Graphics graphics) {
         for (DisplayableObject number : mDigits) {
-            number.draw(graphics);
+            number.render(graphics);
         }
     }
 }

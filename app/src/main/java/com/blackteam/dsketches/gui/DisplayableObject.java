@@ -111,11 +111,11 @@ public class DisplayableObject {
                 ((coords.y >= mPos.y) && (coords.y <= (mPos.y + mHeight)));
     }
 
-    public void draw(Graphics graphics) {
+    public void render(Graphics graphics) {
         if (mAnimationController != null)
             mAnimationController.update(this, graphics.getElapsedTime());
 
-        mSprite.draw(graphics.getMVPMatrix(), graphics.getShader());
+        mSprite.render(graphics.getMVPMatrix(), graphics.getShader());
     }
 
     public void setTexture(Texture texture) {

@@ -43,7 +43,7 @@ public class ProfitLabel extends NumberLabel {
             for (DisplayableObject number : mDigits) {
                 if (!number.isAnimationFinished()) {
                     number.addPosition(new Vector2(0, TRANSLATE_SPEED_ * graphics.getElapsedTime()));
-                    number.draw(graphics);
+                    number.render(graphics);
                 }
             }
         }

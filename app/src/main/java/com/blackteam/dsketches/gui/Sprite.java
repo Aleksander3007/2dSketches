@@ -102,7 +102,7 @@ public class Sprite {
      * @param shader Шейдер.
      */
     //
-    public void draw(float[] mvpMatrix, final ShaderProgram shader) {
+    public void render(float[] mvpMatrix, final ShaderProgram shader) {
 
         prepareTextureCoords();
         getHandlers(shader);

@@ -7,7 +7,6 @@ import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Observer;
 import java.util.Set;
@@ -35,7 +34,7 @@ public class Game {
     }
 
     public void render(Graphics graphics) {
-        mWorld.draw(graphics);
+        mWorld.render(graphics);
         mProfitLabel.render(graphics);
     }
 

@@ -90,22 +90,22 @@ public class World extends Observable {
         }
     }
 
-    public void draw(Graphics graphics) {
+    public void render(Graphics graphics) {
         if (!isUpdating_) {
             for (int iRow = 0; iRow < mNumRows; iRow++) {
                 for (int iCol = 0; iCol < mNumColumns; iCol++) {
                     if (!selectedDots_.contains(mDots[iRow][iCol]))
-                        mDots[iRow][iCol].draw(graphics);
+                        mDots[iRow][iCol].render(graphics);
                 }
             }
             for (GameDot dot : selectedDots_) {
-                dot.draw(graphics);
+                dot.render(graphics);
             }
 
             ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
             for (DisplayableObject effect : effects_) {
                 if (!effect.isAnimationFinished())
-                    effect.draw(graphics);
+                    effect.render(graphics);
                 else {
                     finishedEffects.add(effect);
                 }
