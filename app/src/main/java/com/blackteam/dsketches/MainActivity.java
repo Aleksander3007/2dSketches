@@ -148,15 +148,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         if (requestCode == MAIN_MENU_ACTIVITY) {
             if (resultCode == RESULT_OK) {
                 boolean restart = data.getBooleanExtra(MainMenuActivity.CMD_RESTART_LVL, false);
-                if (restart) {
-                    Log.i("MainActivity", "restart");
-                    mGame.restartLevel();
-                    mPlayer.setScore(0);
-                    mScoreTextView.setText(String.valueOf(mPlayer.getScore()));
-                }
-                else {
-                    Log.i("MainActivity", "false");
-                }
+                if (restart) restartLevel();
             }
             else
             {
@@ -167,6 +159,36 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         Log.i("MainActivity", "onActivityResult end");
     }
 
+    private void restartLevel() {
+        Log.i("MainActivity", "restart");
+
+        mGame.restartLevel();
+
+        mPlayer.setScore(0);
+
+        // Если у игрока закончились skill и он делает restart,
+        // то даём игроку 1 штуку)))
+        // если же у него больше 1-го, то он не должен потерять их.
+        if (mPlayer.getSkill(Skill.Type.RESHUFFLE).getAmount() <= 0)
+            mPlayer.getSkill(Skill.Type.RESHUFFLE).setAmount(1);
+        if (mPlayer.getSkill(Skill.Type.FRIENDS).getAmount() <= 0)
+            mPlayer.getSkill(Skill.Type.FRIENDS).setAmount(1);
+        if (mPlayer.getSkill(Skill.Type.CHASM).getAmount() <= 0)
+            mPlayer.getSkill(Skill.Type.CHASM).setAmount(1);
+
+        mScoreTextView.setText(String.valueOf(
+                mPlayer.getScore())
+        );
+        mSkillShuffleTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.RESHUFFLE).getAmount())
+        );
+        mSkillFriendsTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.FRIENDS).getAmount())
+        );
+        mSkillChasmTextView.setText(String.valueOf(
+                mPlayer.getSkill(Skill.Type.CHASM).getAmount())
+        );
+    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
