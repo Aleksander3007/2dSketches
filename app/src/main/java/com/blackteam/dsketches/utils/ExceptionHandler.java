@@ -12,6 +12,8 @@ import java.io.StringWriter;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
+    public static final String TAG = ExceptionHandler.class.getSimpleName();
+
     private static final String LINE_SEPARATOR = "\n";
 
     private final Context mContext;
@@ -62,10 +64,10 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         errorReport.append(LINE_SEPARATOR);
 
         Intent intent = new Intent(mContext, ErrorActivity.class);
-        intent.putExtra(ErrorActivity.ERROR_DATA, errorReport.toString());
+        intent.putExtra(ErrorActivity.EXTRA_ERROR_DATA, errorReport.toString());
         mContext.startActivity(intent);
 
-        Log.e("ExceptionHandler", errorReport.toString());
+        Log.e(TAG, errorReport.toString());
 
         if(mOldHandler != null) // если есть ранее установленный...
             mOldHandler.uncaughtException(thread, exception); // ...вызовем его

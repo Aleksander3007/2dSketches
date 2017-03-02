@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">2dSketches</string>
     <string name="achievement_image">Achievement image</string>
+    <string name="points">points</string>
+    <string name="money_is_not_enough">Не достаточно средств</string>
+    <string name="sketches_array_is_not_found">Ошибка отображения списка образов</string>
+    <string name="achievements_array_is_not_found">Ошибка отображения списка достижений</string>
 </resources>

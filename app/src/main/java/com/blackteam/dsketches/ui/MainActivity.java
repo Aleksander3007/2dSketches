@@ -30,11 +30,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements View.OnTouchListener {
-    public static String VERSION;
+public class MainActivity extends Activity
+        implements View.OnTouchListener, PaymentSkillDialogFragment.NoticeDialogListener {
 
-    public static String ACHIEVEMENT_DATA = "achievement_data";
-    public static String SKETCHES_DATA = "sketches_data";
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int MAIN_MENU_ACTIVITY = 0;
 
@@ -112,9 +111,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private void printException(Exception e) {
         e.printStackTrace();
-        Log.e("XmlPullParserException", e.getMessage());
+        Log.e(TAG, e.getMessage());
         Intent intent = new Intent(getBaseContext(), ErrorActivity.class);
-        intent.putExtra(ErrorActivity.ERROR_DATA, e.getMessage());
+        intent.putExtra(ErrorActivity.EXTRA_ERROR_DATA, e.getMessage());
         startActivity(intent);
     }
 
@@ -153,7 +152,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("MainActivity", "onActivityResult start");
+        Log.i(TAG, "onActivityResult start");
 
         if (requestCode == MAIN_MENU_ACTIVITY) {
             if (resultCode == RESULT_OK) {
@@ -162,15 +161,15 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             }
             else
             {
-                Log.i("MainActivity", "resultCode != RESULT_OK");
+                Log.i(TAG, "resultCode != RESULT_OK");
             }
         }
 
-        Log.i("MainActivity", "onActivityResult end");
+        Log.i(TAG, "onActivityResult end");
     }
 
     private void restartLevel() {
-        Log.i("MainActivity", "restart");
+        Log.i(TAG, "restart");
 
         mGame.restartLevel();
 
@@ -209,7 +208,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 // TODO: Отдельный метод для каждого Events.
                 case (MotionEvent.ACTION_UP):
                     if (BuildConfig.DEBUG) {
-                        Log.i("MainActivity", "Action was UP");
+                        Log.i(TAG, "Action was UP");
                     }
                     // TODO: По идеи везде hit и необходимо передавать Action.
                     mGame.touchUp(getWorldCoords(event.getX(),event.getY()));
@@ -236,14 +235,18 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     public void menuOpenOnClick(View view) {
+
         Bundle achievementsBundle = new Bundle();
-        achievementsBundle.putSerializable("objects", mAchievementsManager.getAchiviements());
+        achievementsBundle.putSerializable(AchievementsActivity.BUNDLE_ACHIEVEMENT_ARRAY,
+                mAchievementsManager.getAchiviements());
+
         Bundle sketchesBundle = new Bundle();
-        sketchesBundle.putSerializable("objects", mSketchesManager.getSketches());
+        sketchesBundle.putSerializable(SketchesActivity.BUNDLE_SKETCHES_ARRAY,
+                mSketchesManager.getSketches());
 
         Intent menuIntent = new Intent(getBaseContext(), MainMenuActivity.class);
-        menuIntent.putExtra(ACHIEVEMENT_DATA, achievementsBundle);
-        menuIntent.putExtra(SKETCHES_DATA, sketchesBundle);
+        menuIntent.putExtra(MainMenuActivity.EXTRA_ACHIEVEMENT_DATA, achievementsBundle);
+        menuIntent.putExtra(MainMenuActivity.EXTRA_SKETCHES_DATA, sketchesBundle);
         startActivityForResult(menuIntent, MAIN_MENU_ACTIVITY);
     }
 
@@ -251,8 +254,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
      * Обработчик нажатия на одну из skill.
      */
     public void skillOnClick(View view) {
-        Skill.Type skillType = null;
-        TextView clickedSkillTextView = null;
+        Skill.Type skillType;
+        TextView clickedSkillTextView;
         switch (view.getId()) {
             case R.id.ll_skill_shuffle:
                 skillType = Skill.Type.RESHUFFLE;
@@ -279,7 +282,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // В противном случае открываем окно покупки.
         else {
             FragmentManager fragmentManager = getFragmentManager();
-            PaymentSkillDialogFragment paymentDialogFragment = new PaymentSkillDialogFragment(skillType, mPlayer);
+            PaymentSkillDialogFragment paymentDialogFragment =
+                    PaymentSkillDialogFragment.newInstance(skillType, mPlayer.getScore());
             paymentDialogFragment.show(fragmentManager, "paymentDialog");
         }
     }
@@ -289,8 +293,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
      * @param skillType Тип skill.
      * @param paymentType Тип оплаты.
      */
+    @Override
     public void buySkill(Skill.Type skillType, PaymentType paymentType) {
-        Log.i("MainActivity", String.format("buySkill (%s, %s)",
+        Log.i(TAG, String.format("buySkill (%s, %s)",
                 skillType.toString(), paymentType.toString()));
 
         // Производим оплату.

@@ -9,6 +9,9 @@ import com.blackteam.dsketches.R;
 
 public class MainMenuActivity extends Activity {
 
+    public static final String EXTRA_ACHIEVEMENT_DATA = "com.blackteam.dsketches.EXTRA_ACHIEVEMENT_DATA";
+    public static final String EXTRA_SKETCHES_DATA = "com.blackteam.dsketches.EXTRA_SKETCHES_DATA";
+
     public final static String CMD_RESTART_LVL = "com.blackteam.dsketches.CMD_RESTART";
 
     @Override
@@ -30,16 +33,16 @@ public class MainMenuActivity extends Activity {
 
     public void achievementsBtnOnClick(View view) {
         Intent achievementsIntent = new Intent(getBaseContext(), AchievementsActivity.class);
-        achievementsIntent.putExtra(MainActivity.ACHIEVEMENT_DATA,
-                getIntent().getExtras().getBundle(MainActivity.ACHIEVEMENT_DATA)
+        achievementsIntent.putExtra(AchievementsActivity.EXTRA_ACHIEVEMENT_DATA,
+                getIntent().getExtras().getBundle(EXTRA_ACHIEVEMENT_DATA)
         );
         startActivity(achievementsIntent);
     }
 
     public void sketchesBtnOnClick(View view) {
         Intent sketchesIntent = new Intent(getBaseContext(), SketchesActivity.class);
-        sketchesIntent.putExtra(MainActivity.SKETCHES_DATA,
-                getIntent().getExtras().getBundle(MainActivity.SKETCHES_DATA)
+        sketchesIntent.putExtra(EXTRA_SKETCHES_DATA,
+                getIntent().getExtras().getBundle(SketchesActivity.EXTRA_SKETCHES_DATA)
         );
         startActivity(sketchesIntent);
     }
