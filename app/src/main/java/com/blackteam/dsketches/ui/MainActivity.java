@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.ui;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -13,6 +13,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blackteam.dsketches.AchievementsManager;
+import com.blackteam.dsketches.BuildConfig;
+import com.blackteam.dsketches.ContentManager;
+import com.blackteam.dsketches.Game;
+import com.blackteam.dsketches.GameRenderer;
+import com.blackteam.dsketches.PaymentType;
+import com.blackteam.dsketches.Player;
+import com.blackteam.dsketches.R;
+import com.blackteam.dsketches.SketchesManager;
+import com.blackteam.dsketches.Skill;
 import com.blackteam.dsketches.utils.ExceptionHandler;
 import com.blackteam.dsketches.utils.Vector2;
 

@@ -1,13 +1,14 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.ui;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.blackteam.dsketches.Achievement;
+import com.blackteam.dsketches.R;
 
 import java.util.ArrayList;
 

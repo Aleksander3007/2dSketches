@@ -1,11 +1,11 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.hardware.SensorEventListener;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.blackteam.dsketches.R;
 
 public class MainMenuActivity extends Activity {
 

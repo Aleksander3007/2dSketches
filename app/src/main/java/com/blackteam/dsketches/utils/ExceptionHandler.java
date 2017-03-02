@@ -1,12 +1,11 @@
 package com.blackteam.dsketches.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.blackteam.dsketches.ErrorActivity;
+import com.blackteam.dsketches.ui.ErrorActivity;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

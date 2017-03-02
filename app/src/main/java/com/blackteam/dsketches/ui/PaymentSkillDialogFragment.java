@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.ui;
 
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
@@ -9,6 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.blackteam.dsketches.PaymentType;
+import com.blackteam.dsketches.Player;
+import com.blackteam.dsketches.R;
+import com.blackteam.dsketches.Skill;
+import com.blackteam.dsketches.ui.MainActivity;
 
 /**
  * Диалоговое окно покупки skill.

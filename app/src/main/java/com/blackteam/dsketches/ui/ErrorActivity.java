@@ -1,8 +1,10 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.blackteam.dsketches.R;
 
 /**
  * Для вывода исключений (ошибок приложения).

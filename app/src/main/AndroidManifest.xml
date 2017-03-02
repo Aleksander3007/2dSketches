@@ -23,7 +23,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,11 +32,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainMenuActivity"
+            android:name=".ui.MainMenuActivity"
             android:theme="@style/Theme.Transparent"></activity>
-        <activity android:name=".AchievementsActivity"></activity>
-        <activity android:name=".SketchesActivity"/>
-        <activity android:name=".ErrorActivity"/>
+        <activity android:name=".ui.AchievementsActivity"></activity>
+        <activity android:name=".ui.SketchesActivity"/>
+        <activity android:name=".ui.ErrorActivity"/>
     </application>
 
 </manifest>
