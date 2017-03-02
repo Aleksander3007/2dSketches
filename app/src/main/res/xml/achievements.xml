@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <achievements>
-    <achievement name="First thousand" description="Получить 1000 очков">
+    <achievement name="First thousand" description="Получить 1'000 очков">
         <conditions>
             <condition name="score" value="1000"/>
         </conditions>
     </achievement>
-    <achievement name="Bag with silver" description="Получить 2500 очков">
+    <achievement name="Bag with silver" description="Получить 2'500 очков">
         <conditions>
             <condition name="score" value="2500"/>
         </conditions>
     </achievement>
-    <achievement name="Good start" description="Получить 5000 очков">
+    <achievement name="Good start" description="Получить 5'000 очков">
         <conditions>
             <condition name="score" value="5000"/>
         </conditions>
     </achievement>
-    <achievement name="Bag with gold">
+    <achievement name="Bag with gold" description="Получить 10'000 очков">
         <conditions>
             <condition name="score" value="10000"/>
         </conditions>
     </achievement>
-    <achievement name="Silver bar">
+    <achievement name="Silver bar" description="Получить 25'000 очков">
         <conditions>
             <condition name="score" value="25000"/>
         </conditions>
     </achievement>
-    <achievement name="Gold bar">
+    <achievement name="Gold bar" description="Получить 99'999 очков">
         <conditions>
             <condition name="score" value="99999"/>
         </conditions>
     </achievement>
-    <achievement name="Richer">
+    <achievement name="Richer" description="Получить 500'000 очков">
         <conditions>
             <condition name="score" value="500000"/>
         </conditions>
     </achievement>
-    <achievement name="Сто за раз">
+    <achievement name="Сто за раз" description="Получить 100 очков за раз">
         <conditions>
             <condition name="profit" value="100"/>
         </conditions>
     </achievement>
-    <achievement name="Отличное мышление">
+    <achievement name="Отличное мышление" description="Получить 250 очков за раз">
         <conditions>
             <condition name="profit" value="250"/>
         </conditions>
     </achievement>
-    <achievement name="Впечатляет">
+    <achievement name="Впечатляет" description="Получить 500 очков за раз">
         <conditions>
             <condition name="profit" value="500"/>
         </conditions>
     </achievement>
-    <achievement name="Гений мысли">
+    <achievement name="Гений мысли" description="Получить 1000 очков за раз">
         <conditions>
             <condition name="profit" value="1000"/>
         </conditions>
     </achievement>
-    <achievement name="Пять в ряд">
+    <achievement name="Пять в ряд" description="Найти пять в ряд по горизонтали">
         <conditions>
             <condition name="sketch" value="row_5"/>
         </conditions>
     </achievement>
-    <achievement name="Столб творения">
+    <achievement name="Столб творения" description="Найти пять в ряд по вертикали">
         <conditions>
             <condition name="sketch" value="column_5"/>
         </conditions>
     </achievement>
-    <achievement name="Астроном">
+    <achievement name="Астроном" description="Найти Малую Медведицу">
         <conditions>
             <condition name="sketch" value="ursa_minor"/>
         </conditions>
     </achievement>
-    <achievement name="Великий Астроном">
+    <achievement name="Великий Астроном" description="Найти Большую Медведицу">
         <conditions>
             <condition name="sketch" value="ursa_major"/>
         </conditions>
     </achievement>
-    <achievement name="Сдаёшься?">
+    <achievement name="Сдаёшься?" description="Найти флаг">
         <conditions>
             <condition name="sketch" value="flag"/>
         </conditions>
     </achievement>
-    <achievement name="Любишь подумать?">
+    <achievement name="Любишь подумать?" description="Найти шахматную доску">
         <conditions>
             <condition name="sketch" value="chess"/>
         </conditions>
