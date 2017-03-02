@@ -1,7 +1,10 @@
 package com.blackteam.dsketches.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -80,14 +83,39 @@ public class PaymentSkillDialogFragment extends DialogFragment {
         return mPaymentDialogView;
     }
 
+    // Проблема заключалась в том, что onAttach(Context context) в версиях API < 23,
+    // не вызывается. А вызывается onAttach(Activity activity), который является Deprecated,
+    // но используется внутри super.onAttach(context);
+    // Issue android framework track: https://code.google.com/p/android/issues/detail?id=183358
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // не убраем вызов onAttachToContext() здесь для наглядности и понимания, а также если
+        // в случае когда данный метод вызвал НЕ activity.
+        // хотя по идеи super.onAttach(Activity activity) вызывает внутри super.onAttach(context).
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        // Для версий > 23(marshmallow) вызывается onAttach(Context context),
+        // внутри которого вызывается onAttach(Activity activity), поэтому
+        // здесь проверяем версию, чтобы не было двойного вызова onAttachToContext().
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    protected void onAttachToContext(Context context) {
         try {
-            mListener = (NoticeDialogListener) activity;
+            mListener = (NoticeDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement NoticeDialogListener");
+            throw new ClassCastException(context.toString()
+                    + " must implement PaymentSkillDialogFragment.NoticeDialogListener");
         }
     }
 }
