@@ -161,16 +161,16 @@ public class Game {
                 int randomRow = (int) (Math.random() * mWorld.getNumRows());
                 int randomCol = (int) (Math.random() * mWorld.getNumCols());
 
-                GameDot.Types tempOrbType = mWorld.getDot(iRow, iCol).getType();
-                GameDot.SpecTypes tempOrbSpecType = mWorld.getDot(iRow, iCol).getSpecType();
+                GameDot.Types gameDotType = mWorld.getDot(iRow, iCol).getType();
+                GameDot.SpecTypes gameDotSpecType = mWorld.getDot(iRow, iCol).getSpecType();
 
                 mWorld.createDot(mWorld.getDot(randomRow, randomCol).getType(),
                         mWorld.getDot(randomRow, randomCol).getSpecType(),
                         iRow, iCol
                 );
 
-                mWorld.createDot(tempOrbType,
-                        tempOrbSpecType,
+                mWorld.createDot(gameDotType,
+                        gameDotSpecType,
                         randomRow, randomCol
                 );
             }

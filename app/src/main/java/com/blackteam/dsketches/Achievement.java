@@ -50,7 +50,7 @@ public class Achievement implements Serializable {
 
     public boolean equals(String sketchName, int score, int profit) {
         assert sketchName != null;
-        boolean sketchIdentity = (mSketchName == ANY_SKETCH) || (sketchName.equals(mSketchName));
+        boolean sketchIdentity = (mSketchName.equals(ANY_SKETCH)) || (sketchName.equals(mSketchName));
         boolean scoreIdentity = (mScore == ANY_SCORE) || (score >= this.mScore);
         boolean profitIdentity = (mProfit == ANY_PROFIT) || (profit >= this.mProfit);
 

@@ -245,13 +245,8 @@ public class GameDot {
     }
 
     public boolean isIdenticalType(GameDot.Types dotType) {
-        if ((mType == dotType) ||
-                (mType == GameDot.Types.UNIVERSAL) || (dotType == GameDot.Types.UNIVERSAL)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (mType == dotType) ||
+                (mType == Types.UNIVERSAL) || (dotType == Types.UNIVERSAL);
     }
 
     public void moveTo(Vector2 finishPos) {

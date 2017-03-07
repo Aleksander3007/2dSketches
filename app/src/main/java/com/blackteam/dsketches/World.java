@@ -21,11 +21,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Модель мира.
  */
 public class World extends Observable {
+
+    public static final String TAG = World.class.getSimpleName();
+
     public static final int DEFAULT_NUM_ROWS = 9;
     public static final int DEFAULT_NUM_COLUMNS = 7;
 
-    private SketchesManager mSketchesManager;
-    private ContentManager mContents;
+    public static final String DATA_SKETCH_TYPE = "SKETCH_TYPE";
+    public static final String DATA_SKETCH_PROFIT = "PROFIT";
+    public static final String DATA_FACTOR = "FACTOR";
+
+    private final SketchesManager mSketchesManager;
+    private final ContentManager mContents;
 
     private Vector2 mPos = new Vector2(0, 0);
     private float mWidth;
@@ -34,6 +41,8 @@ public class World extends Observable {
     private int mNumColumns;
     private GameDot[][] mDots;
 
+    /** Минимальное количество игровых точек, которые можно выделить (меньщее кол-во игнорируется). */
+    private static final int sMinNumSelectedDots = 3;
     private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL;
 
@@ -92,34 +101,44 @@ public class World extends Observable {
 
     public void render(Graphics graphics) {
         if (!isUpdating_) {
-            for (int iRow = 0; iRow < mNumRows; iRow++) {
-                for (int iCol = 0; iCol < mNumColumns; iCol++) {
-                    if (!selectedDots_.contains(mDots[iRow][iCol]))
-                        mDots[iRow][iCol].render(graphics);
-                }
-            }
-            for (GameDot dot : selectedDots_) {
-                dot.render(graphics);
-            }
-
-            ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
-            for (DisplayableObject effect : effects_) {
-                if (!effect.isAnimationFinished())
-                    effect.render(graphics);
-                else {
-                    finishedEffects.add(effect);
-                }
-            }
-            effects_.removeAll(finishedEffects);
-            finishedEffects.clear();
+            renderDots(graphics);
+            renderEffects(graphics);
         }
     }
 
-    public boolean hit(Vector2 coords) {
-        boolean hitX = (coords.x >= mPos.x) && (coords.x <= mPos.x + mWidth);
-        boolean hitY = (coords.y >= mPos.y) && (coords.y <= mPos.y + mHeight);
+    /**
+     * Отрисовка игровых точек.
+     */
+    private void renderDots(Graphics graphics) {
+        for (int iRow = 0; iRow < mNumRows; iRow++) {
+            for (int iCol = 0; iCol < mNumColumns; iCol++) {
+                if (!selectedDots_.contains(mDots[iRow][iCol]))
+                    mDots[iRow][iCol].render(graphics);
+            }
+        }
+        for (GameDot dot : selectedDots_) {
+            dot.render(graphics);
+        }
+    }
 
-        if (hitX && hitY) {
+    /**
+     * Отрисовка эффектов.
+     */
+    private void renderEffects(Graphics graphics) {
+        ArrayList<DisplayableObject> finishedEffects = new ArrayList<>();
+        for (DisplayableObject effect : effects_) {
+            if (!effect.isAnimationFinished())
+                effect.render(graphics);
+            else
+                finishedEffects.add(effect);
+        }
+        effects_.removeAll(finishedEffects);
+        finishedEffects.clear();
+    }
+
+    public boolean hit(Vector2 coords) {
+
+        if (hitX(coords.x) && hitY(coords.y)) {
             // Определяем был ли нажат на элемент.
             for (int iRow = 0; iRow < mNumRows; iRow++) {
                 for (int iCol = 0; iCol < mNumColumns; iCol++) {
@@ -127,9 +146,20 @@ public class World extends Observable {
                         return true;
                 }
             }
-        }
 
-        return (hitX && hitY);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean hitX(float x) {
+        return (x >= mPos.x) && (x <= mPos.x + mWidth);
+    }
+
+    private boolean hitY(float y) {
+        return (y >= mPos.y) && (y <= mPos.y + mHeight);
     }
 
     private boolean hitDot(GameDot gameDot, Vector2 coords) {
@@ -139,31 +169,15 @@ public class World extends Observable {
                 if (selectedDots_.size() > 0) {
                     GameDot prevGameDot = selectedDots_.get(selectedDots_.size() - 1);
 
-                    // Если соседний, то выделяем (плюс защита от нажатий несколькими пальцами в разных местах).
-                    boolean rowNeighbour = (gameDot.getColNo() == prevGameDot.getColNo()) &&
-                            (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1);
-                    boolean columnNeighbour = (gameDot.getRowNo() == prevGameDot.getRowNo()) &&
-                            (Math.abs((gameDot.getColNo() - prevGameDot.getColNo())) == 1);
-                    boolean diagonalNeighbour = (Math.abs((gameDot.getRowNo() - prevGameDot.getRowNo())) == 1) &&
-                            (Math.abs((gameDot.getColNo() - prevGameDot.getColNo())) == 1);
-
-                    boolean isIdenticalType = true;
-                    GameDot.Types dotType = gameDot.getType();
-                    for (GameDot dot : selectedDots_) {
-                        if (!dot.isIdenticalType(dotType)) {
-                            isIdenticalType = false;
-                            break;
-                        }
-                    }
-
-                    if (isIdenticalType && (rowNeighbour || columnNeighbour || diagonalNeighbour)) {
-
-                        gameDot.setSizeCenter(selectedDotSize_);
+                    // Если игровые точки одинакового типа и соседи.
+                    if (haveGameGotsIdenticalType(selectedDots_, gameDot.getType()) &&
+                            areGameDotsNeighbours(gameDot, prevGameDot)) {
+                        selectDot(gameDot);
                         selectedDots_.add(gameDot);
                     }
                 }
                 else {
-                    gameDot.setSizeCenter(selectedDotSize_);
+                    selectDot(gameDot);
                     selectedDots_.add(gameDot);
                 }
             }
@@ -175,15 +189,53 @@ public class World extends Observable {
     }
 
     /**
+     * Выделить указанную игровую точку.
+     */
+    private void selectDot(GameDot gameDot) {
+        gameDot.setSizeCenter(selectedDotSize_);
+    }
+
+    /**
+     * Являются ли игровые точки соседями.
+     * @param gameDot1 первая игровая точка.
+     * @param gameDot2 вторая игровая точка.
+     * @return true - если являются соседями.
+     */
+    private boolean areGameDotsNeighbours(GameDot gameDot1, GameDot gameDot2) {
+        boolean rowNeighbour = (gameDot1.getColNo() == gameDot2.getColNo()) &&
+                (Math.abs((gameDot1.getRowNo() - gameDot2.getRowNo())) == 1);
+
+        boolean columnNeighbour = (gameDot1.getRowNo() == gameDot2.getRowNo()) &&
+                (Math.abs((gameDot1.getColNo() - gameDot2.getColNo())) == 1);
+
+        boolean diagonalNeighbour = (Math.abs((gameDot1.getRowNo() - gameDot2.getRowNo())) == 1) &&
+                (Math.abs((gameDot1.getColNo() - gameDot2.getColNo())) == 1);
+
+        return rowNeighbour || columnNeighbour || diagonalNeighbour;
+    }
+
+    /**
+     * Все ли указанные точки имеют указанный тип.
+     * @param gameDots точки, которые необходимо проверить.
+     * @param dotType  проверяемый тип.
+     * @return true - если все точки имеют указанный тип.
+     */
+    private boolean haveGameGotsIdenticalType(List<GameDot> gameDots, GameDot.Types dotType) {
+        for (GameDot dot : gameDots) {
+            if (!dot.isIdenticalType(dotType)) return false;
+        }
+        return true;
+    }
+
+    /**
      * Тут идёт анализ выделенных точек.
      * Поиск скетчей, спец. точек и т.п.
      */
     public void update() {
         isUpdating_ = true;
 
-        if (selectedDots_.size() > 2) {
+        if (selectedDots_.size() >= sMinNumSelectedDots) {
             selectedSketch_ = mSketchesManager.findSketch(selectedDots_);
-            // Ищем спец. Dots.
             searchSpecDots(selectedDots_);
         }
 
@@ -254,7 +306,7 @@ public class World extends Observable {
      * @param colNo Номер столбца.
      * @return true - если за пределами.
      */
-    public boolean isOutOfBounds(final int rowNo, final int colNo) {
+    private boolean isOutOfBounds(final int rowNo, final int colNo) {
         return ((rowNo < 0) || (rowNo >= mNumRows) ||
                 (colNo < 0) || (colNo >= mNumColumns));
     }
@@ -284,19 +336,19 @@ public class World extends Observable {
         }
 
         int totalProfit = profit * factor + selectedSketch_.getCost();
-        Log.i("World", "(profit, factor, sketch) = " +
+        Log.i(TAG, "(profit, factor, sketch) = " +
                 "(" +
                 String.valueOf(profit) + "," +
                 String.valueOf(factor) + "," +
                 String.valueOf(selectedSketch_.getCost()) + "," +
                 ")"
         );
-        Log.i("World", "sketch's type = " + selectedSketch_.getName().toString());
+        Log.i(TAG, "sketch's type = " + selectedSketch_.getName());
         if (selectedSketch_.getName() != null) {
             ArrayMap<String, Object> info = new ArrayMap<>();
-            info.put("SketchType", selectedSketch_.getName());
-            info.put("Profit", totalProfit);
-            info.put("Factor", factor);
+            info.put(DATA_SKETCH_TYPE, selectedSketch_.getName());
+            info.put(DATA_SKETCH_PROFIT, totalProfit);
+            info.put(DATA_FACTOR, factor);
 
             // Оповещаем, что есть изменения.
             setChanged();

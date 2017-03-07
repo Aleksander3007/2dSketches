@@ -1,6 +1,7 @@
 package com.blackteam.dsketches;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -18,6 +19,19 @@ import java.util.Observer;
 
 public class AchievementsManager implements Observer {
 
+    public static final String TAG = AchievementsManager.class.getSimpleName();
+
+    private static final String sTagAchievement = "achievement";
+    private static final String sTagCondition = "condition";
+
+    private static final String sAttrAchievementName = "name";
+    private static final String sAttrAchievementDescription = "description";
+    private static final String sAttrConditionName = "name";
+    private static final String sAttrConditionSketch = "sketch";
+    private static final String sAttrConditionScore = "score";
+    private static final String sAttrConditionProfit = "profit";
+    private static final String sAttrConditionValue = "value";
+
     private ArrayList<Achievement> mAchievements = new ArrayList<>();
     private Context mContext;
     private Player mPlayer;
@@ -28,7 +42,7 @@ public class AchievementsManager implements Observer {
         loadContent(context);
     }
 
-    public void loadContent(Context context) throws XmlPullParserException, IOException {
+    private void loadContent(Context context) throws XmlPullParserException, IOException {
         readFile(context);
         findEarnedAchievements();
     }
@@ -39,27 +53,16 @@ public class AchievementsManager implements Observer {
         int eventType = xmlResParser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
-                if (xmlResParser.getName().equals("achievement")) {
-                    achievement = new Achievement();
-                    achievement.setName(xmlResParser.getAttributeValue(null, "name"));
-                    achievement.setDescription(xmlResParser.getAttributeValue(null, "description"));
+                if (xmlResParser.getName().equals(sTagAchievement)) {
+                    parseAchievement(xmlResParser, achievement);
                 }
-                else if (xmlResParser.getName().equals("condition")) {
-                    String conditionName = xmlResParser.getAttributeValue(null, "name");
-                    if (TextUtils.equals(conditionName, "sketch")) {
-                        String sketchType = xmlResParser.getAttributeValue(null, "value");
-                        achievement.setSketchType(sketchType);
-                    } else if (TextUtils.equals(conditionName, "score")) {
-                        int score = xmlResParser.getAttributeIntValue(null, "value", Achievement.ANY_SCORE);
-                        achievement.setScore(score);
-                    } else if (TextUtils.equals(conditionName, "profit")) {
-                        int profit = xmlResParser.getAttributeIntValue(null, "value", Achievement.ANY_PROFIT);
-                        achievement.setProfit(profit);
-                    }
+                else if (xmlResParser.getName().equals(sTagCondition)) {
+                    parseCondition(xmlResParser, achievement);
+
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (xmlResParser.getName().equals("achievement")) {
+                if (xmlResParser.getName().equals(sTagAchievement)) {
                     mAchievements.add(achievement);
                 }
             }
@@ -67,7 +70,37 @@ public class AchievementsManager implements Observer {
             eventType = xmlResParser.next();
         }
         xmlResParser.close();
-        Log.i("AchievementsManager", "Xml is read.");
+        Log.i(TAG, "Xml is read.");
+    }
+
+    /**
+     * Распарсить Achievement через xmlResParser.
+     * @param xmlResParser XML парсер.
+     * @param achievement итоговый.
+     */
+    private void parseAchievement(XmlResourceParser xmlResParser, Achievement achievement) {
+        achievement = new Achievement();
+        achievement.setName(xmlResParser.getAttributeValue(null, sAttrAchievementName));
+        achievement.setDescription(xmlResParser.getAttributeValue(null, sAttrAchievementDescription));
+    }
+
+    /**
+     * Распарсить Условия для achievement через xmlResParser.
+     * @param xmlResParser XML парсер.
+     * @param achievement итоговый.
+     */
+    private void parseCondition(XmlResourceParser xmlResParser, Achievement achievement) {
+        String conditionName = xmlResParser.getAttributeValue(null, sAttrConditionName);
+        if (TextUtils.equals(conditionName, sAttrConditionSketch)) {
+            String sketchType = xmlResParser.getAttributeValue(null, sAttrConditionValue);
+            achievement.setSketchType(sketchType);
+        } else if (TextUtils.equals(conditionName, sAttrConditionScore)) {
+            int score = xmlResParser.getAttributeIntValue(null, sAttrConditionValue, Achievement.ANY_SCORE);
+            achievement.setScore(score);
+        } else if (TextUtils.equals(conditionName, sAttrConditionProfit)) {
+            int profit = xmlResParser.getAttributeIntValue(null, sAttrConditionValue, Achievement.ANY_PROFIT);
+            achievement.setProfit(profit);
+        }
     }
 
     private void findEarnedAchievements() {
@@ -84,19 +117,17 @@ public class AchievementsManager implements Observer {
     @Override
     public void update(Observable observable, Object data) {
         ArrayMap<String, Object> info = (ArrayMap<String, Object>) data;
-        final String sketchType = (String) info.get("SketchType");
-        final int profit = (int)info.get("Profit");
+        final String sketchType = (String) info.get(World.DATA_SKETCH_TYPE);
+        final int profit = (int)info.get(World.DATA_SKETCH_PROFIT);
         final int score = mPlayer.getScore();
 
-        Log.i("Achievement", "(profit, sketch, score) = " +
+        Log.i(TAG, "(profit, sketch, score) = " +
                         "(" +
                         String.valueOf(profit) + "," +
                         sketchType + "," +
                         String.valueOf(score) +
                         ")"
         );
-
-        Log.i("Achievement", "update");
 
         for (Achievement achievement : mAchievements) {
             boolean isAchievement = achievement.equals(
@@ -105,7 +136,7 @@ public class AchievementsManager implements Observer {
                     achievement.equals(Achievement.ANY_SKETCH, Achievement.ANY_SCORE, profit);
 
             if (isAchievement) {
-                Log.i("Achievement", achievement.getName());
+                Log.i(TAG, achievement.getName());
 
                 if (!achievement.isEarned()) {
                     achievement.earn();
