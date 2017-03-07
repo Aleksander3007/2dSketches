@@ -1,6 +1,5 @@
 package com.blackteam.dsketches;
 
-import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -18,15 +17,14 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GameRenderer implements GLSurfaceView.Renderer {
 
+    public static final String TAG = GameRenderer.class.getSimpleName();
+
     public static float sWidth = 0;
     public static float sHeight = 0;
 
     // Units per pixels.
     public static float sUppX = 1.0f;
     public static float sUppY = 1.0f;
-
-    // TODO: Delete unused fields.
-    private Context mContext;
 
     /** Model View Projection Matrix. */
     private final float[] mMvpMatrix = new float[16];
@@ -51,8 +49,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     private Game mGame;
     private ContentManager mContents;
 
-    public GameRenderer(Context context, Game game, ContentManager contents) {
-        this.mContext = context;
+    public GameRenderer(Game game, ContentManager contents) {
         this.mGame = game;
         this.mContents = contents;
     }
@@ -73,7 +70,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        Log.i("GameRender", "onSurfaceChanged begin");
+        Log.i(TAG, "onSurfaceChanged begin");
         GLES20.glViewport(0, 0, width, height);
         GameRenderer.sWidth = width;
         GameRenderer.sHeight = height;
@@ -115,12 +112,10 @@ public class GameRenderer implements GLSurfaceView.Renderer {
             mGame.resize(1f, aspectRatio);
         }
 
-
-
         // Calculate the projection and view transformation.
         Matrix.multiplyMM(mMvpMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        Log.i("GameRender", "onSurfaceChanged end");
+        Log.i(TAG, "onSurfaceChanged end");
     }
 
     @Override
@@ -160,7 +155,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
 
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
-            Log.i("Config Render", "error = " + String.valueOf(error));
+            Log.e(TAG, "configRender(): error = " + String.valueOf(error));
             throw new Error("Configuration render: error = " + String.valueOf(error));
         }
     }

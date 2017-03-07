@@ -87,7 +87,7 @@ public class MainActivity extends Activity
         mGameView.getHolder().setFormat(PixelFormat.RGBA_8888);
         //
 
-        mGameRenderer = new GameRenderer(getApplicationContext(), mGame, mContents);
+        mGameRenderer = new GameRenderer(mGame, mContents);
         mGameView.setRenderer(mGameRenderer);
 
         mScoreTextView = (TextView)findViewById(R.id.tv_score);
