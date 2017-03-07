@@ -41,8 +41,8 @@ public class MainMenuActivity extends Activity {
 
     public void sketchesBtnOnClick(View view) {
         Intent sketchesIntent = new Intent(getBaseContext(), SketchesActivity.class);
-        sketchesIntent.putExtra(EXTRA_SKETCHES_DATA,
-                getIntent().getExtras().getBundle(SketchesActivity.EXTRA_SKETCHES_DATA)
+        sketchesIntent.putExtra(SketchesActivity.EXTRA_SKETCHES_DATA,
+                getIntent().getExtras().getBundle(EXTRA_SKETCHES_DATA)
         );
         startActivity(sketchesIntent);
     }

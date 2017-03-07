@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.blackteam.dsketches.gui.AchievementToast;
+import com.blackteam.dsketches.utils.xml.XmlParceable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -64,6 +65,8 @@ public class AchievementsManager implements Observer {
             else if (eventType == XmlPullParser.END_TAG) {
                 if (xmlResParser.getName().equals(sTagAchievement)) {
                     mAchievements.add(achievement);
+                    // Когда добавили текущее достижение, создаем новое, чтобы данные записывались в новое.
+                    achievement = new Achievement();
                 }
             }
 
@@ -79,7 +82,6 @@ public class AchievementsManager implements Observer {
      * @param achievement итоговый.
      */
     private void parseAchievement(XmlResourceParser xmlResParser, Achievement achievement) {
-        achievement = new Achievement();
         achievement.setName(xmlResParser.getAttributeValue(null, sAttrAchievementName));
         achievement.setDescription(xmlResParser.getAttributeValue(null, sAttrAchievementDescription));
     }
