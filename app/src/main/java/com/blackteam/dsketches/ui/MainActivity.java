@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blackteam.dsketches.Achievement;
 import com.blackteam.dsketches.AchievementsManager;
 import com.blackteam.dsketches.BuildConfig;
 import com.blackteam.dsketches.ContentManager;
@@ -25,6 +26,7 @@ import com.blackteam.dsketches.SketchesManager;
 import com.blackteam.dsketches.Skill;
 import com.blackteam.dsketches.utils.ExceptionHandler;
 import com.blackteam.dsketches.utils.Vector2;
+import com.blackteam.dsketches.utils.xml.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -62,7 +64,7 @@ public class MainActivity extends Activity
 
         try {
             mPlayer = new Player(mContents);
-            mPlayer.load(getApplicationContext());
+            new XmlLoaderInternal().load(this, Player.FILE_NAME, mPlayer);
             mAchievementsManager = new AchievementsManager(mPlayer, getApplicationContext());
             mSketchesManager = new SketchesManager(getApplicationContext());
         } catch (XmlPullParserException | IOException e) {
@@ -145,7 +147,12 @@ public class MainActivity extends Activity
     @Override
     protected void onStop() {
         super.onStop();
-        mPlayer.save(getApplicationContext());
+        try {
+            new XmlLoaderInternal().save(this, Player.FILE_NAME, mPlayer);
+        }
+        catch (IOException ioex) {
+            Log.e(TAG, ioex.getMessage());
+        }
     }
 
     @Override
@@ -239,6 +246,11 @@ public class MainActivity extends Activity
         Bundle achievementsBundle = new Bundle();
         achievementsBundle.putSerializable(AchievementsActivity.BUNDLE_ACHIEVEMENT_ARRAY,
                 mAchievementsManager.getAchiviements());
+
+        for (Achievement achievement : mAchievementsManager.getAchiviements()) {
+            Log.i(TAG, "name = " + achievement.getName());
+            Log.i(TAG, "descr = " + achievement.getDescription());
+        }
 
         Bundle sketchesBundle = new Bundle();
         sketchesBundle.putSerializable(SketchesActivity.BUNDLE_SKETCHES_ARRAY,
