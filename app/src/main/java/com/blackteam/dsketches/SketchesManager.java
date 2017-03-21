@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
 
+import com.blackteam.dsketches.gamedots.GameDot;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -60,7 +62,7 @@ public class SketchesManager {
         Log.i("SketchesManager", "Sketches xml is read.");
     }
 
-    public Sketch findSketch(List<GameDot> gameDots) {
+    public Sketch findSketch(Iterable<GameDot> gameDots) {
         if (gameDots == null)
             return SKETCH_NULL;
 
@@ -75,10 +77,11 @@ public class SketchesManager {
         return SKETCH_NULL;
     }
 
-    private ArrayList<Sketch.Element> normalize(List<GameDot> gameDots) {
+    private ArrayList<Sketch.Element> normalize(Iterable<GameDot> gameDots) {
         // 1. Ищем минимумы.
-        int minRowNo = gameDots.get(0).getRowNo();
-        int minColNo = gameDots.get(0).getColNo();
+        GameDot firsGametDot = gameDots.iterator().next();
+        int minRowNo = firsGametDot.getRowNo();
+        int minColNo = firsGametDot.getColNo();
         for (GameDot gameDot : gameDots) {
             if (gameDot.getRowNo() < minRowNo)
                 minRowNo = gameDot.getRowNo();
@@ -87,7 +90,7 @@ public class SketchesManager {
         }
 
         // Создаем список нормализованных элементов.
-        ArrayList<Sketch.Element> normalDots = new ArrayList<>(gameDots.size());
+        ArrayList<Sketch.Element> normalDots = new ArrayList<>();
         for (GameDot gameDot : gameDots) {
             Sketch.Element elem = new Sketch.Element(
                     gameDot.getRowNo() - minRowNo,

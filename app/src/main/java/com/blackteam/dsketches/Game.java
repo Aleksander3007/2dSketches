@@ -2,6 +2,7 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
+import com.blackteam.dsketches.gamedots.GameDot;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
 import com.blackteam.dsketches.utils.Size2;

@@ -1,5 +1,7 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.gamedots;
 
+import com.blackteam.dsketches.ContentManager;
+import com.blackteam.dsketches.R;
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.gui.DisplayableObject;
@@ -8,6 +10,13 @@ import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Игровая точка без дополнительных эффектов, основная игровая единица.
+ */
 public class GameDot {
     public enum Types {
         TYPE1,
@@ -67,8 +76,8 @@ public class GameDot {
     /** Объект, отображающий специальность игровой точки. */
     private DisplayableObject specObject_;
 
-    private int rowNo_;
-    private int colNo_;
+    protected int rowNo_;
+    protected int colNo_;
 
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
@@ -305,5 +314,23 @@ public class GameDot {
             specObject_.addPosition(distance);
 
         mIsMoving = isMovedX || isMovedY;
+    }
+
+    /**
+     * Оказать воздействие на фактор (множитель profit-а).
+     * @param originalFactor Начальное значение фактора.
+     * @return итоговое значение фактора.
+     */
+    public int affectFactor(int originalFactor) {
+        return originalFactor;
+    }
+
+    /**
+     * Оказать воздействие на другие игровые точки.
+     * @param gameDots список точек на которые может быть оказано влияние.
+     */
+    public Set<GameDot> affectDots(GameDot[][] gameDots) {
+        // обычная игровая точка не оказывает никакого влияния на другие точки.
+        return null;
     }
 }

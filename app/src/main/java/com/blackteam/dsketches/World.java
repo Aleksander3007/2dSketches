@@ -5,6 +5,12 @@ import android.util.Log;
 
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
+import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.gamedots.GameDotAroundEater;
+import com.blackteam.dsketches.gamedots.GameDotColumnEater;
+import com.blackteam.dsketches.gamedots.GameDotDouble;
+import com.blackteam.dsketches.gamedots.GameDotRowEater;
+import com.blackteam.dsketches.gamedots.GameDotTriple;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.TextureRegion;
@@ -15,7 +21,9 @@ import com.blackteam.dsketches.utils.Vector2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Модель мира.
@@ -39,11 +47,12 @@ public class World extends Observable {
     private float mHeight;
     private int mNumRows;
     private int mNumColumns;
+    /** Игровые точки. первый идекс - это строки, второй - это столбцы. */
     private GameDot[][] mDots;
 
-    /** Минимальное количество игровых точек, которые можно выделить (меньщее кол-во игнорируется). */
-    private static final int sMinNumSelectedDots = 3;
-    private CopyOnWriteArrayList<GameDot> selectedDots_ = new CopyOnWriteArrayList<>();
+    /** Минимальное количество игровых точек, которые можно выделить (меньшее кол-во игнорируется). */
+    private static final int MIN_NUM_SELECTED_DOTS = 3;
+    private Set<GameDot> selectedDots_ = new CopyOnWriteArraySet<>();
     private Sketch selectedSketch_ = SketchesManager.SKETCH_NULL;
 
     /** При выделении точки: она увеличивается. */
@@ -116,6 +125,7 @@ public class World extends Observable {
                     mDots[iRow][iCol].render(graphics);
             }
         }
+        // Для отрисовки поверх не выделенных точек.
         for (GameDot dot : selectedDots_) {
             dot.render(graphics);
         }
@@ -167,11 +177,9 @@ public class World extends Observable {
             if (!isDotSelected(gameDot)) {
                 // Если выбран до этого как минимум еще один.
                 if (selectedDots_.size() > 0) {
-                    GameDot prevGameDot = selectedDots_.get(selectedDots_.size() - 1);
-
                     // Если игровые точки одинакового типа и соседи.
                     if (haveGameGotsIdenticalType(selectedDots_, gameDot.getType()) &&
-                            areGameDotsNeighbours(gameDot, prevGameDot)) {
+                            doesGameDotHaveNeighbours(selectedDots_, gameDot)) {
                         selectDot(gameDot);
                         selectedDots_.add(gameDot);
                     }
@@ -193,6 +201,21 @@ public class World extends Observable {
      */
     private void selectDot(GameDot gameDot) {
         gameDot.setSizeCenter(selectedDotSize_);
+    }
+
+    /**
+     * Являются ли указанная игровая точка кому-нибудь соседом из представленного списка точек.
+     * @param gameDots список игровых точек.
+     * @param gameDot вторая игровая точка.
+     * @return true - если являются соседями.
+     */
+    private boolean doesGameDotHaveNeighbours(Iterable<GameDot> gameDots, GameDot gameDot) {
+        for (GameDot dot : gameDots) {
+            if (areGameDotsNeighbours(gameDot, dot)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -220,7 +243,7 @@ public class World extends Observable {
      * @param dotType  проверяемый тип.
      * @return true - если все точки имеют указанный тип.
      */
-    private boolean haveGameGotsIdenticalType(List<GameDot> gameDots, GameDot.Types dotType) {
+    private boolean haveGameGotsIdenticalType(Iterable<GameDot> gameDots, GameDot.Types dotType) {
         for (GameDot dot : gameDots) {
             if (!dot.isIdenticalType(dotType)) return false;
         }
@@ -234,70 +257,33 @@ public class World extends Observable {
     public void update() {
         isUpdating_ = true;
 
-        if (selectedDots_.size() >= sMinNumSelectedDots) {
+        if (selectedDots_.size() >= MIN_NUM_SELECTED_DOTS) {
             selectedSketch_ = mSketchesManager.findSketch(selectedDots_);
-            searchSpecDots(selectedDots_);
+            dotsAffect(selectedDots_);
         }
 
         isUpdating_ = false;
     }
 
-    private List<GameDot> searchSpecDots(List<GameDot> selectedDots) {
-        ArrayList<GameDot> addSpecDots_ = new ArrayList<>();
+    /**
+     * Оказывать воздействие на игровые точки выделенными точками, если такое свойство у них имеется.
+     * @param selectedDots выделенные игровые точки, которые могут оказывать воздействие на другие.
+     */
+    private void dotsAffect(Set<GameDot> selectedDots) {
+
+        if (selectedDots == null) return;
+
         for (GameDot gameDot : selectedDots) {
-            switch (gameDot.getSpecType()) {
-                case ROW_EATER: {
-                    // Добавляем все элементы строки как выделенные.
-                    for (int iCol = 0; iCol < mNumColumns; iCol++) {
-                        // ... без повтора в массиве.
-                        if (!selectedDots_.contains(mDots[gameDot.getRowNo()][iCol])) {
-                            // ... и делаем их уникальным, чтобы считался Profit и для них.
-                            mDots[gameDot.getRowNo()][iCol].setType(GameDot.Types.UNIVERSAL);
-                            addSpecDots_.add(mDots[gameDot.getRowNo()][iCol]);
-                        }
-                    }
-                    selectedDots_.addAll(addSpecDots_);
-                    // Среди только что добавленных точек ищем спец. точки.
-                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
-                    break;
-                }
-                case COLUMN_EATER: {
-                    // Тоже самое, что ROW_EATER, только столбец (см. выше).
-                    for (int iRow = 0; iRow < mNumRows; iRow++) {
-                        if (!selectedDots_.contains(mDots[iRow][gameDot.getColNo()])) {
-                            mDots[iRow][gameDot.getColNo()].setType(GameDot.Types.UNIVERSAL);
-                            addSpecDots_.add(mDots[iRow][gameDot.getColNo()]);
-                        }
-                    }
-                    selectedDots_.addAll(addSpecDots_);
-                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
-                    break;
-                }
-                case AROUND_EATER: {
-                    // Добавляем все соседние элементы как выделенные.
-                    for (int iRow = -1; iRow <= 1; iRow++) {
-                        for (int iCol = -1; iCol <= 1; iCol++) {
-                            int rowNo = gameDot.getRowNo() + iRow;
-                            int colNo = gameDot.getColNo() + iCol;
-                            if (!isOutOfBounds(rowNo, colNo)) {
-                                if (!selectedDots_.contains(mDots[rowNo][colNo])) {
-                                    mDots[rowNo][colNo].setType(GameDot.Types.UNIVERSAL);
-                                    addSpecDots_.add(mDots[rowNo][colNo]);
-                                }
-                            }
-                        }
-                    }
-                    selectedDots_.addAll(addSpecDots_);
-                    addSpecDots_.addAll(searchSpecDots(addSpecDots_));
-                    break;
-                }
-                default:
-                    // В остальных случаях ничего не делаем.
-                    break;
+
+            Set<GameDot> underAffectGameDots = gameDot.affectDots(mDots);
+            if (underAffectGameDots == null) continue;
+
+            boolean isNewAdded = selectedDots_.addAll(underAffectGameDots);
+            // Если были выделены новые точки, то ищем среди новых.
+            if (isNewAdded) {
+                dotsAffect(underAffectGameDots);
             }
         }
-
-        return addSpecDots_;
     }
 
     /**
@@ -313,38 +299,24 @@ public class World extends Observable {
 
     public int getProfitByDots() {
 
-        if (selectedDots_.size() <= 2) {
+        if (selectedDots_.size() < MIN_NUM_SELECTED_DOTS) {
             return 0;
         }
 
         int profit = selectedDots_.size() * GameDot.COST;
-        int factor = 1;
+        int factor = 1; // TODO: Вынести в переменную FACTOR_DEFAULT = 1;
         for (GameDot gameDot : selectedDots_) {
-            switch (gameDot.getSpecType()) {
-                case DOUBLE: {
-                    factor *= 2;
-                    break;
-                }
-                case TRIPLE: {
-                    factor *= 3;
-                    break;
-                }
-                default:
-                    // В остальных случаях ничего не делаем.
-                    break;
-            }
+            factor = gameDot.affectFactor(factor);
         }
 
         int totalProfit = profit * factor + selectedSketch_.getCost();
-        Log.i(TAG, "(profit, factor, sketch) = " +
-                "(" +
-                String.valueOf(profit) + "," +
-                String.valueOf(factor) + "," +
-                String.valueOf(selectedSketch_.getCost()) + "," +
-                ")"
-        );
-        Log.i(TAG, "sketch's type = " + selectedSketch_.getName());
+
+        Log.d(TAG, String.format("(profit, factor, sketch) = (%d, %d, %d)",
+                profit, factor, selectedSketch_.getCost()));
+        Log.d(TAG, "sketch's type = " + selectedSketch_.getName());
+
         if (selectedSketch_.getName() != null) {
+            // TODO: Для этого есть BUNDLE.
             ArrayMap<String, Object> info = new ArrayMap<>();
             info.put(DATA_SKETCH_TYPE, selectedSketch_.getName());
             info.put(DATA_SKETCH_PROFIT, totalProfit);
@@ -380,7 +352,7 @@ public class World extends Observable {
      * Удалить указанные Dots.
      * @param dots Которые необходимо удалить.
      */
-    public void deleteDots(CopyOnWriteArrayList<GameDot> dots) {
+    public void deleteDots(Iterable<GameDot> dots) {
         isUpdating_ = true;
 
         for (GameDot gameDot : dots) {
@@ -406,12 +378,6 @@ public class World extends Observable {
     private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 dotPos) {
         Size2 newSize;
         switch (dotSpecType) {
-            case NONE:
-                return;
-            case DOUBLE:
-                return;
-            case TRIPLE:
-                return;
             case ROW_EATER:
                 newSize = new Size2(dotSize_ * 2 * mNumColumns, dotSize_);
                 break;
@@ -422,6 +388,7 @@ public class World extends Observable {
                 newSize = new Size2(3 * dotSize_, 3 * dotSize_);
                 break;
             default:
+                // по умолчанию никаких визуальных эффектов нет.
                 return;
         }
 
@@ -462,7 +429,7 @@ public class World extends Observable {
         }
 
         if (BuildConfig.DEBUG) {
-            Log.i("World", "Level is created.");
+            Log.i(TAG, "Level is created.");
         }
     }
 
@@ -498,7 +465,7 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
         dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 104f); // 4f
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 104f); // original: 4f
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -511,7 +478,7 @@ public class World extends Observable {
         dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
         dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.5f);
         dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f); // original: 1.5f
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -534,6 +501,7 @@ public class World extends Observable {
         GameDot.Types dotType = generateDotType();
         GameDot.SpecTypes dotSpecType = generateDotSpecType();
         createDot(dotType, dotSpecType, rowNo, colNo);
+        Log.i(TAG, String.format("There is created specType = %s", dotSpecType.toString()));
     }
 
     /**
@@ -549,11 +517,50 @@ public class World extends Observable {
         Vector2 dotPos = new Vector2(
                 this.mPos.x + colNo * dotSize_,
                 this.mPos.y + rowNo * dotSize_);
-        mDots[rowNo][colNo] = new GameDot(dotType, dotSpecType,
-                dotPos,
-                rowNo, colNo,
-                mContents
-        );
+
+        switch (dotSpecType) {
+            case DOUBLE:
+                mDots[rowNo][colNo] = new GameDotDouble(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+                break;
+            case TRIPLE:
+                mDots[rowNo][colNo] = new GameDotTriple(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+                break;
+            case ROW_EATER:
+                mDots[rowNo][colNo] = new GameDotRowEater(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+                break;
+            case COLUMN_EATER:
+                mDots[rowNo][colNo] = new GameDotColumnEater(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+                break;
+            case AROUND_EATER:
+                mDots[rowNo][colNo] = new GameDotAroundEater(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+                break;
+            default:
+                mDots[rowNo][colNo] = new GameDot(dotType, dotSpecType,
+                        dotPos,
+                        rowNo, colNo,
+                        mContents
+                );
+        }
 
         mDots[rowNo][colNo].setSize(dotSize_);
     }
@@ -562,7 +569,7 @@ public class World extends Observable {
      * Установка выделенных GameDot.
      * <br><strong>NOTE</strong>: Только для тестирования.
      */
-    protected void setSelectedDots(CopyOnWriteArrayList<GameDot> gameDots) {
+    protected void setSelectedDots(Set<GameDot> gameDots) {
         selectedDots_ = gameDots;
     }
 

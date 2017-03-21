@@ -1,16 +1,16 @@
 package com.blackteam.dsketches;
 
-import android.graphics.Bitmap;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.gamedots.GameDot;
 import com.blackteam.dsketches.utils.Vector2;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @RunWith(AndroidJUnit4.class)
@@ -24,12 +24,12 @@ public class WorldTest {
             super(fakeContents_, null);
         }
 
-        public void addSelectedOrbs(CopyOnWriteArrayList<GameDot> selectedGameDot) {
+        public void addSelectedOrbs(Set<GameDot> selectedGameDot) {
             setSelectedDots(selectedGameDot);
         }
     }
 
-    public int getProfit(WorldTestClass worldTestClass, CopyOnWriteArrayList<GameDot> selectedGameDot) {
+    public int getProfit(WorldTestClass worldTestClass, Set<GameDot> selectedGameDot) {
         worldTestClass.addSelectedOrbs(selectedGameDot);
         worldTestClass.update();
         int profit = worldTestClass.getProfitByDots();
@@ -40,7 +40,7 @@ public class WorldTest {
     @Test
     public void testGetProfitByOrbs() {
         WorldTestClass worldTestClass = new WorldTestClass();
-        CopyOnWriteArrayList<GameDot> selectedGameDot = new CopyOnWriteArrayList<>();
+        Set<GameDot> selectedGameDot = new HashSet<>();
         int profit = -1;
 
         Vector2 fakePos = new Vector2(0, 0);

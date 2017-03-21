@@ -4,6 +4,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 
+import com.blackteam.dsketches.gamedots.GameDot;
 import com.blackteam.dsketches.utils.Vector2;
 import com.blackteam.dsketches.utils.xml.XmlParceable;
 

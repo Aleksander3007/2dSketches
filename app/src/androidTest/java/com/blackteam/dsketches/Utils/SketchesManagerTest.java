@@ -1,14 +1,15 @@
-package com.blackteam.dsketches.utils;
+package com.blackteam.dsketches.Utils;
 
 import android.graphics.Bitmap;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.blackteam.dsketches.ContentManager;
-import com.blackteam.dsketches.GameDot;
+import com.blackteam.dsketches.gamedots.GameDot;
 import com.blackteam.dsketches.Sketch;
 import com.blackteam.dsketches.SketchesManager;
 import com.blackteam.dsketches.gui.Texture;
+import com.blackteam.dsketches.utils.Vector2;
 
 import org.junit.After;
 import org.junit.Before;
