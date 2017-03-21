@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Игровая точка с эффектом разрушения соседей по столбцу.
  */
-public class GameDotColumnEater extends GameDot {
+public class GameDotColumnEater extends SpecGameDot {
     public GameDotColumnEater(Types dotType, SpecTypes dotSpecType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
         super(dotType, dotSpecType, pos, rowNo, colNo, contents);
     }

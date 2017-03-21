@@ -46,17 +46,12 @@ public class GameDot {
     private static final float MIN_ALPHA_ = 0.0f;
     private static final float MAX_ALPHA_ = 1.0f;
     private static final float ALPHA_TIME_ = 500.0f; // Время на изменения alpha-канала, ms.
-    private static final AnimationSet FILM_DEVELOPMENT_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
+    protected static final AnimationSet FILM_DEVELOPMENT_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
             AnimationSet.PlayMode.NORMAL,
             MIN_ALPHA_, MAX_ALPHA_, ALPHA_TIME_);
 
-    /** Параметры для эффекта живой спец. точки. (мигание specObject_) */
-    private static final float SPEC_MIN_ALPHA_ = 0.5f;
-    private static final float SPEC_MAX_ALPHA_ = 1.0f;
-    private static final float SPEC_ALPHA_TIME_ = 2000.0f; // Время на изменения alpha-канала, ms.
-    private static final AnimationSet FLASHING_ANIM_SET_ = new AnimationSet(AnimationSet.ValueType.ALPHA,
-            AnimationSet.PlayMode.LOOP_PINGPONG,
-            SPEC_MIN_ALPHA_, SPEC_MAX_ALPHA_, SPEC_ALPHA_TIME_);
+    /** Время отображения эффекта, мс. */
+    private static final float EFFECT_TIME_ = 300f;
 
     /** Время на перемещение, мс. */
     public static final float TRANSLATE_TIME_ = 200.0f;
@@ -71,9 +66,7 @@ public class GameDot {
     public static final int TEX_HEIGHT = 256;
 
     /** Главный объект, отображающий игровую точку. */
-    private DisplayableObject mainObject_;
-    /** Объект, отображающий специальность игровой точки. */
-    private DisplayableObject specObject_;
+    protected DisplayableObject mainObject_;
 
     protected int rowNo_;
     protected int colNo_;
@@ -97,18 +90,6 @@ public class GameDot {
         mainObject_ = new DisplayableObject(pos, textureRegion);
 
         mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
-
-        if (mSpecType != SpecTypes.NONE) {
-            TextureRegion specTextureRegion = new TextureRegion(
-                    contents.get(R.drawable.dots_theme1),
-                    GameDotsFactory.getSpecTexturePosition(dotSpecType),
-                    new Size2(TEX_WIDTH, TEX_HEIGHT)
-            );
-            specObject_ = new DisplayableObject(pos, specTextureRegion);
-            specObject_.setAnimation(new AnimationController(
-                    FILM_DEVELOPMENT_ANIM_SET_, FLASHING_ANIM_SET_
-            ));
-        }
     }
 
     public int getColNo() {
@@ -159,27 +140,18 @@ public class GameDot {
 
     public void setSize(float size) {
         mainObject_.setSize(size, size);
-        if (mSpecType != SpecTypes.NONE)
-            specObject_.setSize(size, size);
     }
 
     public void setSizeCenter(float size) {
         mainObject_.setSizeCenter(size, size);
-        if (mSpecType != SpecTypes.NONE) {
-            specObject_.setSizeCenter(size, size);
-        }
     }
 
     public void setPosition(Vector2 dotPos) {
         mainObject_.setPosition(dotPos);
-        if (mSpecType != SpecTypes.NONE)
-            specObject_.setPosition(dotPos);
     }
 
     public void setAlpha(float alphaFactor) {
         mainObject_.setAlpha(alphaFactor);
-        if (mSpecType != SpecTypes.NONE)
-            specObject_.setAlpha(alphaFactor);
     }
 
     public static Types convertToType(String gameDotTypeStr) {
@@ -195,9 +167,6 @@ public class GameDot {
             moving(graphics.getElapsedTime());
 
         mainObject_.render(graphics);
-        if (mSpecType != SpecTypes.NONE) {
-            specObject_.render(graphics);
-        }
     }
 
     public boolean hit(Vector2 coords) {
@@ -235,7 +204,7 @@ public class GameDot {
         mIsMoving = true;
     }
 
-    private void moving(final float elapsedTime) {
+    protected void moving(final float elapsedTime) {
         Vector2 distance = new Vector2(0, 0);
         boolean isMovedX = ((translateSpeed_.x > 0) && (getPosition().x < mFinishPos.x)) ||
                 ((translateSpeed_.x < 0) && (getPosition().x > mFinishPos.x));
@@ -261,8 +230,6 @@ public class GameDot {
         //}
 
         mainObject_.addPosition(distance);
-        if (mSpecType != SpecTypes.NONE)
-            specObject_.addPosition(distance);
 
         mIsMoving = isMovedX || isMovedY;
     }
@@ -294,9 +261,6 @@ public class GameDot {
     public DisplayableObject getDestroyAnimation(Size2 dotSize, Size2 boxSize) {
         return null;
     }
-
-    /** Время отображения эффекта, мс. */
-    private static final float EFFECT_TIME_ = 300f;
 
     /**
      * Создание анимации изменения масштаба объекта.
