@@ -3,17 +3,9 @@ package com.blackteam.dsketches;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import com.blackteam.dsketches.animation.AnimationController;
-import com.blackteam.dsketches.animation.AnimationSet;
 import com.blackteam.dsketches.models.gamedots.GameDot;
-import com.blackteam.dsketches.models.gamedots.GameDotAroundEater;
-import com.blackteam.dsketches.models.gamedots.GameDotColumnEater;
-import com.blackteam.dsketches.models.gamedots.GameDotDouble;
-import com.blackteam.dsketches.models.gamedots.GameDotRowEater;
-import com.blackteam.dsketches.models.gamedots.GameDotTriple;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
-import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.managers.SketchesManager;
 import com.blackteam.dsketches.models.Sketch;
@@ -468,69 +460,19 @@ public class World extends Observable {
     private void createDot(final int rowNo, final int colNo) {
         GameDot.Types dotType = generateDotType();
         GameDot.SpecTypes dotSpecType = generateDotSpecType();
+
         createDot(dotType, dotSpecType, rowNo, colNo);
+
         Log.i(TAG, String.format("There is created specType = %s", dotSpecType.toString()));
     }
 
-    /**
-     * Создать GameDot.
-     * @param dotType Тип.
-     * @param dotSpecType Специальный тип.
-     * @param rowNo Номер строки.
-     * @param colNo Номер столбца.
-     */
-    public void createDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType,
-                          final int rowNo, final int colNo
-    ) {
+    public void createDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType,
+                                    int rowNo, int colNo) {
         Vector2 dotPos = new Vector2(
                 this.mPos.x + colNo * dotSize_,
                 this.mPos.y + rowNo * dotSize_);
-
-        switch (dotSpecType) {
-            case DOUBLE:
-                mDots[rowNo][colNo] = new GameDotDouble(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-                break;
-            case TRIPLE:
-                mDots[rowNo][colNo] = new GameDotTriple(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-                break;
-            case ROW_EATER:
-                mDots[rowNo][colNo] = new GameDotRowEater(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-                break;
-            case COLUMN_EATER:
-                mDots[rowNo][colNo] = new GameDotColumnEater(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-                break;
-            case AROUND_EATER:
-                mDots[rowNo][colNo] = new GameDotAroundEater(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-                break;
-            default:
-                mDots[rowNo][colNo] = new GameDot(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                        mContents
-                );
-        }
-
-        mDots[rowNo][colNo].setSize(dotSize_);
+        mDots[rowNo][colNo] = GameDotsFactory
+                .createDot(dotType, dotSpecType, rowNo, colNo, dotPos, dotSize_, mContents);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.blackteam.dsketches.models.gamedots;
 
+import com.blackteam.dsketches.GameDotsFactory;
 import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.R;
 import com.blackteam.dsketches.animation.AnimationController;
@@ -90,7 +91,7 @@ public class GameDot {
 
         TextureRegion textureRegion = new TextureRegion(
                 contents.get(R.drawable.dots_theme1),
-                getTexturePosition(dotType),
+                GameDotsFactory.getTexturePosition(dotType),
                 new Size2(TEX_WIDTH, TEX_HEIGHT)
         );
         mainObject_ = new DisplayableObject(pos, textureRegion);
@@ -100,7 +101,7 @@ public class GameDot {
         if (mSpecType != SpecTypes.NONE) {
             TextureRegion specTextureRegion = new TextureRegion(
                     contents.get(R.drawable.dots_theme1),
-                    getSpecTexturePosition(dotSpecType),
+                    GameDotsFactory.getSpecTexturePosition(dotSpecType),
                     new Size2(TEX_WIDTH, TEX_HEIGHT)
             );
             specObject_ = new DisplayableObject(pos, specTextureRegion);
@@ -150,57 +151,6 @@ public class GameDot {
 
     public GameDot.SpecTypes getSpecType() {
         return this.mSpecType;
-    }
-
-    public static Vector2 getTexturePosition(GameDot.Types type) {
-        int x = 0;
-
-        switch (type) {
-            case TYPE1:
-                x = 0;
-                break;
-            case TYPE2:
-                x = GameDot.TEX_HEIGHT;
-                break;
-            case TYPE3:
-                x = 2 * GameDot.TEX_HEIGHT;
-                break;
-            case TYPE4:
-                x = 3 * GameDot.TEX_HEIGHT;
-                break;
-            case UNIVERSAL:
-                x = 4 * GameDot.TEX_HEIGHT;
-                break;
-        }
-
-        return new Vector2(x, 0);
-    }
-
-    public static Vector2 getSpecTexturePosition(GameDot.SpecTypes specType) {
-        int x = 0;
-
-        switch (specType) {
-            case NONE:
-                x = 0; // Берём этот, но на деле мы ничего не отрисовываем.
-                break;
-            case DOUBLE:
-                x = 0;
-                break;
-            case TRIPLE:
-                x = GameDot.TEX_WIDTH;
-                break;
-            case ROW_EATER:
-                x = 2 * GameDot.TEX_WIDTH;
-                break;
-            case COLUMN_EATER:
-                x = 3 * GameDot.TEX_WIDTH;
-                break;
-            case AROUND_EATER:
-                x = 4 * GameDot.TEX_WIDTH;
-                break;
-        }
-
-        return new Vector2(x, TEX_HEIGHT);
     }
 
     public static void setAbsTranslateSpeed(final float speed) {
@@ -357,7 +307,7 @@ public class GameDot {
     public DisplayableObject createScaleAnimation(Size2 startDotSize, Size2 endDotSize) {
         TextureRegion textureRegion = new TextureRegion(
                 mContents.get(R.drawable.dots_theme1),
-                GameDot.getSpecTexturePosition(getSpecType()),
+                GameDotsFactory.getSpecTexturePosition(getSpecType()),
                 new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
         );
 
