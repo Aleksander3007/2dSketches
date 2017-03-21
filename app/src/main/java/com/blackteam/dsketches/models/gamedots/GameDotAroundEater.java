@@ -1,6 +1,8 @@
 package com.blackteam.dsketches.models.gamedots;
 
+import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.managers.ContentManager;
+import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.HashSet;
@@ -14,6 +16,7 @@ public class GameDotAroundEater extends GameDot {
         super(dotType, dotSpecType, pos, rowNo, colNo, contents);
     }
 
+    @Override
     public Set<GameDot> affectDots(GameDot[][] gameDots) {
         Set<GameDot> markedDots = new HashSet<>();
 
@@ -34,5 +37,11 @@ public class GameDotAroundEater extends GameDot {
         }
 
         return markedDots;
+    }
+
+    @Override
+    public DisplayableObject getDestroyAnimation(Size2 dotSize, Size2 boxSize) {
+        Size2 newSize = new Size2(3 * dotSize.width, 3 * dotSize.height);
+        return createScaleAnimation(dotSize, newSize);
     }
 }

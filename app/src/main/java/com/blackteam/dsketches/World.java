@@ -22,8 +22,10 @@ import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -65,7 +67,7 @@ public class World extends Observable {
 
     /** Время отображения эффекта, мс. */
     private static final float EFFECT_TIME_ = 300f;
-    private ArrayList<DisplayableObject> effects_ = new ArrayList<>();
+    private List<DisplayableObject> effects_ = new CopyOnWriteArrayList<>();
 
     public World(ContentManager contents, SketchesManager sketchesManager) {
         this.mContents = contents;
@@ -87,6 +89,8 @@ public class World extends Observable {
     public synchronized GameDot getDot(int rowNo, int colNo) {
         return mDots[rowNo][colNo];
     }
+
+    public Size2 getSize() { return new Size2(mWidth, mHeight); }
 
     public void init(final Vector2 pos, final Size2 rectSize) {
         float dotHeight = rectSize.height / mNumRows;
@@ -358,7 +362,10 @@ public class World extends Observable {
 
         for (GameDot gameDot : dots) {
 
-            addEffect(gameDot.getSpecType(), gameDot.getPosition());
+            // Добавить эффект от уничтожения игровой точки.
+            DisplayableObject destroyEffect = gameDot.getDestroyAnimation(
+                    new Size2(dotSize_, dotSize_), this.getSize());
+            if (destroyEffect != null) effects_.add(destroyEffect);
 
             int translateCol = gameDot.getColNo();
             for (int iRow = gameDot.getRowNo() + 1; iRow < mNumRows; iRow++) {
@@ -370,46 +377,6 @@ public class World extends Observable {
         }
 
         isUpdating_ = false;
-    }
-    /**
-     * Отобразить эффект от специальной игровой точки.
-     * @param dotSpecType Тип специальной игровой точки.
-     * @param dotPos Позиция игровой точки, которая порадила эффект.
-     */
-    private void addEffect(GameDot.SpecTypes dotSpecType, Vector2 dotPos) {
-        Size2 newSize;
-        switch (dotSpecType) {
-            case ROW_EATER:
-                newSize = new Size2(dotSize_ * 2 * mNumColumns, dotSize_);
-                break;
-            case COLUMN_EATER:
-                newSize = new Size2(dotSize_, dotSize_ * 2 * mNumRows);
-                break;
-            case AROUND_EATER:
-                newSize = new Size2(3 * dotSize_, 3 * dotSize_);
-                break;
-            default:
-                // по умолчанию никаких визуальных эффектов нет.
-                return;
-        }
-
-        TextureRegion textureRegion = new TextureRegion(
-                mContents.get(R.drawable.dots_theme1),
-                GameDot.getSpecTexturePosition(dotSpecType),
-                new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
-        );
-        DisplayableObject effect = new DisplayableObject(textureRegion);
-        effect.setSize(dotSize_, dotSize_);
-        effect.setPosition(dotPos);
-
-        AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_CENTER,
-                AnimationSet.PlayMode.NORMAL,
-                new Vector2(dotSize_, dotSize_),
-                new Vector2(newSize.width, newSize.height),
-                EFFECT_TIME_);
-        effect.setAnimation(new AnimationController(animSet));
-
-        effects_.add(effect);
     }
 
     /**

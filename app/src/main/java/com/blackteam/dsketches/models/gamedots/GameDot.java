@@ -77,9 +77,12 @@ public class GameDot {
     protected int rowNo_;
     protected int colNo_;
 
+    private ContentManager mContents;
+
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
 
+        this.mContents = contents;
         this.mType = dotType;
         this.mSpecType = dotSpecType;
         this.rowNo_ = rowNo;
@@ -330,5 +333,45 @@ public class GameDot {
     public Set<GameDot> affectDots(GameDot[][] gameDots) {
         // обычная игровая точка не оказывает никакого влияния на другие точки.
         return null;
+    }
+
+    /**
+     * Получить анимацию разрушения объекта.
+     * @param dotSize размер игровой точки.
+     * @param boxSize размер игрового поля.
+     * @return объект анимации.
+     */
+    public DisplayableObject getDestroyAnimation(Size2 dotSize, Size2 boxSize) {
+        return null;
+    }
+
+    /** Время отображения эффекта, мс. */
+    private static final float EFFECT_TIME_ = 300f;
+
+    /**
+     * Создание анимации изменения масштаба объекта.
+     * @param startDotSize начальный размер игровой точки.
+     * @param endDotSize конечный размер игровой точки.
+     * @return объект анимации.
+     */
+    public DisplayableObject createScaleAnimation(Size2 startDotSize, Size2 endDotSize) {
+        TextureRegion textureRegion = new TextureRegion(
+                mContents.get(R.drawable.dots_theme1),
+                GameDot.getSpecTexturePosition(getSpecType()),
+                new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
+        );
+
+        DisplayableObject effect = new DisplayableObject(textureRegion);
+        effect.setSize(startDotSize);
+        effect.setPosition(getPosition());
+
+        AnimationSet animSet = new AnimationSet(AnimationSet.ValueType.SCALE_CENTER,
+                AnimationSet.PlayMode.NORMAL,
+                new Vector2(startDotSize.width, startDotSize.height),
+                new Vector2(endDotSize.width, endDotSize.height),
+                EFFECT_TIME_);
+        effect.setAnimation(new AnimationController(animSet));
+
+        return effect;
     }
 }
