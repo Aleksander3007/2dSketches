@@ -1,4 +1,4 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.models;
 
 import java.io.Serializable;
 

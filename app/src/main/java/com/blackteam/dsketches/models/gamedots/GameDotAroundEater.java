@@ -1,6 +1,6 @@
-package com.blackteam.dsketches.gamedots;
+package com.blackteam.dsketches.models.gamedots;
 
-import com.blackteam.dsketches.ContentManager;
+import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.HashSet;

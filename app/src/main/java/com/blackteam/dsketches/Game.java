@@ -2,9 +2,13 @@ package com.blackteam.dsketches;
 
 import android.util.Log;
 
-import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.models.gamedots.GameDot;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ProfitLabel;
+import com.blackteam.dsketches.managers.ContentManager;
+import com.blackteam.dsketches.managers.SketchesManager;
+import com.blackteam.dsketches.models.Player;
+import com.blackteam.dsketches.models.Skill;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 

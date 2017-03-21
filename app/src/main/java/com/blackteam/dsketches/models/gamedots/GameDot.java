@@ -1,6 +1,6 @@
-package com.blackteam.dsketches.gamedots;
+package com.blackteam.dsketches.models.gamedots;
 
-import com.blackteam.dsketches.ContentManager;
+import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.R;
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
@@ -10,8 +10,6 @@ import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.ui;
+package com.blackteam.dsketches.activities;
 
 import android.app.Activity;
 import android.content.Intent;

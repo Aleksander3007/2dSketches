@@ -1,10 +1,9 @@
 package com.blackteam.dsketches;
 
+import com.blackteam.dsketches.models.Achievement;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.internal.creation.util.SearchingClassLoader;
-
-import static org.junit.Assert.*;
 
 public class AchievementTest {
 

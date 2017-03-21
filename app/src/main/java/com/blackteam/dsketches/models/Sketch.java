@@ -1,11 +1,11 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.models;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.models.gamedots.GameDot;
 
 import java.io.Serializable;
 import java.util.ArrayList;

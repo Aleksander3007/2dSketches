@@ -5,24 +5,25 @@ import android.util.Log;
 
 import com.blackteam.dsketches.animation.AnimationController;
 import com.blackteam.dsketches.animation.AnimationSet;
-import com.blackteam.dsketches.gamedots.GameDot;
-import com.blackteam.dsketches.gamedots.GameDotAroundEater;
-import com.blackteam.dsketches.gamedots.GameDotColumnEater;
-import com.blackteam.dsketches.gamedots.GameDotDouble;
-import com.blackteam.dsketches.gamedots.GameDotRowEater;
-import com.blackteam.dsketches.gamedots.GameDotTriple;
+import com.blackteam.dsketches.models.gamedots.GameDot;
+import com.blackteam.dsketches.models.gamedots.GameDotAroundEater;
+import com.blackteam.dsketches.models.gamedots.GameDotColumnEater;
+import com.blackteam.dsketches.models.gamedots.GameDotDouble;
+import com.blackteam.dsketches.models.gamedots.GameDotRowEater;
+import com.blackteam.dsketches.models.gamedots.GameDotTriple;
 import com.blackteam.dsketches.gui.DisplayableObject;
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.TextureRegion;
+import com.blackteam.dsketches.managers.ContentManager;
+import com.blackteam.dsketches.managers.SketchesManager;
+import com.blackteam.dsketches.models.Sketch;
 import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**

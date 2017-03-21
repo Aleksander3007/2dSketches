@@ -1,14 +1,16 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.managers;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blackteam.dsketches.models.Achievement;
+import com.blackteam.dsketches.models.Player;
+import com.blackteam.dsketches.R;
+import com.blackteam.dsketches.World;
 import com.blackteam.dsketches.gui.AchievementToast;
-import com.blackteam.dsketches.utils.xml.XmlParceable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

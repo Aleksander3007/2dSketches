@@ -1,10 +1,12 @@
-package com.blackteam.dsketches;
+package com.blackteam.dsketches.models;
 
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 
-import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.World;
+import com.blackteam.dsketches.models.gamedots.GameDot;
+import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.utils.Vector2;
 import com.blackteam.dsketches.utils.xml.XmlParceable;
 

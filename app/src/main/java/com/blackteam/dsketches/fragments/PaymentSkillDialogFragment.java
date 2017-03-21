@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.ui;
+package com.blackteam.dsketches.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.blackteam.dsketches.PaymentType;
 import com.blackteam.dsketches.R;
-import com.blackteam.dsketches.Skill;
+import com.blackteam.dsketches.models.Skill;
 
 /**
  * Диалоговое окно покупки skill.

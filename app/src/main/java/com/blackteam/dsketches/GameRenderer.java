@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.gui.ShaderProgram;
+import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.utils.GameMath;
 
 import javax.microedition.khronos.egl.EGLConfig;

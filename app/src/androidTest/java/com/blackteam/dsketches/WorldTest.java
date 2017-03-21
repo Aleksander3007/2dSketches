@@ -2,7 +2,8 @@ package com.blackteam.dsketches;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.models.gamedots.GameDot;
+import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.utils.Vector2;
 
 import org.junit.Assert;
@@ -11,7 +12,6 @@ import org.junit.runner.RunWith;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @RunWith(AndroidJUnit4.class)
 public class WorldTest {

@@ -1,4 +1,4 @@
-package com.blackteam.dsketches.ui;
+package com.blackteam.dsketches.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackteam.dsketches.Achievement;
+import com.blackteam.dsketches.models.Achievement;
 import com.blackteam.dsketches.R;
 
 import java.util.ArrayList;

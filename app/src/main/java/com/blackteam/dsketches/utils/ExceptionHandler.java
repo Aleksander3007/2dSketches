@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.blackteam.dsketches.ui.ErrorActivity;
+import com.blackteam.dsketches.activities.ErrorActivity;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

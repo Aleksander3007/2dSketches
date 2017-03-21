@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainMenuActivity"
+            android:name=".activities.MainMenuActivity"
             android:theme="@style/Theme.Transparent"></activity>
-        <activity android:name=".ui.AchievementsActivity"></activity>
-        <activity android:name=".ui.SketchesActivity"/>
-        <activity android:name=".ui.ErrorActivity"/>
+        <activity android:name=".activities.AchievementsActivity"></activity>
+        <activity android:name=".activities.SketchesActivity"/>
+        <activity android:name=".activities.ErrorActivity"/>
     </application>
 
 </manifest>

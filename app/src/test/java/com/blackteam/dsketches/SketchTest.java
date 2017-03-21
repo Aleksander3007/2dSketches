@@ -1,6 +1,7 @@
 package com.blackteam.dsketches;
 
-import com.blackteam.dsketches.gamedots.GameDot;
+import com.blackteam.dsketches.models.gamedots.GameDot;
+import com.blackteam.dsketches.models.Sketch;
 
 import org.junit.Assert;
 import org.junit.Test;
