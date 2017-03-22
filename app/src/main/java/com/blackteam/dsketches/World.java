@@ -420,7 +420,7 @@ public class World extends Observable {
             for (int iCol = 0; iCol < mNumColumns; iCol++) {
                 if (gameDots[iRow][iCol] != null) {
                     createDot(gameDots[iRow][iCol].getType(),
-                            gameDots[iRow][iCol].getSpecType(),
+                            gameDots[iRow][iCol].getName(),
                             iRow, iCol);
                 }
                 // Если у нас по какой-то причине не инилизирована точка,
@@ -451,14 +451,14 @@ public class World extends Observable {
      */
     private void createDot(final int rowNo, final int colNo) {
         GameDot.Types dotType = GameDotsFactory.generateDotType();
-        GameDot.SpecTypes dotSpecType = GameDotsFactory.generateDotSpecType();
+        String dotSpecType = GameDotsFactory.generateDotSpecType();
 
         createDot(dotType, dotSpecType, rowNo, colNo);
 
         Log.i(TAG, String.format("There is created specType = %s", dotSpecType.toString()));
     }
 
-    private void createDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType,
+    private void createDot(GameDot.Types dotType, String dotSpecType,
                                     int rowNo, int colNo) {
         Vector2 dotPos = new Vector2(
                 this.mPos.x + colNo * dotSize_,

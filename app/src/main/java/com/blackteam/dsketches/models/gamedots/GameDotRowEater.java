@@ -12,8 +12,16 @@ import java.util.Set;
  * Игровая точка с эффектом разрушения соседей по строке.
  */
 public class GameDotRowEater extends SpecGameDot {
-    public GameDotRowEater(Types dotType, SpecTypes dotSpecType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
-        super(dotType, dotSpecType, pos, rowNo, colNo, contents);
+
+    public static final String NAME = "ROW_EATER";
+
+    public GameDotRowEater(Types dotType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
+        super(dotType, pos, rowNo, colNo, contents);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

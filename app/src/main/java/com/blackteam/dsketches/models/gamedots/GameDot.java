@@ -26,15 +26,7 @@ public class GameDot {
     }
     private Types mType;
 
-    public enum SpecTypes {
-        NONE, // Без эффекта.
-        DOUBLE, // Удвоение profit.
-        TRIPLE, // Утроение profit.
-        ROW_EATER, // Разрушаются соседи по строке.
-        COLUMN_EATER, // Разрушаются соседи по столбцу.
-        AROUND_EATER // Разрушаются вокруг все соседи.
-    }
-    private SpecTypes mSpecType;
+    public static final String NAME = "NONE";
 
     private boolean mIsMoving = false;
     private Vector2 mFinishPos;
@@ -68,17 +60,20 @@ public class GameDot {
 
     protected ContentManager mContents;
 
-    public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
-                   final int rowNo, final int colNo, final ContentManager contents) {
+    public GameDot(GameDot.Types dotType, Vector2 pos,
+                   int rowNo, int colNo, ContentManager contents) {
 
         this.mContents = contents;
         this.mType = dotType;
-        this.mSpecType = dotSpecType;
         this.rowNo_ = rowNo;
         this.colNo_ = colNo;
 
         mainObject_ = new DisplayableObject(pos, GameDotsFactory.getTextureRegion(mType, mContents));
         mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
+    }
+
+    public String getName() {
+        return NAME;
     }
 
     public int getColNo() {
@@ -124,10 +119,6 @@ public class GameDot {
         mainObject_.setTexture(GameDotsFactory.getTextureRegion(dotType, mContents));
     }
 
-    public GameDot.SpecTypes getSpecType() {
-        return this.mSpecType;
-    }
-
     public static void setAbsTranslateSpeed(final float speed) {
         ABS_TRANSLATE_SPEED_ = speed;
     }
@@ -150,10 +141,6 @@ public class GameDot {
 
     public static Types convertToType(String gameDotTypeStr) {
         return Enum.valueOf(GameDot.Types.class, gameDotTypeStr);
-    }
-
-    public static SpecTypes convertToSpecType(String gameDotSpecTypeStr) {
-        return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
     }
 
     public void startCreatingAnimation() {
@@ -271,7 +258,7 @@ public class GameDot {
      */
     public DisplayableObject createScaleAnimation(Size2 startDotSize, Size2 endDotSize) {
 
-        TextureRegion textureRegion = GameDotsFactory.getSpecTextureRegion(getSpecType(), mContents);
+        TextureRegion textureRegion = GameDotsFactory.getSpecTextureRegion(getName(), mContents);
 
         DisplayableObject effect = new DisplayableObject(textureRegion);
         effect.setSize(startDotSize);

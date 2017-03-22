@@ -4,6 +4,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 
+import com.blackteam.dsketches.GameDotsFactory;
 import com.blackteam.dsketches.World;
 import com.blackteam.dsketches.models.gamedots.GameDot;
 import com.blackteam.dsketches.managers.ContentManager;
@@ -165,11 +166,11 @@ public class Player implements XmlParceable {
         int iCol = Integer.parseInt(xmlParser.getAttributeValue(null, sAttrGameDotColumn));
         GameDot.Types gameDotType = GameDot.convertToType(
                 xmlParser.getAttributeValue(null, sAttrGameDotType));
-        GameDot.SpecTypes gameDotSpecType = GameDot.convertToSpecType(
-                xmlParser.getAttributeValue(null, sAttrGameDotSpecType));
+        String gameDotSpecType = xmlParser.getAttributeValue(null, sAttrGameDotSpecType);
 
-        gameDots_[iRow][iCol] = new GameDot(gameDotType, gameDotSpecType,
-                new Vector2(0, 0), iRow, iCol, mContents);
+        gameDots_[iRow][iCol] = GameDotsFactory.createDot(gameDotType, gameDotSpecType,
+                iRow, iCol, new Vector2(0, 0),
+                mContents);
     }
 
 
@@ -219,7 +220,7 @@ public class Player implements XmlParceable {
                     xmlSerializer.attribute(null, sAttrGameDotType,
                             String.valueOf(gameDots_[iRow][iCol].getType()));
                     xmlSerializer.attribute(null, sAttrGameDotSpecType,
-                            String.valueOf(gameDots_[iRow][iCol].getSpecType()));
+                            String.valueOf(gameDots_[iRow][iCol].getName()));
                     xmlSerializer.attribute(null, sAttrGameDotRow, String.valueOf(iRow));
                     xmlSerializer.attribute(null, sAttrGameDotColumn, String.valueOf(iCol));
                     xmlSerializer.endTag(null, sTagGameDot);

@@ -26,59 +26,67 @@ public class GameDotsFactory {
     public static final int TEX_HEIGHT = 256;
 
     /**
-     * Создать GameDot.
-     * @param dotType Тип.
-     * @param dotSpecType Специальный тип.
-     * @param rowNo Номер строки.
-     * @param colNo Номер столбца.
+     * Создать игровую точку.
+     * @param dotType тип.
+     * @param dotSpecType специальный тип.
+     * @param rowNo номер строки.
+     * @param colNo номер столбца.
+     * @param dotPos позиция точки.
      */
-    public static GameDot createDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType,
-                          int rowNo, int colNo, Vector2 dotPos, float dotSize, ContentManager contents) {
-        GameDot gameDot;
+    public static GameDot createDot(GameDot.Types dotType, String dotSpecType,
+                                    int rowNo, int colNo, Vector2 dotPos, ContentManager contents) {
         switch (dotSpecType) {
-            case DOUBLE:
-                gameDot = new GameDotDouble(dotType, dotSpecType,
-                        dotPos,
-                        rowNo, colNo,
-                    contents
-                );
-                break;
-            case TRIPLE:
-                gameDot = new GameDotTriple(dotType, dotSpecType,
+            case GameDotDouble.NAME:
+                return new GameDotDouble(dotType,
                         dotPos,
                         rowNo, colNo,
                         contents
                 );
-                break;
-            case ROW_EATER:
-                gameDot = new GameDotRowEater(dotType, dotSpecType,
+            case GameDotTriple.NAME:
+                return new GameDotTriple(dotType,
                         dotPos,
                         rowNo, colNo,
                         contents
                 );
-                break;
-            case COLUMN_EATER:
-                gameDot = new GameDotColumnEater(dotType, dotSpecType,
+            case GameDotRowEater.NAME:
+                return new GameDotRowEater(dotType,
                         dotPos,
                         rowNo, colNo,
                         contents
                 );
-                break;
-            case AROUND_EATER:
-                gameDot = new GameDotAroundEater(dotType, dotSpecType,
+            case GameDotColumnEater.NAME:
+                return new GameDotColumnEater(dotType,
                         dotPos,
                         rowNo, colNo,
                         contents
                 );
-                break;
+            case GameDotAroundEater.NAME:
+                return new GameDotAroundEater(dotType,
+                        dotPos,
+                        rowNo, colNo,
+                        contents
+                );
             default:
-                gameDot = new GameDot(dotType, dotSpecType,
+                return new GameDot(dotType,
                         dotPos,
                         rowNo, colNo,
                         contents
                 );
         }
+    }
+    /**
+     * Создать игровую точку.
+     * @param dotType тип.
+     * @param dotSpecType специальный тип.
+     * @param rowNo номер строки.
+     * @param colNo номер столбца.
+     * @param dotPos позиция точки.
+     * @param dotSize размер точки.
+     */
+    public static GameDot createDot(GameDot.Types dotType, String dotSpecType,
+                          int rowNo, int colNo, Vector2 dotPos, float dotSize, ContentManager contents) {
 
+        GameDot gameDot = createDot(dotType, dotSpecType, rowNo, colNo, dotPos, contents);
         gameDot.setSize(dotSize);
         return gameDot;
     }
@@ -91,7 +99,7 @@ public class GameDotsFactory {
         );
     }
 
-    public static TextureRegion getSpecTextureRegion(GameDot.SpecTypes dotSpecType, ContentManager contents) {
+    public static TextureRegion getSpecTextureRegion(String dotSpecType, ContentManager contents) {
         return new TextureRegion(
                 contents.get(R.drawable.dots_theme1),
                 getSpecTexturePosition(dotSpecType),
@@ -110,14 +118,14 @@ public class GameDotsFactory {
         return GameMath.generateValue(dotTypeProbabilities);
     }
 
-    public static GameDot.SpecTypes generateDotSpecType() {
-        ArrayMap<GameDot.SpecTypes, Float> dotTypeProbabilities = new ArrayMap<>();
-        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f);
+    public static String generateDotSpecType() {
+        ArrayMap<String, Float> dotTypeProbabilities = new ArrayMap<>();
+        dotTypeProbabilities.put(GameDot.NAME, 93f);
+        dotTypeProbabilities.put(GameDotDouble.NAME, 2f);
+        dotTypeProbabilities.put(GameDotTriple.NAME, 0.5f);
+        dotTypeProbabilities.put(GameDotRowEater.NAME, 1.5f);
+        dotTypeProbabilities.put(GameDotColumnEater.NAME, 1.5f);
+        dotTypeProbabilities.put(GameDotAroundEater.NAME, 1.5f);
 
         return GameMath.generateValue(dotTypeProbabilities);
     }
@@ -146,26 +154,26 @@ public class GameDotsFactory {
         return new Vector2(x, 0);
     }
 
-    public static Vector2 getSpecTexturePosition(GameDot.SpecTypes specType) {
+    public static Vector2 getSpecTexturePosition(String specType) {
         int x = 0;
 
         switch (specType) {
-            case NONE:
+            case GameDot.NAME:
                 x = 0; // Берём этот, но на деле мы ничего не отрисовываем.
                 break;
-            case DOUBLE:
+            case GameDotDouble.NAME:
                 x = 0;
                 break;
-            case TRIPLE:
+            case GameDotTriple.NAME:
                 x = TEX_WIDTH;
                 break;
-            case ROW_EATER:
+            case GameDotRowEater.NAME:
                 x = 2 * TEX_WIDTH;
                 break;
-            case COLUMN_EATER:
+            case GameDotColumnEater.NAME:
                 x = 3 * TEX_WIDTH;
                 break;
-            case AROUND_EATER:
+            case GameDotAroundEater.NAME:
                 x = 4 * TEX_WIDTH;
                 break;
         }

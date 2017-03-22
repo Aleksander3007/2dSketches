@@ -12,8 +12,16 @@ import java.util.Set;
  * Игровая точка с эффектом разрушения окружающих соседей.
  */
 public class GameDotAroundEater extends SpecGameDot {
-    public GameDotAroundEater(Types dotType, SpecTypes dotSpecType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
-        super(dotType, dotSpecType, pos, rowNo, colNo, contents);
+
+    public static final String NAME = "AROUND_EATER";
+
+    public GameDotAroundEater(Types dotType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
+        super(dotType, pos, rowNo, colNo, contents);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

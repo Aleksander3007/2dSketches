@@ -27,11 +27,11 @@ public abstract class SpecGameDot extends GameDot {
             AnimationSet.PlayMode.LOOP_PINGPONG,
             SPEC_MIN_ALPHA_, SPEC_MAX_ALPHA_, SPEC_ALPHA_TIME_);
 
-    public SpecGameDot(Types dotType, SpecTypes dotSpecType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
-        super(dotType, dotSpecType, pos, rowNo, colNo, contents);
+    public SpecGameDot(Types dotType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
+        super(dotType, pos, rowNo, colNo, contents);
 
         specObject_ = new DisplayableObject(pos,
-                GameDotsFactory.getSpecTextureRegion(dotSpecType, mContents));
+                GameDotsFactory.getSpecTextureRegion(getName(), mContents));
         specObject_.setAnimation(new AnimationController(
                 FILM_DEVELOPMENT_ANIM_SET_, FLASHING_ANIM_SET_
         ));
