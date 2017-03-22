@@ -1,5 +1,6 @@
 package com.blackteam.dsketches;
 
+import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.models.gamedots.GameDot;
 import com.blackteam.dsketches.models.gamedots.GameDotAroundEater;
@@ -7,6 +8,7 @@ import com.blackteam.dsketches.models.gamedots.GameDotColumnEater;
 import com.blackteam.dsketches.models.gamedots.GameDotDouble;
 import com.blackteam.dsketches.models.gamedots.GameDotRowEater;
 import com.blackteam.dsketches.models.gamedots.GameDotTriple;
+import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
 /**
@@ -14,6 +16,12 @@ import com.blackteam.dsketches.utils.Vector2;
  * Идея - Простая фабрика.
  */
 public class GameDotsFactory {
+
+    /** Ширина текстуры. */
+    public static final int TEX_WIDTH = 256;
+    /** Высота текстуры. */
+    public static final int TEX_HEIGHT = 256;
+
     /**
      * Создать GameDot.
      * @param dotType Тип.
@@ -72,7 +80,23 @@ public class GameDotsFactory {
         return gameDot;
     }
 
-    public static Vector2 getTexturePosition(GameDot.Types type) {
+    public static TextureRegion getTextureRegion(GameDot.Types dotType, ContentManager contents) {
+        return new TextureRegion(
+                contents.get(R.drawable.dots_theme1),
+                getTexturePosition(dotType),
+                new Size2(TEX_WIDTH, TEX_HEIGHT)
+        );
+    }
+
+    public static TextureRegion getSpecTextureRegion(GameDot.SpecTypes dotSpecType, ContentManager contents) {
+        return new TextureRegion(
+                contents.get(R.drawable.dots_theme1),
+                getSpecTexturePosition(dotSpecType),
+                new Size2(TEX_WIDTH, TEX_WIDTH)
+        );
+    }
+
+    private static Vector2 getTexturePosition(GameDot.Types type) {
         int x = 0;
 
         switch (type) {
@@ -80,16 +104,16 @@ public class GameDotsFactory {
                 x = 0;
                 break;
             case TYPE2:
-                x = GameDot.TEX_HEIGHT;
+                x = TEX_HEIGHT;
                 break;
             case TYPE3:
-                x = 2 * GameDot.TEX_HEIGHT;
+                x = 2 * TEX_HEIGHT;
                 break;
             case TYPE4:
-                x = 3 * GameDot.TEX_HEIGHT;
+                x = 3 * TEX_HEIGHT;
                 break;
             case UNIVERSAL:
-                x = 4 * GameDot.TEX_HEIGHT;
+                x = 4 * TEX_HEIGHT;
                 break;
         }
 
@@ -107,19 +131,19 @@ public class GameDotsFactory {
                 x = 0;
                 break;
             case TRIPLE:
-                x = GameDot.TEX_WIDTH;
+                x = TEX_WIDTH;
                 break;
             case ROW_EATER:
-                x = 2 * GameDot.TEX_WIDTH;
+                x = 2 * TEX_WIDTH;
                 break;
             case COLUMN_EATER:
-                x = 3 * GameDot.TEX_WIDTH;
+                x = 3 * TEX_WIDTH;
                 break;
             case AROUND_EATER:
-                x = 4 * GameDot.TEX_WIDTH;
+                x = 4 * TEX_WIDTH;
                 break;
         }
 
-        return new Vector2(x, GameDot.TEX_HEIGHT);
+        return new Vector2(x, TEX_HEIGHT);
     }
 }

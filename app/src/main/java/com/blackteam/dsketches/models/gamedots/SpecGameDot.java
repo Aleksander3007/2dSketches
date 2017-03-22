@@ -30,12 +30,8 @@ public abstract class SpecGameDot extends GameDot {
     public SpecGameDot(Types dotType, SpecTypes dotSpecType, Vector2 pos, int rowNo, int colNo, ContentManager contents) {
         super(dotType, dotSpecType, pos, rowNo, colNo, contents);
 
-        TextureRegion specTextureRegion = new TextureRegion(
-                contents.get(R.drawable.dots_theme1),
-                GameDotsFactory.getSpecTexturePosition(dotSpecType),
-                new Size2(TEX_WIDTH, TEX_HEIGHT)
-        );
-        specObject_ = new DisplayableObject(pos, specTextureRegion);
+        specObject_ = new DisplayableObject(pos,
+                GameDotsFactory.getSpecTextureRegion(dotSpecType, mContents));
         specObject_.setAnimation(new AnimationController(
                 FILM_DEVELOPMENT_ANIM_SET_, FLASHING_ANIM_SET_
         ));

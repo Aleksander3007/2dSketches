@@ -60,18 +60,13 @@ public class GameDot {
 
     private Vector2 translateSpeed_ = new Vector2(0, 0); // units per ms.
 
-    /** Ширина текстуры. */
-    public static final int TEX_WIDTH = 256;
-    /** Высота текстуры. */
-    public static final int TEX_HEIGHT = 256;
-
     /** Главный объект, отображающий игровую точку. */
     protected DisplayableObject mainObject_;
 
     protected int rowNo_;
     protected int colNo_;
 
-    private ContentManager mContents;
+    protected ContentManager mContents;
 
     public GameDot(final GameDot.Types dotType, final GameDot.SpecTypes dotSpecType, final Vector2 pos,
                    final int rowNo, final int colNo, final ContentManager contents) {
@@ -82,18 +77,16 @@ public class GameDot {
         this.rowNo_ = rowNo;
         this.colNo_ = colNo;
 
-        TextureRegion textureRegion = new TextureRegion(
-                contents.get(R.drawable.dots_theme1),
-                GameDotsFactory.getTexturePosition(dotType),
-                new Size2(TEX_WIDTH, TEX_HEIGHT)
-        );
-        mainObject_ = new DisplayableObject(pos, textureRegion);
-
+        mainObject_ = new DisplayableObject(pos, GameDotsFactory.getTextureRegion(mType, mContents));
         mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
     }
 
     public int getColNo() {
         return colNo_;
+    }
+
+    public void setColNo(final int colNo) {
+        colNo_ = colNo;
     }
 
     public int getRowNo() {
@@ -128,6 +121,7 @@ public class GameDot {
 
     public void setType(GameDot.Types dotType) {
         this.mType = dotType;
+        mainObject_.setTexture(GameDotsFactory.getTextureRegion(dotType, mContents));
     }
 
     public GameDot.SpecTypes getSpecType() {
@@ -162,6 +156,13 @@ public class GameDot {
         return Enum.valueOf(GameDot.SpecTypes.class, gameDotSpecTypeStr);
     }
 
+    public void startCreatingAnimation() {
+        mainObject_.setAnimation(new AnimationController(FILM_DEVELOPMENT_ANIM_SET_));
+    }
+
+    /**
+     * Главный метод отрисовки.
+     */
     public void render(Graphics graphics) {
         if (mIsMoving)
             moving(graphics.getElapsedTime());
@@ -269,11 +270,8 @@ public class GameDot {
      * @return объект анимации.
      */
     public DisplayableObject createScaleAnimation(Size2 startDotSize, Size2 endDotSize) {
-        TextureRegion textureRegion = new TextureRegion(
-                mContents.get(R.drawable.dots_theme1),
-                GameDotsFactory.getSpecTexturePosition(getSpecType()),
-                new Size2(GameDot.TEX_WIDTH, GameDot.TEX_HEIGHT)
-        );
+
+        TextureRegion textureRegion = GameDotsFactory.getSpecTextureRegion(getSpecType(), mContents);
 
         DisplayableObject effect = new DisplayableObject(textureRegion);
         effect.setSize(startDotSize);

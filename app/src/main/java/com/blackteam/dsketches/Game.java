@@ -122,7 +122,7 @@ public class Game {
      * Использовать Skill.Type.FRIENDS.
      */
     private void applySkillFriends() {
-        Log.i("Game", "FRIENDS skill.");
+        Log.d("Game", "FRIENDS skill.");
 
         // У 3-x разные случайных dots.
         Set<Integer> randomDotNumbers = new HashSet<>();
@@ -132,52 +132,40 @@ public class Game {
 
             // Кандидатом на друга становится только тот кто удовлетврояет след. условиям:
             // - еще не был выбран (в рамках текущего использования skill).
-            // - не был исключен далее по алгоритму (в рамках текущего использования skill).
-            boolean isCandidate;
-            if (randomDotNumbers.add(randomDotNo))
-                isCandidate = true;
-            else
-                isCandidate = false;
+            // - не является универсальным.
 
-            if (!isCandidate) {
+            boolean isCandidate = randomDotNumbers.add(randomDotNo);
+
+            if (isCandidate) {
                 int randomRow = randomDotNo / mWorld.getNumCols();
                 int randomCol = randomDotNo % mWorld.getNumCols();
                 // Должны быть не универсальными.
                 if (mWorld.getDot(randomRow, randomCol).getType() != GameDot.Types.UNIVERSAL) {
-                    mWorld.createDot(GameDot.Types.UNIVERSAL,
-                            mWorld.getDot(randomRow, randomCol).getSpecType(),
-                            randomRow, randomCol
-                    );
+
+                    mWorld.getDot(randomRow, randomCol).setType(GameDot.Types.UNIVERSAL);
+                    mWorld.getDot(randomRow, randomCol).startCreatingAnimation();
+
                     iFriend++;
+                    Log.i("Game", String.format("Friend: (%d, %d)", randomRow, randomCol));
                 }
             }
         }
 
-        Log.i("Game", String.format("Friends: {%s}", randomDotNumbers.toString()));
+        Log.d("Game", String.format("Candidates: {%s}", randomDotNumbers.toString()));
     }
 
     /**
      * Использовать Skill.Type.RESHUFFLE.
      */
     private void applySkillReshuffle() {
-        Log.i("World", "RESHUFFLE skill.");
+        Log.d("World", "RESHUFFLE skill.");
+
         for (int iRow = 0; iRow < mWorld.getNumRows(); iRow++) {
             for (int iCol = 0; iCol < mWorld.getNumCols(); iCol++) {
                 int randomRow = (int) (Math.random() * mWorld.getNumRows());
                 int randomCol = (int) (Math.random() * mWorld.getNumCols());
 
-                GameDot.Types gameDotType = mWorld.getDot(iRow, iCol).getType();
-                GameDot.SpecTypes gameDotSpecType = mWorld.getDot(iRow, iCol).getSpecType();
-
-                mWorld.createDot(mWorld.getDot(randomRow, randomCol).getType(),
-                        mWorld.getDot(randomRow, randomCol).getSpecType(),
-                        iRow, iCol
-                );
-
-                mWorld.createDot(gameDotType,
-                        gameDotSpecType,
-                        randomRow, randomCol
-                );
+                mWorld.replaceDots(iRow, iCol, randomRow, randomCol);
             }
         }
     }

@@ -161,6 +161,27 @@ public class World extends Observable {
         }
     }
 
+    /**
+     * Перестановка игровых точек.
+     * @param dot1RowNo номер строки первой перемещаемой игровой точки.
+     * @param dot1ColNo номер столбца первой перемещаемой игровой точки.
+     * @param dot2RowNo номер строки второй перемещаемой игровой точки.
+     * @param dot2ColNo номер столбца второй перемещаемой игровой точки.
+     */
+    public synchronized void replaceDots(int dot1RowNo, int dot1ColNo, int dot2RowNo, int dot2ColNo) {
+        GameDot oldDot2 = mDots[dot2RowNo][dot2ColNo];
+
+        mDots[dot1RowNo][dot1ColNo].moveTo(convertToPos(dot2RowNo, dot2ColNo));
+        mDots[dot1RowNo][dot1ColNo].setRowNo(dot2RowNo);
+        mDots[dot1RowNo][dot1ColNo].setColNo(dot2ColNo);
+        mDots[dot2RowNo][dot2ColNo] = mDots[dot1RowNo][dot1ColNo];
+
+        oldDot2.moveTo(convertToPos(dot1RowNo, dot1ColNo));
+        oldDot2.setRowNo(dot1RowNo);
+        oldDot2.setColNo(dot1ColNo);
+        mDots[dot1RowNo][dot1ColNo] = oldDot2;
+    }
+
     private boolean hitX(float x) {
         return (x >= mPos.x) && (x <= mPos.x + mWidth);
     }
