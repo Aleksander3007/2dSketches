@@ -1,5 +1,7 @@
 package com.blackteam.dsketches;
 
+import android.support.v4.util.ArrayMap;
+
 import com.blackteam.dsketches.gui.TextureRegion;
 import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.models.gamedots.GameDot;
@@ -8,6 +10,7 @@ import com.blackteam.dsketches.models.gamedots.GameDotColumnEater;
 import com.blackteam.dsketches.models.gamedots.GameDotDouble;
 import com.blackteam.dsketches.models.gamedots.GameDotRowEater;
 import com.blackteam.dsketches.models.gamedots.GameDotTriple;
+import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -94,6 +97,29 @@ public class GameDotsFactory {
                 getSpecTexturePosition(dotSpecType),
                 new Size2(TEX_WIDTH, TEX_WIDTH)
         );
+    }
+
+    public static GameDot.Types generateDotType() {
+        ArrayMap<GameDot.Types, Float> dotTypeProbabilities = new ArrayMap<>();
+        dotTypeProbabilities.put(GameDot.Types.TYPE1, 24f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
+        dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
+        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 74f); // original: 4f
+
+        return GameMath.generateValue(dotTypeProbabilities);
+    }
+
+    public static GameDot.SpecTypes generateDotSpecType() {
+        ArrayMap<GameDot.SpecTypes, Float> dotTypeProbabilities = new ArrayMap<>();
+        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.5f);
+        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f);
+
+        return GameMath.generateValue(dotTypeProbabilities);
     }
 
     private static Vector2 getTexturePosition(GameDot.Types type) {

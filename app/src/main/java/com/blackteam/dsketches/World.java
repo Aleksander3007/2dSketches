@@ -9,7 +9,6 @@ import com.blackteam.dsketches.gui.Graphics;
 import com.blackteam.dsketches.managers.ContentManager;
 import com.blackteam.dsketches.managers.SketchesManager;
 import com.blackteam.dsketches.models.Sketch;
-import com.blackteam.dsketches.utils.GameMath;
 import com.blackteam.dsketches.utils.Size2;
 import com.blackteam.dsketches.utils.Vector2;
 
@@ -57,8 +56,6 @@ public class World extends Observable {
 
     private boolean isUpdating_ = false;
 
-    /** Время отображения эффекта, мс. */
-    private static final float EFFECT_TIME_ = 300f;
     private List<DisplayableObject> effects_ = new CopyOnWriteArrayList<>();
 
     public World(ContentManager contents, SketchesManager sketchesManager) {
@@ -438,32 +435,6 @@ public class World extends Observable {
             Log.i("World", "Level is created.");
         }
     }
-
-    private GameDot.Types generateDotType() {
-        // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<GameDot.Types, Float> dotTypeProbabilities = new ArrayMap<>();
-        dotTypeProbabilities.put(GameDot.Types.TYPE1, 24f);
-        dotTypeProbabilities.put(GameDot.Types.TYPE2, 24f);
-        dotTypeProbabilities.put(GameDot.Types.TYPE3, 24f);
-        dotTypeProbabilities.put(GameDot.Types.TYPE4, 24f);
-        dotTypeProbabilities.put(GameDot.Types.UNIVERSAL, 104f); // original: 4f
-
-        return GameMath.generateValue(dotTypeProbabilities);
-    }
-
-    private GameDot.SpecTypes generateDotSpecType() {
-        // TODO: Подумать где дожна находится карта вероятностей выпадения. (GameRuler?)
-        ArrayMap<GameDot.SpecTypes, Float> dotTypeProbabilities = new ArrayMap<>();
-        dotTypeProbabilities.put(GameDot.SpecTypes.NONE, 93f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.DOUBLE, 2f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.TRIPLE, 0.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.ROW_EATER, 1.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.COLUMN_EATER, 1.5f);
-        dotTypeProbabilities.put(GameDot.SpecTypes.AROUND_EATER, 1.5f); // original: 1.5f
-
-        return GameMath.generateValue(dotTypeProbabilities);
-    }
-
     private boolean isDotSelected(GameDot gameDot) {
         for (GameDot selectedGameDot : selectedDots_) {
             if (gameDot == selectedGameDot) {
@@ -479,15 +450,15 @@ public class World extends Observable {
      * @param colNo Номер столбца.
      */
     private void createDot(final int rowNo, final int colNo) {
-        GameDot.Types dotType = generateDotType();
-        GameDot.SpecTypes dotSpecType = generateDotSpecType();
+        GameDot.Types dotType = GameDotsFactory.generateDotType();
+        GameDot.SpecTypes dotSpecType = GameDotsFactory.generateDotSpecType();
 
         createDot(dotType, dotSpecType, rowNo, colNo);
 
         Log.i(TAG, String.format("There is created specType = %s", dotSpecType.toString()));
     }
 
-    public void createDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType,
+    private void createDot(GameDot.Types dotType, GameDot.SpecTypes dotSpecType,
                                     int rowNo, int colNo) {
         Vector2 dotPos = new Vector2(
                 this.mPos.x + colNo * dotSize_,
